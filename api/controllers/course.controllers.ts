@@ -3,12 +3,10 @@ import { type Request, type Response, type NextFunction } from "express"
 
 export const createCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { title, description, price } = req.body;
-        const course = await pool.query("INSERT INTO course (title, description, price) VALUES ($1, $2, $3) RETURNING *", [title, description, price])
+        const { course_name, description, created_at, teacher_id, price} = req.body;
+        const course = await pool.query("INSERT INTO course (created_at, course_name, description, teacher_id, price) VALUES ($1, $2, $3, $4, $5) RETURNING *", [created_at, course_name, description, teacher_id, price])
         const courseObject = course.rows[0];
-        res.json({
-            message: "Course created successfully"
-        })
+        res.status(201).json(courseObject);
     } catch (error) {
         next(error);
     }

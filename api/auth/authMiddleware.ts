@@ -30,13 +30,13 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             maxAge: 5 * 60 * 1000
         })
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
@@ -52,11 +52,11 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
 export const registerStudent = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, password } = req.body;
+        const { full_name, username, email, password, bio, profile_pic, created_at, updated_at } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await pool.query("INSERT INTO user (email, password, role) VALUES ($1, $2, $3) RETURNING *", [email, hashedPassword, "student"])
+        const user = await pool.query("INSERT INTO user (full_name, username, email, password, bio, profile_pic, created_at, updated_at, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [full_name, username, email, hashedPassword, bio, profile_pic, created_at, updated_at, "student"])
         const userObject = user.rows[0];
-        res.json({
+        res.status(201).json({
             message: "User registered successfully"
         })
     } catch (error) {
@@ -66,11 +66,11 @@ export const registerStudent = async (req: Request, res: Response, next: NextFun
 
 export const registerTeacher = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, password } = req.body;
+        const { full_name, username, email, password, bio, profile_pic, created_at, updated_at } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await pool.query("INSERT INTO user (email, password, role) VALUES ($1, $2, $3) RETURNING *", [email, hashedPassword, "teacher"])
+        const user = await pool.query("INSERT INTO user (full_name, username, email, password, bio, profile_pic, created_at, updated_at, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [full_name, username, email, hashedPassword, bio, profile_pic, created_at, updated_at, "teacher"])
         const userObject = user.rows[0];
-        res.json({
+        res.status(201).json({
             message: "User registered successfully"
         })
     } catch (error) {
@@ -82,7 +82,7 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
     try {
         res.clearCookie("accessToken");
         res.clearCookie("refreshToken");
-        res.json({
+        res.status(200).json({
             message: "Logout successful"
         })
     } catch (error) {

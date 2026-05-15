@@ -7,7 +7,7 @@ export const errorHandler = (err: Error, req:  Request, res: Response, next: Nex
         res.status(403).json({ message: "Unauthorized" });
         return; 
     }
-    if (err.message === "Not Authenticated") {
+    if (err.message === "Not Authenticated" || err.message === "Invalid credentials") {
         res.status(401).json({ message: "Not Authenticated" });
         return; 
     }
