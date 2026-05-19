@@ -10,6 +10,6 @@ route.post("/register/student", registerStudent);
 route.post("/register/teacher", registerTeacher);
 route.post("/logout", logoutUser);
 route.get("/cookies", getCookies);
-route.post("/refresh", refreshTokenCookie);
+route.get("/refresh", refreshTokenCookie);
 
 export default route;

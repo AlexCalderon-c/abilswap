@@ -3,8 +3,8 @@ import { type Request, type Response, type NextFunction } from "express"
 
 export const createCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { course_name, description, created_at, teacher_id, price} = req.body;
-        const course = await pool.query("INSERT INTO course (created_at, course_name, description, teacher_id, price) VALUES ($1, $2, $3, $4, $5) RETURNING *", [created_at, course_name, description, teacher_id, price])
+        const { course_name, description, teacher_id, price} = req.body;
+        const course = await pool.query("INSERT INTO course (course_name, description, teacher_id, price) VALUES ($1, $2, $3, $4) RETURNING *", [course_name, description, teacher_id, price])
         const courseObject = course.rows[0];
         res.status(201).json(courseObject);
     } catch (error) {
@@ -25,9 +25,8 @@ export const getCourse = async (req: Request, res: Response, next: NextFunction)
 
 export const updateCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
-        const { title, description, price } = req.body;
-        const course = await pool.query("UPDATE course SET title = $1, description = $2, price = $3 WHERE id = $4 RETURNING *", [title, description, price, id])
+        const { course_name, description, price } = req.body;
+        const course = await pool.query("UPDATE course SET course_name = $1, description = $2, price = $3 WHERE id = $4 RETURNING *", [course_name, description, price])
         const courseObject = course.rows[0];
         res.json({
             message: "Course updated successfully"

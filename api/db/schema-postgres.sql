@@ -11,7 +11,8 @@ CREATE TABLE "user" (
     bio TEXT,
     profile_pic TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    role VARCHAR(20) NOT NULL CONSTRAINT chk_rol_valido CHECK (rol IN ('teacher', 'student'))
 );
 
 CREATE TABLE teacher (
@@ -29,7 +30,8 @@ CREATE TABLE course (
     course_name VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    teacher_id UUID NOT NULL REFERENCES teacher(id) ON DELETE CASCADE
+    teacher_id UUID NOT NULL REFERENCES teacher(id) ON DELETE CASCADE,
+    price DECIMAL(10, 2)
 );
 
 CREATE TABLE enrollment (

@@ -3,6 +3,7 @@ import { type Request, type Response, type NextFunction } from "express"
 import jwt from "jsonwebtoken"
 import { type UserObject } from "../types/user.types.ts"
 import { generateAccessToken } from "../services/tokenServices.ts"
+import { type payloadType } from "../types/token.types.ts"
 
 export const verifyAccessToken = (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies.accessToken;
@@ -25,8 +26,8 @@ export const refreshTokenCookie = (req: Request, res: Response, next: NextFuncti
         if (!refreshToken) {
             throw new Error("No refresh token provided");
         }
-        const user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
-        const accessToken = generateAccessToken(user)
+        const user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as payloadType;
+        const accessToken = generateAccessToken({id: user.id, username: user.username, role: user.role})
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",

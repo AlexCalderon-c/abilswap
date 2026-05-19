@@ -10,17 +10,17 @@
 
 ### Día 1: Limpieza de secretos y esquema
 
-- [ ] **1.1** Rotar `DB_PASSWORD`, `ACCESS_TOKEN_SECRET`, `REFRESH_TOKEN_SECRET` y actualizar `.env`
+- [X] **1.1** Rotar `DB_PASSWORD`, `ACCESS_TOKEN_SECRET`, `REFRESH_TOKEN_SECRET` y actualizar `.env`
       ⏰ Deadline: Día 1 | Archivos: `.env`
-- [ ] **1.2** Limpiar `.env` del historial de Git (`git filter-repo` o `BFG Repo-Cleaner`)
+- [X] **1.2** Limpiar `.env` del historial de Git (`git filter-repo` o `BFG Repo-Cleaner`)
       ⏰ Deadline: Día 1 | Comando: `git filter-repo --path .env --invert-paths`
-- [ ] **1.3** Agregar columna `role VARCHAR(50)` a la tabla `"user"` en el esquema SQL
+- [X] **1.3** Agregar columna `role VARCHAR(50)` a la tabla `"user"` en el esquema SQL
       ⏰ Deadline: Día 1 | Archivo: `api/db/schema-postgres.sql`
-- [ ] **1.4** Agregar columnas faltantes en la tabla `course` del esquema o corregir los controladores:
+- [X] **1.4** Agregar columnas faltantes en la tabla `course` del esquema o corregir los controladores:
       - Opción A: Cambiar `course_name` → `title` y agregar `price DECIMAL`
       - Opción B: Cambiar controladores para usar `course_name`, eliminar `price`, agregar `teacher_id`
       ⏰ Deadline: Día 1 | Archivos: `schema-postgres.sql`, `course.controllers.ts`
-- [ ] **1.5** Agregar `full_name` y `username` a las consultas INSERT de registro
+- [X] **1.5** Agregar `full_name` y `username` a las consultas INSERT de registro
       ⏰ Deadline: Día 1 | Archivo: `api/auth/authMiddleware.ts`
 
 ### Día 2: Validación y rate limiting
@@ -41,16 +41,16 @@
 
 ### Día 3: Cookies, refresh tokens y enumeración
 
-- [ ] **3.1** Cambiar cookie `secure: false` → `secure: true` (usar variable de entorno)
+- [X] **3.1** Cambiar cookie `secure: false` → `secure: true` (usar variable de entorno)
       ⏰ Deadline: Día 3 | Archivo: `api/auth/authMiddleware.ts`
-- [ ] **3.2** Unificar mensajes de error de login: `"Invalid credentials"` con status `401`
+- [X] **3.2** Unificar mensajes de error de login: `"Invalid credentials"` con status `401`
       ⏰ Deadline: Día 3 | Archivo: `api/auth/authMiddleware.ts`
-- [ ] **3.3** Implementar endpoint `POST /api/auth/refresh`:
+- [X] **3.3** Implementar endpoint `POST /api/auth/refresh`:
       - Verificar refresh token de la cookie
       - Generar nuevo access + refresh token (rotación)
       - Almacenar refresh token en nueva tabla `refresh_tokens`
       ⏰ Deadline: Día 3 | Archivos: `api/auth/authMiddleware.ts`, `api/routes/auth.routes.ts`, `schema-postgres.sql`
-- [ ] **3.4** Agregar rutas de registro a `auth.routes.ts`:
+- [X] **3.4** Agregar rutas de registro a `auth.routes.ts`:
       - `POST /api/auth/register/student`
       - `POST /api/auth/register/teacher`
       ⏰ Deadline: Día 3 | Archivo: `api/routes/auth.routes.ts`
@@ -78,16 +78,16 @@
 
 ### Día 5: Pool de BD, logger y hardening
 
-- [ ] **5.1** Configurar pool de PostgreSQL con límites:
+- [X] **5.1** Configurar pool de PostgreSQL con límites:
       `max: 20, idleTimeoutMillis: 30000, connectionTimeoutMillis: 2000`
       ⏰ Deadline: Día 5 | Archivo: `api/db/connect.ts`
-- [ ] **5.2** Reemplazar `console.error` por Winston o Pino con transporte de archivos
+- [X] **5.2** Reemplazar `console.error` por Winston o Pino con transporte de archivos
       ⏰ Deadline: Día 5 | Archivo: `api/middlewares/errorMiddleware.ts` + nuevo archivo `api/utils/logger.ts`
-- [ ] **5.3** Sincronizar `maxAge` de cookie accessToken con expiry del JWT (15 min)
+- [X] **5.3** Sincronizar `maxAge` de cookie accessToken con expiry del JWT (15 min)
       ⏰ Deadline: Día 5 | Archivo: `api/auth/authMiddleware.ts`
-- [ ] **5.4** Agregar `path: "/"` a todas las cookies
+- [X] **5.4** Agregar `path: "/"` a todas las cookies
       ⏰ Deadline: Día 5 | Archivo: `api/auth/authMiddleware.ts`
-- [ ] **5.5** No devolver filas crudas de BD en respuestas — proyectar campos explícitamente
+- [X] **5.5** No devolver filas crudas de BD en respuestas — proyectar campos explícitamente
       ⏰ Deadline: Día 5 | Archivo: `api/controllers/course.controllers.ts`
 
 ---
