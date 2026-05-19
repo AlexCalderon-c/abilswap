@@ -2,12 +2,13 @@ import bcrypt from "bcrypt"
 import { pool } from "../db/connect.ts"
 import { generateAccessToken, generateRefreshToken } from "../services/tokenServices.ts"
 import { type Request, type Response, type NextFunction } from "express"
+import { logger } from "../libs/logger.ts"
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const { email, password } = req.body;
-        const user = await pool.query("SELECT * FROM user WHERE email = $1", [email])
+        const user = await pool.query(`SELECT * FROM "user" WHERE email = $1`, [email])
 
         const userObject = user.rows[0];
         if (userObject === null) {
@@ -29,12 +30,14 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         const refreshToken = generateRefreshToken(payload)
 
         res.cookie("accessToken", accessToken, {
+            path: "/",
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 5 * 60 * 1000
+            maxAge: 15 * 60 * 1000
         })
         res.cookie("refreshToken", refreshToken, {
+            path: "/",
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
@@ -52,9 +55,11 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
 export const registerStudent = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { full_name, username, email, password, bio, profile_pic, created_at, updated_at } = req.body;
+        logger.info("Registration request received");
+        const { full_name, username, email, password, bio, profile_pic} = req.body;
+        logger.info("Registration data:", req.body);
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await pool.query("INSERT INTO user (full_name, username, email, password, bio, profile_pic, created_at, updated_at, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *", [full_name, username, email, hashedPassword, bio, profile_pic, created_at, updated_at, "student"])
+        const user = await pool.query(`INSERT INTO "user" (full_name, username, email, password, bio, profile_pic, role) VALUES ($1, $2, $3, $4, $5, $6, 'student') RETURNING *`, [full_name, username, email, hashedPassword, bio, profile_pic])
         const userObject = user.rows[0];
         res.status(201).json({
             message: "User registered successfully"
@@ -89,3 +94,12 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
         next(error);
     }
 }
+
+export const getCookies = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.send(req.cookies);
+    } catch (error) {
+        next(error);
+    }
+}
+

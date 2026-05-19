@@ -1,8 +1,9 @@
 import { type Request, type Response, type NextFunction } from "express";
+import { logger } from "../libs/logger.ts";
 
-//Error middleware
 export const errorHandler = (err: Error, req:  Request, res: Response, next: NextFunction) => {
     // Es recomendable en producción usar un logger (ej:Winston/Pino) para evitar exponer info sensible en logs simples
+    console.log(err)
     if (err.message === "Unauthorized") {
         res.status(403).json({ message: "Unauthorized" });
         return; 
@@ -19,7 +20,7 @@ export const errorHandler = (err: Error, req:  Request, res: Response, next: Nex
         res.status(400).json({ message: "Bad Request" });
         return; 
     }
-    console.error(`[Error]: ${err.message}`);
+    
     res.status(500).json({ message: "Internal Server Error" });   
 
 }

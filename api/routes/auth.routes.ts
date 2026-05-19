@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUser, logoutUser, registerStudent, registerTeacher } from "../auth/authMiddleware.ts";
+import { loginUser, logoutUser, registerStudent, registerTeacher, getCookies } from "../auth/authMiddleware.ts";
 import { refreshTokenCookie } from "../middlewares/verifyMiddleware.ts";
 
 
@@ -9,6 +9,7 @@ route.post("/login", loginUser);
 route.post("/register/student", registerStudent);
 route.post("/register/teacher", registerTeacher);
 route.post("/logout", logoutUser);
+route.get("/cookies", getCookies);
 route.post("/refresh", refreshTokenCookie);
 
 export default route;
