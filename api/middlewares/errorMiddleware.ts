@@ -15,10 +15,6 @@ export const errorHandler = (err: Error, req:  Request, res: Response, next: Nex
         res.status(401).json({ message: "Not Authenticated" });
         return; 
     }
-    if (err.message === "User not found") {
-        res.status(404).json({ message: "User Not Found" });
-        return; 
-    }
     if (err.message === "Bad Request") {
         res.status(400).json({ message: "Bad Request" });
         return; 

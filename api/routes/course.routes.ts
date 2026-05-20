@@ -6,7 +6,7 @@ import { roleMiddleware } from "../middlewares/roleMiddleware.ts";
 const route = Router()
 
 route.post("/", verifyAccessToken, roleMiddleware(["teacher"]), createCourse);
-route.get("/:id", verifyAccessToken, roleMiddleware(["teacher", "student"]), getCourse);
+route.get("/:course_id", verifyAccessToken, roleMiddleware(["teacher", "student"]), getCourse);
 route.put("/:id", verifyAccessToken, roleMiddleware(["teacher"]), updateCourse);
 route.delete("/:id", verifyAccessToken, roleMiddleware(["teacher"]), deleteCourse);
 

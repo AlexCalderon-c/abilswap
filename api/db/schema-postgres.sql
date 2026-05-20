@@ -12,7 +12,7 @@ CREATE TABLE "user" (
     profile_pic TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    role VARCHAR(20) NOT NULL CONSTRAINT chk_rol_valido CHECK (rol IN ('teacher', 'student'))
+    role VARCHAR(20) NOT NULL CONSTRAINT chk_rol_valido CHECK (role IN ('teacher', 'student'))
 );
 
 CREATE TABLE teacher (

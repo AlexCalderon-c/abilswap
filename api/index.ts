@@ -10,6 +10,8 @@ import cookieParser from "cookie-parser"
 import helmet from "helmet"
 import { logger } from "./libs/logger.ts"
 import userRoutes from "./routes/user.routes.ts"
+import moduleRoutes from './routes/module.routes.ts'
+import lessonRoutes from './routes/lesson.routes.ts'
 
 const app = express()
 
@@ -20,10 +22,11 @@ app.use(express.urlencoded({ extended: true }))
 app.use(helmet())
 app.use(cookieParser())
 
-
 app.use("/api/auth", authRoutes)
 app.use("/api/course", courseRoutes)
 app.use("/api/user", userRoutes)
+app.use("/api/module", moduleRoutes)
+app.use("/api/lesson", lessonRoutes)
 
 app.use(errorHandler)
 
