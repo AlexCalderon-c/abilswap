@@ -3,8 +3,8 @@ import { type Request, type Response, type NextFunction } from "express"
 
 export const createCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { course_name, description, teacher_id, price} = req.body;
-        const course = await pool.query("INSERT INTO course (course_name, description, teacher_id, price) VALUES ($1, $2, $3, $4) RETURNING *", [course_name, description, teacher_id, price])
+        const { course_name, description, price} = req.body;
+        const course = await pool.query("INSERT INTO course (course_name, description, teacher_id, price) VALUES ($1, $2, $3, $4) RETURNING *", [course_name, description, req.user?.id, price])
         const courseObject = course.rows[0];
         res.status(201).json(courseObject);
     } catch (error) {
@@ -15,7 +15,7 @@ export const createCourse = async (req: Request, res: Response, next: NextFuncti
 export const getCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const course = await pool.query("SELECT * FROM course WHERE id = $1", [id])
+        const course = await pool.query("SELECT * FROM course WHERE id = $1 AND teacher_id = $5", [id])
         const courseObject = course.rows[0];
         res.json(courseObject);
     } catch (error) {
@@ -25,8 +25,9 @@ export const getCourse = async (req: Request, res: Response, next: NextFunction)
 
 export const updateCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const {id} = req.params
         const { course_name, description, price } = req.body;
-        const course = await pool.query("UPDATE course SET course_name = $1, description = $2, price = $3 WHERE id = $4 RETURNING *", [course_name, description, price])
+        const course = await pool.query("UPDATE course SET course_name = $1, description = $2, price = $3 WHERE id = $4 AND teacher_id = $5 RETURNING *", [course_name, description, price, id, req.user?.id])
         const courseObject = course.rows[0];
         res.json({
             message: "Course updated successfully"

@@ -12,12 +12,12 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
         const userObject = user.rows[0];
         if (userObject === null) {
-            return res.status(404).json({ message: "User not found" });
+            throw new Error("User not found")
         }
 
         const isPasswordValid = await bcrypt.compare(password, userObject.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Invalid password" });
+            throw new Error("Invalid credentials")
         }
 
         const payload = {
@@ -34,7 +34,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 30 * 1000
+            maxAge: 15 * 60 * 1000
         })
         res.cookie("refreshToken", refreshToken, {
             path: "/",
