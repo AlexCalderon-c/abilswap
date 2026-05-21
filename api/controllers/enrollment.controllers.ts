@@ -1,0 +1,44 @@
+import { type Request, type Response, type NextFunction } from "express";
+import { pool } from "../db/connect.ts";
+
+export const createEnrollment = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {course_id} = req.params
+        const {enrollment_status} = req.body
+        const response = await pool.query('INSERT INTO enrollment (enrollment_status, student_id, course_id) VALUES ($1, $2, $3)', [enrollment_status, req.user?.id, course_id])
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}
+
+export const getEnrollmentById = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {id} = req.params
+        const response = await pool.query('SELECT * FROM enrollment WHERE id = $1 AND student_id = $2', [id, req.user?.id])
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}
+
+export const updateEnrollment = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {id} = req.params
+        const {enrollment_status} = req.body
+        const response = await pool.query('UPDATE enrollment SET enrollment_status = $1 WHERE id = $2 AND student_id = $3', [enrollment_status, id, req.user?.id])
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}
+
+export const deleteEnrollment = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {id} = req.params
+        const response = await pool.query('DELETE FROM enrollment WHERE id = $1 AND student_id = $2', [id, req.user?.id])
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}
