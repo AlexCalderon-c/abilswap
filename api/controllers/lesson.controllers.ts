@@ -21,3 +21,24 @@ export const getLessonById = async (req: Request, res: Response, next: NextFunct
         next(error)
     }
 }
+
+export const updateLesson = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {id} = req.params
+        const {lesson_name, content_type, video_url} = req.body
+        const response = await pool.query('UPDATE lesson SET lesson_name = $1, content_type = $2, video_url = $3 WHERE id = $4 AND teacher_id = $5', [lesson_name, content_type, video_url, id, req.user?.id])
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}
+
+export const deleteLesson = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {id} = req.params
+        const response = await pool.query('DELETE FROM lesson WHERE id = $1 AND teacher_id = $2', [id, req.user?.id])
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}

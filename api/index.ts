@@ -12,13 +12,15 @@ import { logger } from "./libs/logger.ts"
 import userRoutes from "./routes/user.routes.ts"
 import moduleRoutes from './routes/module.routes.ts'
 import lessonRoutes from './routes/lesson.routes.ts'
+import ratingRoutes from './routes/rating.routes.ts'
+import enforce from 'express-sslify'
 
 const app = express()
 
 app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173", credentials: true }))
 app.use(morgan("dev"))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json({limit: "1mb"}))
+app.use(express.urlencoded({ extended: true, limit: "1mb" }))
 app.use(helmet())
 app.use(cookieParser())
 
@@ -27,6 +29,7 @@ app.use("/api/course", courseRoutes)
 app.use("/api/user", userRoutes)
 app.use("/api/module", moduleRoutes)
 app.use("/api/lesson", lessonRoutes)
+app.use("/api/rating", ratingRoutes)
 
 app.use(errorHandler)
 
