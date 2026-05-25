@@ -1,11 +1,13 @@
 import pino from "pino";
+import { type TransportTargetOptions } from "pino";
 import dotenv from "dotenv"
 dotenv.config()
 
 const isDev = process.env.NODE_ENV == "development";
 
 console.log(isDev)
-const transports = []
+
+const transports: TransportTargetOptions[] = []
 
 if(isDev){
     transports.push(
@@ -25,8 +27,5 @@ transports.push({
 
 export const logger = pino({
     level: "info",
-    redact: {
-        paths: [],
-        remove: true
-    }
-}, transports.length === 1 ? pino.transport(transports[0]) : pino.transport({targets: transports}))
+    redact: ["password", "email"]
+}, transports.length === 1 ? pino.transport(transports[0]!) : pino.transport({targets: transports}))

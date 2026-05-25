@@ -2,12 +2,14 @@ import { Router } from "express";
 import { createCourse, getCourse, updateCourse, deleteCourse } from "../controllers/course.controllers.ts";
 import { verifyAccessToken } from "../middlewares/verifyMiddleware.ts";
 import { roleMiddleware } from "../middlewares/roleMiddleware.ts";
+import { validateMiddleware } from "../middlewares/validateMiddleware.ts";
+import { CourseSchema } from "../validators/course.validators.ts";
 
 const route = Router()
 
-route.post("/", verifyAccessToken, roleMiddleware(["teacher"]), createCourse);
+route.post("/", verifyAccessToken, roleMiddleware(["teacher"]), validateMiddleware(CourseSchema), createCourse);
 route.get("/:course_id", verifyAccessToken, roleMiddleware(["teacher", "student"]), getCourse);
-route.put("/:id", verifyAccessToken, roleMiddleware(["teacher"]), updateCourse);
+route.put("/:id", verifyAccessToken, roleMiddleware(["teacher"]), validateMiddleware(CourseSchema), updateCourse);
 route.delete("/:id", verifyAccessToken, roleMiddleware(["teacher"]), deleteCourse);
 
 export default route;
