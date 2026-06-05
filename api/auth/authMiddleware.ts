@@ -62,7 +62,8 @@ export const registerStudent = async (req: Request, res: Response, next: NextFun
         const user = await pool.query(`WITH userQuery AS (INSERT INTO "user" (full_name, username, email, password, bio, profile_pic, role) VALUES ($1, $2, $3, $4, $5, $6, 'student') RETURNING id) INSERT INTO student SELECT id FROM userQuery`, [full_name, username, email, hashedPassword, bio, profile_pic])
         const userObject = user.rows[0];
         res.status(201).json({
-            message: "User registered successfully"
+            message: "User registered successfully",
+            result: userObject
         })
     } catch (error) {
         next(error);

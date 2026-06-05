@@ -1,7 +1,16 @@
 import {z} from "zod"
 
-export const LessonSchema = z.object({
+const TextSchema = z.object({
     lesson_name: z.string(),
-    content_type: z.enum(['video', 'text', 'quiz', 'pdf']),
-    video_url: z.url()
+    content_type: z.literal("text"),
+    content: z.string()
 })
+
+const VideoSchema = z.object({
+    lesson_name: z.string(),
+    content_type: z.literal("video"),
+    video_url: z.url(),
+    content: z.string().optional()
+})
+
+export const LessonSchema = z.discriminatedUnion('content_type', [TextSchema, VideoSchema])

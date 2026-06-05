@@ -8,7 +8,7 @@ export const createModule = async (req: Request, res: Response, next: NextFuncti
         const {course_id} = req.params
         const {module_name} = req.body
         const response: QueryResult<ModuleObject> = await pool.query('INSERT INTO module (module_name, course_id) VALUES ($1, $2)', [module_name, course_id])
-        res.status(201).json(response)
+        res.status(201).json(response.rows[0])
     }catch(error){
         next(error)
     }
@@ -18,7 +18,7 @@ export const getModuleById = async (req: Request, res: Response, next: NextFunct
     try{
         const {course_id} = req.params
         const response: QueryResult<ModuleObject> = await pool.query('SELECT * FROM module WHERE id = $1', [course_id])
-        res.status(201).json(response)
+        res.status(201).json(response.rows[0])
     }catch(error){
         next(error)
     }
