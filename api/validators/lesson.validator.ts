@@ -13,4 +13,16 @@ const VideoSchema = z.object({
     content: z.string().optional()
 })
 
-export const LessonSchema = z.discriminatedUnion('content_type', [TextSchema, VideoSchema])
+const PdfSchema = z.object({
+    lesson_name: z.string(),
+    content_type: z.literal("pdf"),
+    content: z.string().optional()
+})
+
+const QuizSchema = z.object({
+    lesson_name: z.string(),
+    content_type: z.literal("quiz"),
+    content: z.string().optional()
+})
+
+export const LessonSchema = z.discriminatedUnion('content_type', [TextSchema, VideoSchema, PdfSchema, QuizSchema])

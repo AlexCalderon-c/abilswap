@@ -7,7 +7,7 @@ export const errorHandler = (err: Error, req:  Request, res: Response, next: Nex
         res.status(403).json({ message: "Unauthorized" });
         return; 
     }
-    if (err.message === "Invalid credentials") {
+    if (err.message === "Invalid credentials" || err.message === "User not found") {
         res.status(401).json({ message: "Invalid credentials" });
         return; 
     }

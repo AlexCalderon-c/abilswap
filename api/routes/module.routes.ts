@@ -8,6 +8,6 @@ import { ModuleSchema } from "../validators/module.validator.ts";
 const route = Router()
 
 route.post("/:course_id", verifyAccessToken, roleMiddleware(["teacher"]), validateMiddleware(ModuleSchema), createModule);
-route.get("/:id", verifyAccessToken, roleMiddleware(["teacher", "student"]), getModuleById);
+route.get("/:course_id", verifyAccessToken, roleMiddleware(["teacher", "student"]), getModuleById);
 
 export default route;

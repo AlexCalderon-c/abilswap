@@ -1,10 +1,11 @@
 import { type Request, type Response, type NextFunction } from "express";
 import { ZodType } from "zod";
+import {z} from "zod"
 
 export const validateMiddleware = (schema: ZodType) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const result = schema.safeParse(req.body)
-        if (!result.success) return res.status(400).json(result.error.flatten())
+        if (!result.success) return res.status(400).json(z.flattenError(result.error))
         req.body = result.data
         next()
     }

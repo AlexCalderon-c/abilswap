@@ -11,7 +11,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         const user = await pool.query(`SELECT * FROM "user" WHERE email = $1`, [email])
 
         const userObject = user.rows[0];
-        if (userObject === null) {
+        if (!userObject) {
             throw new Error("User not found")
         }
 

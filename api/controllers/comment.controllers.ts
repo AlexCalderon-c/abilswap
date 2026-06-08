@@ -17,7 +17,7 @@ export const createComment = async (req: Request, res: Response, next: NextFunct
 export const getCommentById = async (req: Request, res: Response, next: NextFunction) => {
     try{
         const {id} = req.params
-        const response: QueryResult<CommentObject> = await pool.query('SELECT * FROM comments WHERE id = $1 AND student_id = $2', [id, req.user?.id])
+        const response: QueryResult<CommentObject> = await pool.query('SELECT * FROM comments WHERE id = $1 AND user_id = $2', [id, req.user?.id])
         res.status(201).json(response)
     }catch(error){
         next(error)

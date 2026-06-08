@@ -4,11 +4,12 @@ import { refreshTokenCookie } from "../middlewares/verifyMiddleware.ts";
 import { verifyAccessToken } from "../middlewares/verifyMiddleware.ts";
 import { LoginSchema, UserSchema } from "../validators/auth.validator.ts";
 import { validateMiddleware } from "../middlewares/validateMiddleware.ts";
+import { loginLimiter } from "../libs/rateLimiters.ts"
 
 
 const route = Router()
 
-route.post("/login", validateMiddleware(LoginSchema), loginUser);
+route.post("/login", loginLimiter, validateMiddleware(LoginSchema), loginUser);
 route.post("/register/student", validateMiddleware(UserSchema), registerStudent);
 route.post("/register/teacher", validateMiddleware(UserSchema), registerTeacher);
 route.post("/logout", logoutUser);
