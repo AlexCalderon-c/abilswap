@@ -17,7 +17,7 @@ export const createCourse = async (req: Request, res: Response, next: NextFuncti
 export const getCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { course_id } = req.params;
-        const course: QueryResult<CourseObject> = await pool.query("SELECT * FROM course WHERE id = $1", [course_id])
+        const course: QueryResult<CourseObject> = await pool.query("SELECT * FROM course WHERE id = $1 AND teacher_id = $2", [course_id, req.user?.id])
         const courseObject = course.rows[0];
         return res.status(200).json(courseObject);
     } catch (error) {
@@ -31,9 +31,7 @@ export const updateCourse = async (req: Request, res: Response, next: NextFuncti
         const { course_name, description, price } = req.body;
         const course: QueryResult<CourseObject> = await pool.query("UPDATE course SET course_name = $1, description = $2, price = $3 WHERE id = $4 AND teacher_id = $5 RETURNING *", [course_name, description, price, id, req.user?.id])
         const courseObject = course.rows[0];
-        res.json({
-            message: "Course updated successfully"
-        })
+        res.json(courseObject)
     } catch (error) {
         next(error);
     }
@@ -44,9 +42,7 @@ export const deleteCourse = async (req: Request, res: Response, next: NextFuncti
         const { id } = req.params;
         const course: QueryResult<CourseObject> = await pool.query("DELETE FROM course WHERE id = $1 AND teacher_id = $2 RETURNING *", [id, req.user?.id])
         const courseObject = course.rows[0];
-        res.json({
-            message: "Course deleted successfully"
-        })
+        res.json(courseObject)
     } catch (error) {
         next(error);
     }

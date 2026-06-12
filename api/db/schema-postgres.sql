@@ -3,16 +3,17 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE "user" (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID DEFAULT gen_random_uuid() NOT NULL,
     full_name VARCHAR(255) NOT NULL,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     bio TEXT,
     profile_pic TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    role VARCHAR(20) NOT NULL CONSTRAINT chk_rol_valido CHECK (role IN ('teacher', 'student'))
+    role VARCHAR(50) DEFAULT 'student'::CHARACTER VARYING NOT NULL,
+    CONSTRAINT user_role_check CHECK (((role)::TEXT = ANY ((ARRAY['student'::CHARACTER VARYING, 'teacher'::CHARACTER VARYING])::TEXT[])))
 );
 
 CREATE TABLE teacher (
@@ -31,7 +32,7 @@ CREATE TABLE course (
     description TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     teacher_id UUID NOT NULL REFERENCES teacher(id) ON DELETE CASCADE,
-    price DECIMAL(10, 2)
+    price NUMERIC(7,0) DEFAULT 0
 );
 
 CREATE TABLE enrollment (
@@ -55,7 +56,8 @@ CREATE TABLE lesson (
     module_id BIGINT NOT NULL REFERENCES module(id) ON DELETE CASCADE,
     content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('video', 'text', 'quiz', 'pdf')),
     video_url VARCHAR(255),
-    lesson_index INTEGER NOT NULL
+    lesson_index INTEGER NOT NULL,
+    content TEXT
 );
 
 CREATE TABLE resource (
