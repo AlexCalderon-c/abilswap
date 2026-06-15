@@ -7,8 +7,11 @@ export const createEnrollment = async (req: Request, res: Response, next: NextFu
     try{
         const {course_id} = req.params
         const {enrollment_status} = req.body
-        const response: QueryResult<EnrollmentObject> = await pool.query('INSERT INTO enrollment (enrollment_status, student_id, course_id) VALUES ($1, $2, $3)', [enrollment_status, req.user?.id, course_id])
-        res.status(201).json(response)
+        const response: QueryResult<EnrollmentObject> = await pool.query('INSERT INTO enrollment (enrollment_status, student_id, course_id) VALUES ($1, $2, $3) ', [enrollment_status, req.user?.id, course_id])
+        if (response.rowCount === 0){
+            throw new Error("Unauthorized")
+        }
+        res.status(201).json(response.rows[0])
     }catch(error){
         next(error)
     }
@@ -18,7 +21,7 @@ export const getEnrollmentById = async (req: Request, res: Response, next: NextF
     try{
         const {id} = req.params
         const response: QueryResult<EnrollmentObject> = await pool.query('SELECT * FROM enrollment WHERE id = $1 AND student_id = $2', [id, req.user?.id])
-        res.status(201).json(response)
+        res.status(200).json(response.rows[0])
     }catch(error){
         next(error)
     }
@@ -29,7 +32,10 @@ export const updateEnrollment = async (req: Request, res: Response, next: NextFu
         const {id} = req.params
         const {enrollment_status} = req.body
         const response: QueryResult<EnrollmentObject> = await pool.query('UPDATE enrollment SET enrollment_status = $1 WHERE id = $2 AND student_id = $3', [enrollment_status, id, req.user?.id])
-        res.status(201).json(response)
+        if (response.rowCount === 0){
+            throw new Error("Unauthorized")
+        }
+        res.status(201).json(response.rows[0])
     }catch(error){
         next(error)
     }
@@ -39,7 +45,10 @@ export const deleteEnrollment = async (req: Request, res: Response, next: NextFu
     try{
         const {id} = req.params
         const response: QueryResult<EnrollmentObject> = await pool.query('DELETE FROM enrollment WHERE id = $1 AND student_id = $2', [id, req.user?.id])
-        res.status(201).json(response)
+        if (response.rowCount === 0){
+            throw new Error("Unauthorized")
+        }
+        res.status(204).json(response.rows[0])
     }catch(error){
         next(error)
     }

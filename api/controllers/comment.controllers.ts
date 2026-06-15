@@ -24,11 +24,21 @@ export const getCommentById = async (req: Request, res: Response, next: NextFunc
     }
 }
 
+export const getCommentByCourse = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {course_id} = req.body
+        const response: QueryResult<CommentObject> = await pool.query('SELECT * FROM comments WHERE id = $1 AND user_id = $2', [course_id, req.user?.id])
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}
+
 export const updateComment = async (req: Request, res: Response, next: NextFunction) => {
     try{
         const {id} = req.params
         const {content} = req.body
-        const response: QueryResult<CommentObject> = await pool.query('UPDATE comments SET content = $1 WHERE id = $2 AND student_id = $3', [content, id, req.user?.id])
+        const response: QueryResult<CommentObject> = await pool.query('UPDATE comments SET content = $1 WHERE id = $2 AND user_id = $3', [content, id, req.user?.id])
         res.status(201).json(response)
     }catch(error){
         next(error)
@@ -38,7 +48,7 @@ export const updateComment = async (req: Request, res: Response, next: NextFunct
 export const deleteComment = async (req: Request, res: Response, next: NextFunction) => {
     try{
         const {id} = req.params
-        const response: QueryResult<CommentObject> = await pool.query('DELETE FROM comments WHERE id = $1 AND student_id = $2', [id, req.user?.id])
+        const response: QueryResult<CommentObject> = await pool.query('DELETE FROM comments WHERE id = $1 AND user_id = $2', [id, req.user?.id])
         res.status(201).json(response)
     }catch(error){
         next(error)

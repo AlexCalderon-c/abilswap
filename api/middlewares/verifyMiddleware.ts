@@ -31,7 +31,7 @@ export const refreshTokenCookie = (req: Request, res: Response, next: NextFuncti
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
             maxAge: 5 * 60 * 1000
         })
         res.json({

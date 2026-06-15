@@ -1,6 +1,7 @@
-import {expect, test, describe, afterAll, beforeAll} from 'vitest'
+import {expect, test, describe, afterEach} from 'vitest'
 import supertest from "supertest"
 import app from '../app.ts'
+import {pool} from '../db/connect.ts'
 
 
 
@@ -40,22 +41,67 @@ describe('POST api/login', () => {
 
 describe('POST api/register', () => {
 
-    beforeAll(() => {
-
-    })
-    afterAll(() => {
-
+    afterEach(async () => {
+        await pool.query(`DELETE FROM "user" WHERE email = 'test@gmail.com'`)
     })
 
     test("Student is able to register", async () => {
+
+        const registerBody = {
+            full_name: "test",
+            username: "testing",
+            email: "test@gmail.com",
+            password: "holasoytest",
+            bio: "My test"
+        }
+
         const res = await supertest(app)
         .post("/api/auth/register/student")
-        .send({})
+        .send(registerBody)
+
+        expect(res.status).toBe(201)
     })
     test("Teacher is able to register" , async () => {
+        const registerBody = {
+            full_name: "test",
+            username: "testing",
+            email: "test@gmail.com",
+            password: "holasoytest",
+            bio: "My test"
+        }
         const res = await supertest(app)
-        .post("/api/auth/register/student")
-        .send({})
+        .post("/api/auth/register/teacher")
+        .send(registerBody)
+
+        expect(res.status).toBe(201)
+    })
+    test("User inputs not formatted email and can't register", async () => {
+        const registerBody = {
+            full_name: "test",
+            username: "testing",
+            email: "testgmail.com",
+            password: "holasoytest",
+            bio: "My test"
+        }
+        const res = await supertest(app)
+        .post("/api/auth/register/teacher")
+        .send(registerBody)
+
+        expect(res.status).toBe(400)
+    })
+    test("Users password is too short and can't register", async () => {
+        const registerBody = {
+            full_name: "test",
+            username: "testing",
+            email: "testgmail.com",
+            password: "holas",
+            bio: "My test"
+        }
+        const res = await supertest(app)
+        .post("/api/auth/register/teacher")
+        .send(registerBody)
+
+        expect(res.status).toBe(400)
     })
 })
 

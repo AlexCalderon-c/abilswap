@@ -14,10 +14,20 @@ export const createCourse = async (req: Request, res: Response, next: NextFuncti
     }
 }
 
-export const getCourse = async (req: Request, res: Response, next: NextFunction) => {
+export const getCourseByTeacher = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { course_id } = req.params;
         const course: QueryResult<CourseObject> = await pool.query("SELECT * FROM course WHERE id = $1 AND teacher_id = $2", [course_id, req.user?.id])
+        const courseObject = course.rows[0];
+        return res.status(200).json(courseObject);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getCourseAll = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const course: QueryResult<CourseObject> = await pool.query("SELECT * FROM course")
         const courseObject = course.rows[0];
         return res.status(200).json(courseObject);
     } catch (error) {
