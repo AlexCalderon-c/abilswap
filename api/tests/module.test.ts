@@ -1,18 +1,52 @@
-import {expect, test, describe} from 'vitest'
+import {expect, test, describe, beforeAll, afterAll} from 'vitest'
+import supertest from "supertest"
+import app from '../app.ts'
+import {pool} from '../db/connect.ts'
 
 
-const sum = (a: number, b: number) => a+b
 
 
-describe('sum', () => {
-    
-    test("Funciona con números positivos", () =>{
-        expect(sum(1,2)).toEqual(3)
+describe('POST api/module', () => {
+    let userCookie: string | undefined
+
+    beforeAll(async () => {
+        const registerBody = {
+            full_name: "test",
+            username: "testing",
+            email: "test@gmail.com",
+            password: "holasoytest",
+            bio: "My test"
+        }
+        const res = await supertest(app)
+        .post("/api/auth/register/teacher")
+        .send(registerBody)
+
+        const resLogin = await supertest(app)
+        .post("/api/auth/login")
+        .send({email: "test@gmail.com", password: "holasoytest"})
+
+        userCookie = resLogin.headers['set-cookie']
     })
 
-    test("Funciona con multiplicaciones", () => {
-        expect(sum(4*5,2)).toEqual(22)
+    afterAll(async () => {
+        await pool.query(`DELETE FROM "user" WHERE email = 'test@gmail.com'`)
+        await pool.query(`DELETE FROM module WHERE module_name = 'TEST'`)
+    })
+
+    test("", () => {
+
     })
 })
 
 
+describe('GET api/module', () => {
+
+})
+
+describe('PUT api/module', () => {
+
+})
+
+describe('DELETE api/module', () => {
+
+})

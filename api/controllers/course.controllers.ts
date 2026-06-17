@@ -8,7 +8,11 @@ export const createCourse = async (req: Request, res: Response, next: NextFuncti
         const { course_name, description, price} = req.body;
         const course: QueryResult<CourseObject> = await pool.query(`INSERT INTO "course" (course_name, description, teacher_id, price) VALUES ($1, $2, $3, $4) RETURNING *`, [course_name, description, req.user?.id, price])
         const courseObject = course.rows[0];
-        res.status(201).json(courseObject);
+        res.status(201).json({
+            ...courseObject,
+            id: Number(courseObject?.id),
+            price: Number(courseObject?.price)
+        });
     } catch (error) {
         next(error);
     }

@@ -15,4 +15,20 @@ describe('sum', () => {
     })
 })
 
+describe('POST api/comment', () => {
+
+})
+
+describe('GET api/comment', () => {
+
+})
+
+describe('PUT api/comment', () => {
+
+})
+
+describe('DELETE api/comment', () => {
+
+})
+
 

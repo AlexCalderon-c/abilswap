@@ -28,8 +28,6 @@ app.use(cookieParser())
 app.use(globalLimiter)
 
 app.use("/api/auth", authRoutes)
-
-
 app.use("/api/course", courseRoutes)
 app.use("/api/user", userRoutes)
 app.use("/api/module", moduleRoutes)

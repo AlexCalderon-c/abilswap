@@ -1,6 +1,5 @@
 import {expect, test, describe} from 'vitest'
 
-
 const sum = (a: number, b: number) => a+b
 
 

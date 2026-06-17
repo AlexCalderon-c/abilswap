@@ -13,7 +13,8 @@ CREATE TABLE "user" (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     role VARCHAR(50) DEFAULT 'student'::CHARACTER VARYING NOT NULL,
-    CONSTRAINT user_role_check CHECK (((role)::TEXT = ANY ((ARRAY['student'::CHARACTER VARYING, 'teacher'::CHARACTER VARYING])::TEXT[])))
+    CONSTRAINT user_role_check CHECK (((role)::TEXT = ANY ((ARRAY['student'::CHARACTER VARYING, 'teacher'::CHARACTER VARYING])::TEXT[]))),
+    CONSTRAINT user_email_key UNIQUE (email)
 );
 
 CREATE TABLE teacher (

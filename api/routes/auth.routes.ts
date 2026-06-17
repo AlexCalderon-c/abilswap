@@ -12,7 +12,7 @@ const route = Router()
 route.post("/login", loginLimiter, validateMiddleware(LoginSchema), loginUser);
 route.post("/register/student", validateMiddleware(UserSchema), registerStudent);
 route.post("/register/teacher", validateMiddleware(UserSchema), registerTeacher);
-route.post("/logout", logoutUser);
+route.delete("/logout", logoutUser);
 route.get("/cookies", verifyAccessToken, getCookies);
 route.get("/refresh", verifyAccessToken, refreshTokenCookie);
 
