@@ -29,6 +29,16 @@ export const getCourseByTeacher = async (req: Request, res: Response, next: Next
     }
 }
 
+export const getEveryCourseByTeacher = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const course: QueryResult<CourseObject> = await pool.query("SELECT * FROM course WHERE teacher_id = $1", [req.user?.id])
+        const courseObject = course.rows[0];
+        return res.status(200).json(courseObject);
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const getCourseAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const course: QueryResult<CourseObject> = await pool.query("SELECT * FROM course")
@@ -44,8 +54,11 @@ export const updateCourse = async (req: Request, res: Response, next: NextFuncti
         const {id} = req.params
         const { course_name, description, price } = req.body;
         const course: QueryResult<CourseObject> = await pool.query("UPDATE course SET course_name = $1, description = $2, price = $3 WHERE id = $4 AND teacher_id = $5 RETURNING *", [course_name, description, price, id, req.user?.id])
+        if (course.rowCount === 0){
+            throw new Error("Unauthorized")
+        }
         const courseObject = course.rows[0];
-        res.json(courseObject)
+        return res.status(204).json(courseObject)
     } catch (error) {
         next(error);
     }
@@ -56,7 +69,10 @@ export const deleteCourse = async (req: Request, res: Response, next: NextFuncti
         const { id } = req.params;
         const course: QueryResult<CourseObject> = await pool.query("DELETE FROM course WHERE id = $1 AND teacher_id = $2 RETURNING *", [id, req.user?.id])
         const courseObject = course.rows[0];
-        res.json(courseObject)
+        if (course.rowCount === 0){
+            throw new Error("Unauthorized")
+        }
+        return res.status(204).json(courseObject)
     } catch (error) {
         next(error);
     }
