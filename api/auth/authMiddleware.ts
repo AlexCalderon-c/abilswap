@@ -96,6 +96,19 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
     }
 }
 
+export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const { full_name, username, email, bio, profile_pic } = req.body;
+        const user = await pool.query(`UPDATE "user" SET full_name = $1, username = $2, email = $3, bio = $4, profile_pic = $5 WHERE id = $6 RETURNING *`, [full_name, username, email, bio, profile_pic, req.user?.id])
+        res.status(204).json({
+            message: "Succesfully updated"
+        })
+
+    }catch(error){
+        next(error)
+    }
+}
+
 export const getCookies = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.send(req.cookies);
