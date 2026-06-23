@@ -9,8 +9,8 @@ import { CommentSchema } from "../validators/comment.validators.ts";
 const route = Router()
 
 route.get('/:id', verifyAccessToken, roleMiddleware(['student', 'teacher']), getCommentById)
-route.post('/:lesson_id', verifyAccessToken, roleMiddleware(['student']), validateMiddleware(CommentSchema), createComment)
-route.put('/:id', verifyAccessToken, roleMiddleware(['student']), validateMiddleware(CommentSchema), updateComment)
-route.delete('/:id', verifyAccessToken, roleMiddleware(['student']), deleteComment)
+route.post('/:lesson_id', verifyAccessToken, roleMiddleware(['student', 'teacher']), validateMiddleware(CommentSchema), createComment)
+route.put('/:id', verifyAccessToken, roleMiddleware(['student', 'teacher']), validateMiddleware(CommentSchema), updateComment)
+route.delete('/:id', verifyAccessToken, roleMiddleware(['student', 'teacher']), deleteComment)
 
 export default route

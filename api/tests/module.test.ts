@@ -13,7 +13,7 @@ describe('POST api/module/:course_id', () => {
     const password = "holasoytest"
     let userCookie: string | undefined
     let courseId: number
-
+ 
     beforeAll(async () => {
         await supertest(app)
             .post("/api/auth/register/teacher")
@@ -363,4 +363,43 @@ describe('PUT api/module', () => {
 
         expect(resModule.status).toBe(403)
     })
+    test('Teacher cant update without cookie', async () => {
+        const resModule = await supertest(app)
+            .put(`/api/module/${moduleId}`)
+            .send({module_name: "TEST MODULE NAME UPDATED"})
+
+        expect(resModule.status).toBe(401)
+    })
 })
+
+describe('DELETE api/module/:module_id', async () => {
+    const id = uid()
+    const teacherEmail = `testDelTeacherId_${id}@gmail.com`
+    const studentEmail = `testDelStudentId_${id}@gmail.com`
+    const tempEmail = `testDelTempId_${id}@gmail.com`
+
+    beforeAll(async () => {
+
+    })
+    afterAll(async () => {
+
+    })
+
+    test('Teacher is able to delete module as normal', async () => {
+
+    })
+
+    test('Another teacher isnt able to delete existing teachers module', async () => {
+
+    })
+
+    test('Teacher is not able to delete without Cookie', async () => {
+
+    })
+
+    test('Student is not able to delete modules', async () => {
+
+    })
+
+})
+ 

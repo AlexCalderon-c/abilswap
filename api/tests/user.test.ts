@@ -223,7 +223,7 @@ describe('DELETE api/auth/logout', () => {
     test('User is able to logout', async () => {
         await supertest(app)
             .post("/api/auth/register/teacher")
-            .send({
+            .send({ 
                 full_name: "testLogout",
                 username: `testingLogout_${id}`,
                 email,
