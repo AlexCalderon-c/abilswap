@@ -2,6 +2,7 @@ import {expect, test, describe, beforeAll, afterAll} from 'vitest'
 import supertest from "supertest"
 import app from '../app.ts'
 import {pool} from '../db/connect.ts'
+import { resolveModuleName } from 'typescript'
 
 const uid = () => Math.random().toString(36).substring(2, 8)
 
@@ -374,30 +375,129 @@ describe('PUT api/module', () => {
 
 describe('DELETE api/module/:module_id', async () => {
     const id = uid()
+    let userCookie: string | undefined
+    let moduleId: number
     const teacherEmail = `testDelTeacherId_${id}@gmail.com`
     const studentEmail = `testDelStudentId_${id}@gmail.com`
     const tempEmail = `testDelTempId_${id}@gmail.com`
 
     beforeAll(async () => {
+        const registerBody = {
+            full_name: "test",
+            username: `testing_${id}`,
+            email: teacherEmail,
+            password: `holasoytest`,
+            bio: "My test"
+        }
+        
+        await supertest(app)
+        .post('/api/auth/register/teacher')
+        .send(registerBody)
+
+        const resLogin = await supertest(app)
+        .post("/api/auth/login")
+        .send({email: teacherEmail, password: `holasoytest`})
+        
+        userCookie = resLogin.headers['set-cookie'] 
+
+        if (!userCookie) throw new Error('Cookie not defined')
+
+        const resCourse = await supertest(app)
+            .post("/api/course/")
+            .send({
+                "course_name": "TEST WAY TOO SHORT",
+                "description": "My test",
+                "price": 0
+            })
+            .set('Cookie', userCookie)
+
+        const courseId = resCourse.body.id
+
+        const resModule = await supertest(app)
+            .post(`/api/module/${courseId}`)
+            .send({"module_name": "TEST MODULE NAME"})
+            .set('Cookie', userCookie)
+
+        moduleId = resModule.body.id
 
     })
     afterAll(async () => {
-
+        await pool.query(`DELETE FROM "user" WHERE email IN ('${teacherEmail}', '${studentEmail}', '${tempEmail}')`)
     })
 
     test('Teacher is able to delete module as normal', async () => {
+        if (!userCookie) throw new Error('Cookie is not set')
+        
+        const resDelete = await supertest(app)
+        .delete(`/api/module/${moduleId}`)
+        .set('Cookie', userCookie)
+
+        expect(resDelete.status).toBe(204)
 
     })
 
     test('Another teacher isnt able to delete existing teachers module', async () => {
+        const registerBody = {
+            full_name: "test",
+            username: `testingTemp_${id}`,
+            email: tempEmail,
+            password: `holasoytest`,
+            bio: "My test"
+        }
+        
+        await supertest(app)
+        .post('/api/auth/register/teacher')
+        .send(registerBody)
+
+        const resLogin = await supertest(app)
+        .post("/api/auth/login")
+        .send({email: tempEmail, password: `holasoytest`})
+
+        let tempCookie = resLogin.headers['set-cookie']
+
+        if (!tempCookie) throw new Error('Cookie is not set')
+        
+        const resDelete = await supertest(app)
+        .delete(`/api/module/${moduleId}`)
+        .set('Cookie', tempCookie)
+
+        expect(resDelete.status).toBe(403)
 
     })
 
     test('Teacher is not able to delete without Cookie', async () => {
+        const resDelete = await supertest(app)
+        .delete(`/api/module/${moduleId}`)
 
+        expect(resDelete.status).toBe(401)
     })
 
     test('Student is not able to delete modules', async () => {
+        const registerBody = {
+            full_name: "test",
+            username: `testingStudent_${id}`,
+            email: studentEmail,
+            password: `holasoytest`,
+            bio: "My test"
+        }
+        
+        await supertest(app)
+        .post('/api/auth/register/teacher')
+        .send(registerBody)
+
+        const resLogin = await supertest(app)
+        .post("/api/auth/login")
+        .send({email: studentEmail, password: `holasoytest`})
+        
+        let tempCookie = resLogin.headers['set-cookie']
+
+        if (!tempCookie) throw new Error('Cookie is not set')
+        
+        const resDelete = await supertest(app)
+        .delete(`/api/module/${moduleId}`)
+        .set('Cookie', tempCookie)
+
+        expect(resDelete.status).toBe(403)
 
     })
 

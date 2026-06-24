@@ -3,6 +3,7 @@ import { logger } from "../libs/logger.ts";
 
 export const errorHandler = (err: Error, req:  Request, res: Response, next: NextFunction) => {
     logger.error(err)
+    console.error(err)
     if (err.message === "Unauthorized") {
         res.status(403).json({ message: "Unauthorized" });
         return; 

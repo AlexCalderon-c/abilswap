@@ -51,6 +51,7 @@ export const deleteModule = async (req: Request, res: Response, next: NextFuncti
         }
         res.status(204).json(response.rows[0])
     }catch(e){
+        console.log(e)
         next(e)
     }    
 }

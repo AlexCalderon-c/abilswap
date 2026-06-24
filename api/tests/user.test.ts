@@ -16,7 +16,7 @@ describe('POST api/login', () => {
             .send({
                 full_name: "testLogin",
                 username: `testingLogin_${id}`,
-                email,
+                email, 
                 password,
                 bio: "My testLogin"
             })
