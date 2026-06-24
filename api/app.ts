@@ -14,6 +14,7 @@ import moduleRoutes from './routes/module.routes.ts'
 import lessonRoutes from './routes/lesson.routes.ts'
 import ratingRoutes from './routes/rating.routes.ts'
 import enrollmentRoutes from './routes/enrollment.routes.ts'
+import commentRoutes from './routes/comment.routes.ts'
 import { globalLimiter } from "./libs/rateLimiters.ts"
 
 
@@ -34,6 +35,7 @@ app.use("/api/module", moduleRoutes)
 app.use("/api/lesson", lessonRoutes)
 app.use("/api/rating", ratingRoutes)
 app.use("/api/enrollment", enrollmentRoutes)
+app.use("/api/comment", commentRoutes)
 
 app.use(errorHandler)
 

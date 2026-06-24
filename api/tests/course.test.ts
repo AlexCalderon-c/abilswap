@@ -12,10 +12,10 @@ describe('POST api/course', () => {
     const password = "holasoytest"
     let userCookie: string | undefined
 
-    beforeAll(async () => {
+    beforeAll(async () => { 
         await supertest(app)
             .post("/api/auth/register/teacher")
-            .send({
+            .send({ 
                 full_name: "test",
                 username: `testingCourse_${id}`,
                 email: emailTeacher,

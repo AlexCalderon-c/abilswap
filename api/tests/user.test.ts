@@ -347,3 +347,4 @@ describe('PUT api/user', () => {
         expect(resUpdate.status).toBe(400)
     })
 })
+  

@@ -1,26 +1,26 @@
 import {z} from "zod"
 
 const TextSchema = z.object({
-    lesson_name: z.string(),
+    lesson_name: z.string().min(8).max(250),
     content_type: z.literal("text"),
-    content: z.string()
+    content: z.string().min(1)
 })
 
 const VideoSchema = z.object({
-    lesson_name: z.string(),
+    lesson_name: z.string().min(8).max(250),
     content_type: z.literal("video"),
     video_url: z.url(),
     content: z.string().optional()
 })
 
 const PdfSchema = z.object({
-    lesson_name: z.string(),
+    lesson_name: z.string().min(8).max(250),
     content_type: z.literal("pdf"),
     content: z.string().optional()
 })
 
 const QuizSchema = z.object({
-    lesson_name: z.string(),
+    lesson_name: z.string().min(8).max(250),
     content_type: z.literal("quiz"),
     content: z.string().optional()
 })

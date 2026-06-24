@@ -7,14 +7,14 @@ export const createEnrollment = async (req: Request, res: Response, next: NextFu
     try{
         const {course_id} = req.params
         const {enrollment_status} = req.body
-        const response: QueryResult<EnrollmentObject> = await pool.query('INSERT INTO enrollment (enrollment_status, student_id, course_id) VALUES ($1, $2, $3) ', [enrollment_status, req.user?.id, course_id])
+        const response: QueryResult<EnrollmentObject> = await pool.query('INSERT INTO enrollment (enrollment_status, student_id, course_id) VALUES ($1, $2, $3) RETURNING *', [enrollment_status, req.user?.id, course_id])
         if (response.rowCount === 0){
             throw new Error("Unauthorized")
         }
         res.status(201).json(response.rows[0])
     }catch(error){
         next(error)
-    }
+    } 
 }
 
 export const getEnrollmentById = async (req: Request, res: Response, next: NextFunction) => {

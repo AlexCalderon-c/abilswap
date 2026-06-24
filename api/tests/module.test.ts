@@ -447,8 +447,8 @@ describe('DELETE api/module/:module_id', async () => {
         
         await supertest(app)
         .post('/api/auth/register/teacher')
-        .send(registerBody)
-
+        .send(registerBody) 
+ 
         const resLogin = await supertest(app)
         .post("/api/auth/login")
         .send({email: tempEmail, password: `holasoytest`})

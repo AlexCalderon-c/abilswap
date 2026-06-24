@@ -7,7 +7,7 @@ export const createLesson = async (req: Request, res: Response, next: NextFuncti
     try{
         const {module_id} = req.params
         const {lesson_name, content_type, video_url, content} = req.body
-        const response: QueryResult<LessonObject> = await pool.query('INSERT INTO lesson (lesson_name, module_id, content_type, video_url, content) SELECT $1, $2, $3, $4, $5 WHERE EXISTS (SELECT 1 FROM module JOIN course ON course.id = module.course_id WHERE module.id = $2 AND course.teacher_id = $6)', [lesson_name, module_id, content_type, video_url, content, req.user?.id])
+        const response: QueryResult<LessonObject> = await pool.query('INSERT INTO lesson (lesson_name, module_id, content_type, video_url, content) SELECT $1, $2, $3, $4, $5 WHERE EXISTS (SELECT 1 FROM module JOIN course ON course.id = module.course_id WHERE module.id = $2 AND course.teacher_id = $6) RETURNING *', [lesson_name, module_id, content_type, video_url, content, req.user?.id])
         if (response.rowCount === 0){
             throw new Error("Unauthorized")
         }
@@ -22,7 +22,7 @@ export const getLessonById = async (req: Request, res: Response, next: NextFunct
         const {id} = req.params
         const response: QueryResult<LessonObject> = await pool.query('SELECT * FROM lesson WHERE id = $1', [id])
         res.status(200).json(response.rows[0])
-    }catch(error){
+    }catch(error){ 
         next(error)
     }
 }
