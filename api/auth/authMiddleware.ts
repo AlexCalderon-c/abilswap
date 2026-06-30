@@ -1,8 +1,11 @@
 import bcrypt from "bcrypt"
 import { pool } from "../db/connect.ts"
-import { generateAccessToken, generateRefreshToken } from "../services/tokenServices.ts"
+import { generateAccessToken, generateRefreshToken, deleteRefreshToken} from "../services/tokenServices.ts"
 import { type Request, type Response, type NextFunction } from "express"
 import { logger } from "../libs/logger.ts"
+import jwt from "jsonwebtoken"
+import { type payloadType } from "../types/token.types.ts"
+
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -27,7 +30,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         }
 
         const accessToken = generateAccessToken(payload)
-        const refreshToken = generateRefreshToken(payload)
+        const refreshToken = await generateRefreshToken(payload, payload.id)
 
         res.cookie("accessToken", accessToken, {
             path: "/",
@@ -86,8 +89,14 @@ export const registerTeacher = async (req: Request, res: Response, next: NextFun
 
 export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const {refreshToken} = req.cookies;
+        if (!refreshToken) {
+            throw new Error("No refresh token provided");
+        }
+        const user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as payloadType;
         res.clearCookie("accessToken");
         res.clearCookie("refreshToken");
+        await deleteRefreshToken(user.id)
         res.status(200).json({
             message: "Logout successful"
         })
