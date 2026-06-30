@@ -1,11 +1,6 @@
 import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-const navLinks = [
-  { to: '/', label: 'Inicio' },
-  { to: '/courses', label: 'Cursos' },
-  { to: '/dashboard', label: 'Dashboard' },
-]
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -34,25 +29,6 @@ export default function Header() {
               Abil<span className='text-primary-600'>Swap</span>
             </span>
           </Link>
-
-          <nav className='hidden md:flex items-center gap-1'>
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                end={link.to === '/'}
-                className={({ isActive }) =>
-                  `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? 'bg-primary-50 text-primary-700'
-                      : 'text-text-secondary hover:text-text-primary hover:bg-surface-tertiary'
-                  }`
-                }
-              >
-                {link.label}
-              </NavLink>
-            ))}
-          </nav>
 
           <div className='hidden md:flex items-center gap-3'>
             <Link
@@ -88,23 +64,6 @@ export default function Header() {
       {mobileOpen && (
         <div className='md:hidden border-t border-border bg-white animate-slide-down'>
           <div className='px-4 py-4 space-y-1'>
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                end={link.to === '/'}
-                onClick={() => setMobileOpen(false)}
-                className={({ isActive }) =>
-                  `block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-primary-50 text-primary-700'
-                      : 'text-text-secondary hover:bg-surface-tertiary'
-                  }`
-                }
-              >
-                {link.label}
-              </NavLink>
-            ))}
             <hr className='my-3 border-border' />
             <Link
               to='/login'

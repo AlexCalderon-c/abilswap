@@ -9,10 +9,6 @@ export default function Hero() {
 
       <div className='relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32'>
         <div className='max-w-3xl'>
-          <div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-100 text-primary-700 text-sm font-medium mb-6 animate-fade-in'>
-            <span className='w-2 h-2 rounded-full bg-primary-500 animate-pulse' />
-            Nueva plataforma de aprendizaje
-          </div>
 
           <h1 className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary leading-[1.1] tracking-tight mb-6 animate-slide-up'>
             Aprende
@@ -40,21 +36,7 @@ export default function Hero() {
             >
               Comenzar gratis
             </Link>
-          </div>
-
-          <div className='flex items-center gap-6 mt-12 pt-8 border-t border-border/50 animate-fade-in'>
-            {[
-              { label: 'Estudiantes', value: '2,500+' },
-              { label: 'Cursos', value: '120+' },
-              { label: 'Docentes', value: '45+' },
-              { label: 'Rating', value: '4.8/5' },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <p className='text-lg font-bold text-text-primary'>{stat.value}</p>
-                <p className='text-sm text-text-muted'>{stat.label}</p>
-              </div>
-            ))}
-          </div>
+          </div> 
         </div>
       </div>
 
