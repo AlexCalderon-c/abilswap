@@ -1,0 +1,63 @@
+import { type Request, type Response, type NextFunction } from "express";
+import { pool } from "../db/connect.ts";
+import { type QueryResult } from "pg";
+import { type CommentObject } from "../types/comment.types.ts";
+
+export const createComment = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {lesson_id} = req.params
+        const {content} = req.body
+        const response: QueryResult<CommentObject> = await pool.query('INSERT INTO comments (content, user_id, lesson_id) VALUES ($1, $2, $3) RETURNING *', [content, req.user?.id, lesson_id])
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}
+
+export const getCommentById = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {id} = req.params
+        const response: QueryResult<CommentObject> = await pool.query('SELECT * FROM comments WHERE id = $1 AND user_id = $2', [id, req.user?.id])
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}
+
+export const getCommentByCourse = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {course_id} = req.body
+        const response: QueryResult<CommentObject> = await pool.query('SELECT * FROM comments WHERE id = $1 AND user_id = $2', [course_id, req.user?.id])
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}
+
+export const updateComment = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {id} = req.params
+        const {content} = req.body
+        const response: QueryResult<CommentObject> = await pool.query('UPDATE comments SET content = $1 WHERE id = $2 AND user_id = $3 RETURNING *', [content, id, req.user?.id])
+        if(response.rowCount === 0){
+            throw new Error('Unauthorized')
+        }
+        res.status(201).json(response)
+    }catch(error){
+        next(error)
+    }
+}
+
+export const deleteComment = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {id} = req.params
+        const response: QueryResult<CommentObject> = await pool.query('DELETE FROM comments WHERE id = $1 AND user_id = $2 RETURNING *', [id, req.user?.id])
+        if(response.rowCount === 0){
+            throw new Error('Unauthorized')
+        }
+        res.status(201).json(response)
+        
+    }catch(error){
+        next(error)
+    }
+}
