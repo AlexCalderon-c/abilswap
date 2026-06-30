@@ -23,7 +23,7 @@ export const verifyAccessToken = (req: Request, res: Response, next: NextFunctio
 
 export const refreshTokenCookie = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {refreshToken} = req.cookies;        
+        const {refreshToken} = req.cookies;
         if (!refreshToken) {
             throw new Error("No refresh token provided");
         }
