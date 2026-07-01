@@ -1,14 +1,27 @@
-import { useState, type FormEvent } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../../context/AuthContext'
 
 export default function RegisterForm() {
+
+  const {handleRegisterStudentAxios, handleRegisterTeacherAxios} = useAuth()
+
+
   const [name, setName] = useState('')
+  const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState<'student' | 'teacher'>('student')
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if(role === 'student'){
+      handleRegisterStudentAxios(e, name, username, email, password)
+    }
+    if(role === 'teacher'){
+      handleRegisterTeacherAxios(e, name, username, email, password)
+    }
   }
 
   return (
@@ -37,6 +50,22 @@ export default function RegisterForm() {
               required
             />
           </div>
+
+          <div>
+            <label htmlFor='name' className='block text-sm font-medium text-text-primary mb-1.5'>
+              Nombre de usuario
+            </label>
+            <input
+              id='name'
+              type='text'
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder='Tu nombre'
+              className='w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all'
+              required
+            />
+          </div>
+
 
           <div>
             <label htmlFor='email' className='block text-sm font-medium text-text-primary mb-1.5'>
