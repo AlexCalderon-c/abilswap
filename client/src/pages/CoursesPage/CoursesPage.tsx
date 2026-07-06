@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { Course } from '../../types'
 import CourseFilters from '../../components/courses/CourseFilters/CourseFilters'
 import CourseGrid from '../../components/courses/CourseGrid/CourseGrid'
+import { useAuth } from '../../context/AuthContext'
+import { Navigate } from 'react-router-dom'
 
 const allCourses: Course[] = [
   { id: 1, course_name: 'Desarrollo Web Fullstack Completo', description: 'Aprende React, Node.js, TypeScript y PostgreSQL desde cero hasta desplegar aplicaciones completas.', price: 49.99, teacher_name: 'Carlos Mendoza', category: 'Fullstack', rating_avg: 4.9, student_count: 1240 },
@@ -18,6 +20,12 @@ export default function CoursesPage() {
   const [sort, setSort] = useState('popular')
 
   let filtered = allCourses
+
+  const {isAuthenticated} = useAuth()
+
+  if (!isAuthenticated){
+    return <Navigate to={'../login'}/>
+  }
 
   if (search) {
     const q = search.toLowerCase()

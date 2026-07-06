@@ -1,12 +1,19 @@
-import { useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../context/AuthContext'
+
 
 export default function LoginForm() {
+  const navigate = useNavigate()
+  const {isAuthenticated, handleLoginAxios} = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    handleLoginAxios(e, email, password)
+    navigate('/courses')
   }
 
   return (

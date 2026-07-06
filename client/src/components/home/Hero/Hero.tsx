@@ -30,12 +30,6 @@ export default function Hero() {
             >
               Explorar cursos
             </Link>
-            <Link
-              to='/register'
-              className='px-8 py-3.5 text-center text-text-primary font-semibold bg-white border-2 border-border rounded-xl hover:border-primary-200 hover:bg-primary-50/50 transition-all duration-200'
-            >
-              Comenzar gratis
-            </Link>
           </div> 
         </div>
       </div>

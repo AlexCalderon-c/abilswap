@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
 import type { User } from '../types'
 import {apiClient} from '../api/axios.ts'
-import type { AxiosResponse } from 'axios'
 
 interface AuthContextType {
   user: User | null
@@ -32,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           'Content-Type': 'application/json'
         }
       })
+      console.log(response)
 
       if(response){
         setIsAuthenticated(true)
