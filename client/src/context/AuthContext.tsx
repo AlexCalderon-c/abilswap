@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
 import type { User } from '../types'
 import {apiClient} from '../api/axios.ts'
+import type { AxiosResponse } from 'axios'
 
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
   handleLogout: () => void
-  handleLoginAxios: (e: React.SubmitEvent<HTMLFormElement>, userEmail: string, userPassword: string) => void
+  handleLoginAxios: (e: React.SubmitEvent<HTMLFormElement>, userEmail: string, userPassword: string) => Promise<AxiosResponse<any, any, {}> | undefined>
   handleRegisterStudentAxios: (e: React.SubmitEvent<HTMLFormElement>, fullname: string, username: string, email: string, password: string, bio?: string, profile_pic?: string) => void
   handleRegisterTeacherAxios: (e: React.SubmitEvent<HTMLFormElement>, fullname: string, username: string, email: string, password: string, bio?: string, profile_pic?: string) => void
 }
@@ -31,10 +32,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           'Content-Type': 'application/json'
         }
       })
-      console.log(response)
 
       if(response){
         setIsAuthenticated(true)
+        return response
       }
     }catch(e){
       console.log(e)

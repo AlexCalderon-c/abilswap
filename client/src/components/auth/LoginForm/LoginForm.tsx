@@ -9,10 +9,10 @@ export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    handleLoginAxios(e, email, password)
+    await handleLoginAxios(e, email, password)
     navigate('/courses')
   }
 
