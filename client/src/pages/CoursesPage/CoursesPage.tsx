@@ -3,7 +3,7 @@ import type { Course } from '../../types'
 import CourseFilters from '../../components/courses/CourseFilters/CourseFilters'
 import CourseGrid from '../../components/courses/CourseGrid/CourseGrid'
 import { useAuth } from '../../context/AuthContext'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLoaderData } from 'react-router-dom'
 import { useCourse } from '../../context/CourseContext'
 
 const allCourses: Course[] = [
@@ -16,15 +16,18 @@ const allCourses: Course[] = [
 ]
 
 export default function CoursesPage() {
+  
+  const {isAuthenticated} = useAuth()
+  const {course, error, fetchAllCourseData, isLoading} = useCourse()
+  const courseLoaded = useLoaderData()
+
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
   const [sort, setSort] = useState('popular')
+  const [filteredCourses, setFilteredCourses] = useState(courseLoaded)
 
-  let filtered = allCourses
-
-  const {isAuthenticated} = useAuth()
-  const {course, error, fetchAllCourseData, isLoading} = useCourse()
-
+  
+  let filtered = course
 
   if (!isAuthenticated){
     return <Navigate to={'../login'}/>
@@ -38,33 +41,6 @@ export default function CoursesPage() {
     console.log(course)
   }, [course])
 
-  if (search) {
-    const q = search.toLowerCase()
-    filtered = filtered.filter(
-      (c) => c.course_name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
-    )
-  }
-
-  if (category) {
-    filtered = filtered.filter((c) => c.category === category)
-  }
-
-  switch (sort) {
-    case 'newest':
-      filtered = [...filtered].sort((a, b) => (b.id || 0) - (a.id || 0))
-      break
-    case 'rating':
-      filtered = [...filtered].sort((a, b) => (b.rating_avg || 0) - (a.rating_avg || 0))
-      break
-    case 'price-asc':
-      filtered = [...filtered].sort((a, b) => a.price - b.price)
-      break
-    case 'price-desc':
-      filtered = [...filtered].sort((a, b) => b.price - a.price)
-      break
-    default:
-      filtered = [...filtered].sort((a, b) => (b.student_count || 0) - (a.student_count || 0))
-  }
 
   return (
     <div className='min-h-screen bg-surface-secondary'>
@@ -79,7 +55,7 @@ export default function CoursesPage() {
             <CourseFilters onSearch={setSearch} onCategoryChange={setCategory} onSortChange={setSort} />
           </aside>
           <div className='lg:col-span-3'>
-            <CourseGrid courses={filtered} />
+            <CourseGrid courses={filteredCourses} />
           </div>
         </div>
       </div>

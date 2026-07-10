@@ -3,7 +3,7 @@ import type { Course } from '../types'
 import {apiClient} from '../api/axios.ts'
 
 interface CourseContextInterface {
-    course: Course[] | undefined
+    course: Course[]
     isLoading: boolean
     error: Error | null
     fetchAllCourseData: () => Promise<void> 
@@ -15,7 +15,7 @@ export function CourseProvider({children}: {children: ReactNode}){
 
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<Error | null>(null)
-    const [course, setCourse] = useState(undefined)
+    const [course, setCourse] = useState<Course[]>([])
 
     const fetchAllCourseData = useCallback(async () => {
         try{

@@ -2,11 +2,11 @@ import type { Course } from '../../../types'
 import CourseCard from '../CourseCard/CourseCard'
 
 interface Props {
-  courses: Course[]
+  courses?: Course[]
 }
 
 export default function CourseGrid({ courses }: Props) {
-  if (courses.length === 0) {
+  if (courses!.length === 0) {
     return (
       <div className='text-center py-20'>
         <div className='w-16 h-16 mx-auto mb-4 rounded-2xl bg-surface-tertiary flex items-center justify-center'>
@@ -22,7 +22,7 @@ export default function CourseGrid({ courses }: Props) {
 
   return (
     <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-      {courses.map((course) => (
+      {courses!.map((course) => (
         <CourseCard key={course.id} course={course} />
       ))}
     </div>
