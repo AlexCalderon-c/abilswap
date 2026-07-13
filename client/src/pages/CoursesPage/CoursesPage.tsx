@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { Course } from '../../types'
 import CourseFilters from '../../components/courses/CourseFilters/CourseFilters'
 import CourseGrid from '../../components/courses/CourseGrid/CourseGrid'
@@ -18,29 +18,29 @@ const allCourses: Course[] = [
 export default function CoursesPage() {
   
   const {isAuthenticated} = useAuth()
-  const {course, error, fetchAllCourseData, isLoading} = useCourse()
   const courseLoaded = useLoaderData()
+  const [filteredCourses, setFilteredCourses] = useState(courseLoaded.courses)
 
-  const [search, setSearch] = useState('')
-  const [category, setCategory] = useState('')
-  const [sort, setSort] = useState('popular')
-  const [filteredCourses, setFilteredCourses] = useState(courseLoaded)
+  const searchHandler = (value: string) => {
+    const newValue = courseLoaded.courses.filter((obj: Course) => obj.course_name.toLowerCase().includes(value.toLowerCase()))
+    setFilteredCourses(newValue)
+  }
 
+  const categoryHandler = (category: string) => {
+
+    const newValue = courseLoaded.courses.filter((obj: Course) => category === 'Todas' ? true : obj.category === category)
+    setFilteredCourses(newValue)
+  }
+
+  const sortHandler = () => {
+
+  }
+ 
   
-  let filtered = course
 
   if (!isAuthenticated){
     return <Navigate to={'../login'}/>
   }
-
-  useEffect(() => {
-    fetchAllCourseData()
-  }, [])
-
-  useEffect(() => {
-    console.log(course)
-  }, [course])
-
 
   return (
     <div className='min-h-screen bg-surface-secondary'>
@@ -52,7 +52,7 @@ export default function CoursesPage() {
 
         <div className='grid lg:grid-cols-4 gap-8'>
           <aside className='lg:col-span-1'>
-            <CourseFilters onSearch={setSearch} onCategoryChange={setCategory} onSortChange={setSort} />
+            <CourseFilters onSearch={searchHandler} onCategoryChange={categoryHandler} onSortChange={sortHandler} />
           </aside>
           <div className='lg:col-span-3'>
             <CourseGrid courses={filteredCourses} />

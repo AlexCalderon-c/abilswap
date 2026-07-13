@@ -67,12 +67,22 @@ export const getCourseComplete = async (req: Request, res: Response, next: NextF
     }
 }
 
+export const getCategoriesFromCourses = async (req: Request, res: Response, next: NextFunction) => { //HASN'T BEEN TESTED
+    try {
+        const course: QueryResult<CourseObject> = await pool.query("SELECT category FROM course GROUP BY category")
+        const courseObject = course.rows;
+        return res.status(200).json(courseObject);
+    } catch (error) {
+        next(error);
+    }
+}
+
 
 export const updateCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {id} = req.params
-        const { course_name, description, price } = req.body;
-        const course: QueryResult<CourseObject> = await pool.query("UPDATE course SET course_name = $1, description = $2, price = $3 WHERE id = $4 AND teacher_id = $5 RETURNING *", [course_name, description, price, id, req.user?.id])
+        const { course_name, description, category, price } = req.body;
+        const course: QueryResult<CourseObject> = await pool.query("UPDATE course SET course_name = $1, description = $2, price = $3, category = $4 WHERE id = $5 AND teacher_id = $6 RETURNING *", [course_name, description, price, category, id, req.user?.id])
         if (course.rowCount === 0){
             throw new Error("Unauthorized")
         }

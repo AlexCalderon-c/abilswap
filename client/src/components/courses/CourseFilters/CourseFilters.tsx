@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLoaderData } from 'react-router-dom'
 
 const categories = ['Todas', 'Fullstack', 'Frontend', 'Backend', 'DevOps', 'Mobile']
 const sortOptions = [
@@ -10,13 +11,15 @@ const sortOptions = [
 ]
 
 interface Props {
-  onSearch: (query: string) => void
+  onSearch: (value: string) => void
   onCategoryChange: (category: string) => void
   onSortChange: (sort: string) => void
 }
 
 export default function CourseFilters({ onSearch, onCategoryChange, onSortChange }: Props) {
+  const loadedData = useLoaderData()
   const [activeCategory, setActiveCategory] = useState('Todas')
+  const [categories, setCategories] = useState(loadedData.category)
 
   return (
     <div className='space-y-6'>
@@ -38,20 +41,20 @@ export default function CourseFilters({ onSearch, onCategoryChange, onSortChange
       </div>
 
       <div className='flex flex-wrap gap-2'>
-        {categories.map((cat) => (
+        {loadedData.categories.map((obj: {category: string}, index: number) => (
           <button
-            key={cat}
+            key={index}
             onClick={() => {
-              setActiveCategory(cat)
-              onCategoryChange(cat === 'Todas' ? '' : cat)
+              setActiveCategory(obj.category)
+              onCategoryChange(obj.category)
             }}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-              activeCategory === cat
+              activeCategory === obj.category
                 ? 'bg-primary-600 text-white shadow-sm'
                 : 'bg-surface-tertiary text-text-secondary hover:bg-border'
             }`}
           >
-            {cat}
+            {obj.category}
           </button>
         ))}
       </div>
