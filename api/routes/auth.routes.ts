@@ -15,7 +15,7 @@ route.post("/register/student", validateMiddleware(UserSchema), registerStudent)
 route.post("/register/teacher", validateMiddleware(UserSchema), registerTeacher);
 route.delete("/logout", logoutUser);
 route.get("/cookies", verifyAccessToken, getCookies);
-route.post("/refresh", refreshTokenCookie);
+route.get("/refresh", refreshTokenCookie);
 route.put("/updateUser", verifyAccessToken, roleMiddleware(['teacher', 'student']), validateMiddleware(UpdateUserSchema), updateUser)
 
 export default route;

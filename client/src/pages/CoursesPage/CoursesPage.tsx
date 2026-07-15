@@ -33,8 +33,9 @@ export default function CoursesPage() {
   }
 
   const sortHandler = () => {
-
+    
   }
+  console.log(isAuthenticated)
  
   
 

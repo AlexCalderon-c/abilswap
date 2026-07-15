@@ -24,13 +24,15 @@ export const verifyAccessToken = (req: Request, res: Response, next: NextFunctio
 export const refreshTokenCookie = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {refreshToken} = req.cookies;
+        console.log(refreshToken)
         if (!refreshToken) {
             throw new Error("No refresh token provided");
         }
         const verifyTokenDb = await pool.query('SELECT token FROM refreshToken WHERE token = $1', [refreshToken])
+        console.log(verifyTokenDb.rows)
         const user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as payloadType;
 
-        if(verifyTokenDb.rowCount === 0){
+        if(verifyTokenDb.rowCount === 0){ //ERROR RELACIONADO CON ESTO, NO ESTA ENCONTRANDO REFRESHTOKEN EN LA BASE DE DATOS
             await deleteRefreshToken(user.id)
             throw new Error('Unauthorized')
         }
