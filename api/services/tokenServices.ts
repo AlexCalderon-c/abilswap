@@ -9,7 +9,7 @@ export const generateAccessToken = (payload: Object) => {
         throw new Error("ACCESS_TOKEN_SECRET is not defined");
     }
     return jwt.sign(payload, userToken, {
-        expiresIn: "10s"
+        expiresIn: "15m"
     });
 }
 

@@ -3,22 +3,13 @@ import type { Course } from '../../types'
 import CourseFilters from '../../components/courses/CourseFilters/CourseFilters'
 import CourseGrid from '../../components/courses/CourseGrid/CourseGrid'
 import { useAuth } from '../../context/AuthContext'
-import { Navigate, useLoaderData } from 'react-router-dom'
-import { useCourse } from '../../context/CourseContext'
+import { Navigate, useLoaderData, useRouteLoaderData } from 'react-router-dom'
 
-const allCourses: Course[] = [
-  { id: 1, course_name: 'Desarrollo Web Fullstack Completo', description: 'Aprende React, Node.js, TypeScript y PostgreSQL desde cero hasta desplegar aplicaciones completas.', price: 49.99, teacher_name: 'Carlos Mendoza', category: 'Fullstack', rating_avg: 4.9, student_count: 1240 },
-  { id: 2, course_name: 'React & TypeScript Avanzado', description: 'Patrones avanzados, state management, testing y optimización de rendimiento en React.', price: 39.99, teacher_name: 'Ana García', category: 'Frontend', rating_avg: 4.8, student_count: 890 },
-  { id: 3, course_name: 'Node.js & APIs Escalables', description: 'Arquitectura limpia, autenticación, bases de datos y despliegue de APIs REST.', price: 44.99, teacher_name: 'Miguel Torres', category: 'Backend', rating_avg: 4.7, student_count: 675 },
-  { id: 4, course_name: 'Bases de Datos & SQL', description: 'Diseño de esquemas, consultas avanzadas, optimización y PostgreSQL.', price: 34.99, teacher_name: 'Laura Jiménez', category: 'Backend', rating_avg: 4.8, student_count: 920 },
-  { id: 5, course_name: 'TypeScript Profesional', description: 'Tipado avanzado, genéricos, decoradores y patrones con TypeScript.', price: 29.99, teacher_name: 'Carlos Mendoza', category: 'Frontend', rating_avg: 4.6, student_count: 540 },
-  { id: 6, course_name: 'DevOps para Desarrolladores', description: 'Docker, CI/CD, cloud computing y automatización para equipos de desarrollo.', price: 54.99, teacher_name: 'Sofia Ruiz', category: 'DevOps', rating_avg: 4.5, student_count: 320 },
-]
 
 export default function CoursesPage() {
   
-  const {isAuthenticated} = useAuth()
   const courseLoaded = useLoaderData()
+  const {isAuthenticated} = useRouteLoaderData('root')
   const [filteredCourses, setFilteredCourses] = useState(courseLoaded.courses)
 
   const searchHandler = (value: string) => {
