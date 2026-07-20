@@ -6,7 +6,7 @@ import type { AxiosResponse } from 'axios'
 interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
-  handleLogout: () => void
+  handleLogout: () => Promise<AxiosResponse<any, any, {}> | undefined>
   handleLoginAxios: (e: React.SubmitEvent<HTMLFormElement>, userEmail: string, userPassword: string) => Promise<AxiosResponse<any, any, {}> | undefined>
   handleRegisterStudentAxios: (e: React.SubmitEvent<HTMLFormElement>, fullname: string, username: string, email: string, password: string, bio?: string, profile_pic?: string) => void
   handleRegisterTeacherAxios: (e: React.SubmitEvent<HTMLFormElement>, fullname: string, username: string, email: string, password: string, bio?: string, profile_pic?: string) => void
@@ -99,6 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
 
     if(response){
+      setIsAuthenticated(false)
       return response
     }
   }

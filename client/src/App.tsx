@@ -40,7 +40,7 @@ export default function App() {
         </Route>
         <Route path='/login' element={<LoginPage />}  />
         <Route path='/register' element={<RegisterPage />} />
-        <Route path='/dashboard' element={<DashboardPage />} loader={authLoader} id={'auth'}/>
+        <Route path='/dashboard' element={<DashboardPage />} />
       </Route>
     </>
   ))
