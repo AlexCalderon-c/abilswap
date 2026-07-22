@@ -11,8 +11,8 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     await handleLoginAxios(e, email, password)
+    console.log("logged in, supossedly")
     navigate('/courses')
   }
 

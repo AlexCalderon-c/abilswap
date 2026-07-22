@@ -2,14 +2,14 @@ import { useState } from 'react'
 import type { Course } from '../../types'
 import CourseFilters from '../../components/courses/CourseFilters/CourseFilters'
 import CourseGrid from '../../components/courses/CourseGrid/CourseGrid'
-import { useAuth } from '../../context/AuthContext'
 import { Navigate, useLoaderData, useRouteLoaderData } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 
 
 export default function CoursesPage() {
   
   const courseLoaded = useLoaderData()
-  const {isAuthenticated} = useRouteLoaderData('root')
+  const {isAuthenticatedState} = useAuth()
   const [filteredCourses, setFilteredCourses] = useState(courseLoaded.courses)
 
   const searchHandler = (value: string) => {
@@ -26,11 +26,11 @@ export default function CoursesPage() {
   const sortHandler = () => {
     
   }
-  console.log(isAuthenticated)
+  console.log(isAuthenticatedState)
  
   
 
-  if (!isAuthenticated){
+  if (!isAuthenticatedState){
     return <Navigate to={'../login'}/>
   }
 

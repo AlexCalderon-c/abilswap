@@ -1,18 +1,19 @@
 import { useState } from 'react'
-import { Link, useLoaderData } from 'react-router-dom'
+import { Link, useLoaderData, useRouteLoaderData } from 'react-router-dom'
 import NavHeader from '../navHeader/NavHeader'
 import UserHeader from '../userHeader/UserHeader'
 import { useAuth } from '../../../context/AuthContext'
 
 export default function Header() {
-  const {isAuthenticated} = useAuth()
-  
+  const {isAuthenticatedState} = useAuth()  
   const [scrolled, setScrolled] = useState(false)
 
   const handleScroll = () => setScrolled(window.scrollY > 20)
   if (typeof window !== 'undefined') {
     window.addEventListener('scroll', handleScroll, { passive: true })
   }
+
+  console.log(isAuthenticatedState)
 
   return (
     <header
@@ -33,7 +34,7 @@ export default function Header() {
             </span>
           </Link>
 
-          {!isAuthenticated ? <NavHeader/> : <UserHeader/>}
+          {!isAuthenticatedState ? <NavHeader/> : <UserHeader/>}
 
           
         </div>

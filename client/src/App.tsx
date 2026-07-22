@@ -23,33 +23,28 @@ const authLoader = async () => {
     console.log("loaded auth")
     return {user: response.data, isAuthenticated: true}
   }catch(e){
-    console.log('Failed auth check')
+    console.log('Failed auth check: ', e)
     return {user: null, isAuthenticated: false} 
   }  
 }
 
-export default function App() {
-  
-  const router = createBrowserRouter(createRoutesFromElements(
+const router = createBrowserRouter(createRoutesFromElements(
     <>
-      <Route element={<Layout />}>
+      <Route element={<Layout />} loader={authLoader} id='auth'>
         <Route path='/' element={<HomePage />} />
-        <Route loader={authLoader} id='root'>
-          <Route path='/courses' element={<CoursesPage />} loader={courseLoader}/>
-          <Route path='/courses/:id' element={<CourseDetailPage />} />
-        </Route>
+        <Route path='/courses' element={<CoursesPage />} loader={courseLoader}/>
+        <Route path='/courses/:id' element={<CourseDetailPage />} />
         <Route path='/login' element={<LoginPage />}  />
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/dashboard' element={<DashboardPage />} />
       </Route>
     </>
-  ))
+))
+
+export default function App() { 
   return (
-    
-      <AuthProvider>
-        <CourseProvider>
-          <RouterProvider router = {router}/>
-        </CourseProvider>
-      </AuthProvider>
+      <CourseProvider>
+        <RouterProvider router = {router}/>
+      </CourseProvider>
   )
 }

@@ -1,5 +1,7 @@
 import axios, { type AxiosResponse } from "axios"
 
+const ENDPOINTS_ARR = ['/api/user/me', '/api/auth/refresh']
+
 export const apiClient = axios.create({
     baseURL: "http://localhost:3001",
     withCredentials: true
@@ -11,6 +13,11 @@ apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config
+
+        if(ENDPOINTS_ARR.some(endpoint => originalRequest.url?.includes(endpoint))){
+            console.log(originalRequest)
+            return Promise.reject(error)
+        }
 
         if((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry){
             originalRequest._retry = true

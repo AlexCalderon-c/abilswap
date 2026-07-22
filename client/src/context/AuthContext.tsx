@@ -4,19 +4,25 @@ import {apiClient} from '../api/axios.ts'
 import type { AxiosResponse } from 'axios'
 
 interface AuthContextType {
-  user: User | null
-  isAuthenticated: boolean
+  userState: User | null
+  isAuthenticatedState: boolean
   handleLogout: () => Promise<AxiosResponse<any, any, {}> | undefined>
   handleLoginAxios: (e: React.SubmitEvent<HTMLFormElement>, userEmail: string, userPassword: string) => Promise<AxiosResponse<any, any, {}> | undefined>
   handleRegisterStudentAxios: (e: React.SubmitEvent<HTMLFormElement>, fullname: string, username: string, email: string, password: string, bio?: string, profile_pic?: string) => void
   handleRegisterTeacherAxios: (e: React.SubmitEvent<HTMLFormElement>, fullname: string, username: string, email: string, password: string, bio?: string, profile_pic?: string) => void
 }
 
+interface LoadedDataType {
+  user: User
+  isAuthenticated: boolean
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+export function AuthProvider({ children, loadedData }: { children: ReactNode, loadedData: LoadedDataType }) {
+  const {user, isAuthenticated} = loadedData
+  const [userState, setUserState] = useState<User | null>(user)
+  const [isAuthenticatedState, setIsAuthenticatedState] = useState<boolean>(isAuthenticated)
 
   const handleLoginAxios = async (e: React.SubmitEvent<HTMLFormElement>, email: string, password: string) => {
     e.preventDefault()
@@ -34,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
 
       if(response){
-        setIsAuthenticated(true)
+        setIsAuthenticatedState(true)
         return response
       }
     }catch(e){
@@ -99,14 +105,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
 
     if(response){
-      setIsAuthenticated(false)
+      setIsAuthenticatedState(false)
       return response
     }
   }
 
   const value: AuthContextType = {
-    user,
-    isAuthenticated,
+    userState,
+    isAuthenticatedState,
     handleLoginAxios,
     handleLogout,
     handleRegisterStudentAxios,
