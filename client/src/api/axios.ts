@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from "axios"
 
-const ENDPOINTS_ARR = ['/api/user/me', '/api/auth/refresh']
+const ENDPOINTS_ARR = ['/api/auth/refresh']
 
 export const apiClient = axios.create({
     baseURL: "http://localhost:3001",
@@ -33,7 +33,9 @@ apiClient.interceptors.response.use(
                 await refreshPromise
                 return apiClient(originalRequest)
             }catch(e){
-                window.location.href = '/login'
+                if(window.location.pathname !== '/login'){
+                    window.location.href = '/login'
+                }                
                 return Promise.reject(e) 
             }          
         }

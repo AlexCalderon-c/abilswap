@@ -27,12 +27,6 @@ export default function CoursesPage() {
     
   }
   console.log(isAuthenticatedState)
- 
-  
-
-  if (!isAuthenticatedState){
-    return <Navigate to={'../login'}/>
-  }
 
   return (
     <div className='min-h-screen bg-surface-secondary'>

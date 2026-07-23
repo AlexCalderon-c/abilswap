@@ -6,6 +6,7 @@ import { AuthProvider } from '../../../context/AuthContext'
 export default function Layout() {
 
   const data = useRouteLoaderData('auth')
+  
   return (
     <AuthProvider loadedData={data}>
       <div className='flex flex-col min-h-screen'>

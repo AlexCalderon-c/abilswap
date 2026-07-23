@@ -35,7 +35,7 @@ export default function Header() {
           </Link>
 
           {!isAuthenticatedState ? <NavHeader/> : <UserHeader/>}
-
+          
           
         </div>
       </div>

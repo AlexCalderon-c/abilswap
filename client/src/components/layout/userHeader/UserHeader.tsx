@@ -5,19 +5,20 @@ import { useAuth } from '../../../context/AuthContext'
 function UserHeader() {
     const navigate = useNavigate()
     const [menuOpen, setMenuOpen] = useState(false)
-    const {handleLogout} = useAuth()
+    const {userState, handleLogout} = useAuth()
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+      e.preventDefault()
 
-    await handleLogout()
-    navigate('/courses')
-  }
+      await handleLogout()
+      navigate('/login')
+    }
+    console.log(userState)
 
   return ( 
     <>
         <div className='flex gap-6 items-center'>
-            <span className='font-bold'>Hello, user</span>
+            <span className='font-bold'>Hello, {userState?.username}</span>
             <button
             
                 onClick={() => setMenuOpen(!menuOpen)}

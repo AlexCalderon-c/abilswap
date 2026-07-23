@@ -39,7 +39,10 @@ export function AuthProvider({ children, loadedData }: { children: ReactNode, lo
         }
       })
 
+      console.log(response.data)
+
       if(response){
+        setUserState(response.data)
         setIsAuthenticatedState(true)
         return response
       }
@@ -105,6 +108,7 @@ export function AuthProvider({ children, loadedData }: { children: ReactNode, lo
     })
 
     if(response){
+      setUserState(null)
       setIsAuthenticatedState(false)
       return response
     }

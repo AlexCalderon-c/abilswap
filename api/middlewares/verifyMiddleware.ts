@@ -35,9 +35,17 @@ export const refreshTokenCookie = async (req: Request, res: Response, next: Next
             throw new Error('Unauthorized')
         }
 
-        const accessToken = generateAccessToken({id: user.id, username: user.username, role: user.role})
+        const payload = {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            profile_pic: user.profile_pic,
+            role: user.role
+        }
+
+        const accessToken = generateAccessToken(payload)
         await pool.query('DELETE FROM refreshToken WHERE token = $1', [refreshToken])
-        const newRefreshToken = await generateRefreshToken({id: user.id, username: user.username, role: user.role}, user.id)
+        const newRefreshToken = await generateRefreshToken(payload, user.id)
         res.cookie("accessToken", accessToken, {
             path: "/",
             httpOnly: true,
