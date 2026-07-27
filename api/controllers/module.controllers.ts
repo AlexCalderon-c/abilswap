@@ -28,6 +28,35 @@ export const getModuleById = async (req: Request, res: Response, next: NextFunct
     }
 }
 
+export const getModuleLessonInfoId = async (req: Request, res: Response, next: NextFunction) => { //SIN TESTS
+    try{
+        const {course_id} = req.params
+        const response = await pool.query(`
+            SELECT m.id, m.module_name, m.module_index, m.course_id,
+            COALESCE(
+                json_agg(
+                json_build_object(
+                    'id', l.id,
+                    'lesson_name', l.lesson_name,
+                    'lesson_index', l.lesson_index,
+                    'content_type', l.content_type,
+                    'video_url', l.video_url
+                ) ORDER BY l.lesson_index
+                ) FILTER (WHERE l.id IS NOT NULL),
+                '[]'::json
+            ) AS lessons
+            FROM module m
+            LEFT JOIN lesson l ON l.module_id = m.id
+            WHERE m.course_id = $1
+            GROUP BY m.id
+            ORDER BY m.module_index`, [course_id]
+        )
+        res.status(200).json(response.rows)
+    }catch(e){
+        next(e)
+    }
+}
+
 export const updateModule = async (req: Request, res: Response, next: NextFunction) => {
     try{
         const {module_id} = req.params

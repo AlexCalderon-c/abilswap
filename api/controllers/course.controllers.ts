@@ -49,7 +49,7 @@ export const getCourseAll = async (req: Request, res: Response, next: NextFuncti
     }
 }
 
-export const getCourseComplete = async (req: Request, res: Response, next: NextFunction) => {
+export const getCourseComplete = async (req: Request, res: Response, next: NextFunction) => { //NO TEST
     try{
         const course = await pool.query(`
             SELECT c.id, c.course_name, c.description, c.created_at, c.price, 
@@ -61,6 +61,26 @@ export const getCourseComplete = async (req: Request, res: Response, next: NextF
             GROUP BY c.id, u.full_name
             `)
         const courseObject = course.rows;
+        return res.status(200).json(courseObject)
+    }catch (error){
+        next(error)
+    }
+}
+
+export const getCourseCompleteById = async (req: Request, res: Response, next: NextFunction) => { //NO TEST
+    try{
+        const {course_id} = req.params
+        const course = await pool.query(`
+            SELECT c.id, c.course_name, c.description, c.created_at, c.price, 
+                c.category, c.image_url, u.full_name,
+                COALESCE(ROUND(AVG(r.rating_score), 1), 0) AS rating_avg
+            FROM course c
+            INNER JOIN "user" u ON c.teacher_id = u.id
+            LEFT JOIN rating r ON c.id = r.id_course
+            WHERE c.id = $1
+            GROUP BY c.id, u.full_name
+            `, [course_id])
+        const courseObject = course.rows[0];
         return res.status(200).json(courseObject)
     }catch (error){
         next(error)

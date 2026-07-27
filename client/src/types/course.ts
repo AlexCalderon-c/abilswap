@@ -7,7 +7,7 @@ export interface Course {
   price: number
   category?: string
   image_url?: string
-  teacher_name?: string
+  full_name?: string
   rating_avg?: number
   student_count?: number
 }
