@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
+import UserSidebar from '../userSidebar/UserSidebar'
 
 function UserHeader() {
     const navigate = useNavigate()
@@ -34,19 +35,7 @@ function UserHeader() {
                 </svg>
             </button>
         </div>
-        {menuOpen && (
-        <div className='absolute top-20 right-5 border-t border-border bg-white animate-slide-down'>
-          <div className='px-4 py-4 space-y-1'>
-            <button
-              type='submit'
-              onClick={handleSubmit}
-              className='block px-4 py-2.5 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 text-center'
-            >
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      )}
+        {menuOpen && (<UserSidebar handleSubmit={handleSubmit}/>)}
     </>   
     
   )

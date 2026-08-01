@@ -1,3 +1,4 @@
+import { useCourse } from '../../../context/CourseContext'
 import type { Course } from '../../../types'
 
 interface Props {
@@ -5,6 +6,8 @@ interface Props {
 }
 
 export default function CourseSidebar({ course }: Props) {
+  const {enrollCourse} = useCourse()
+
   return (
     <div className='sticky top-24'>
       <div className='bg-white rounded-2xl border border-border overflow-hidden shadow-sm'>
@@ -20,7 +23,7 @@ export default function CourseSidebar({ course }: Props) {
             )}
           </div>
 
-          <button className='w-full py-3 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-md'>
+          <button onClick={() => enrollCourse(course.id)} className='w-full py-3 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-md'>
             Inscribirse ahora
           </button>
 

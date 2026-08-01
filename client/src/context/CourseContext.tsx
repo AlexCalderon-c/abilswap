@@ -1,12 +1,10 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
-import type { Course } from '../types'
 import {apiClient} from '../api/axios.ts'
 
 interface CourseContextInterface {
-    course: Course[]
     isLoading: boolean
     error: Error | null
-    fetchAllCourseData: () => Promise<void> 
+    enrollCourse: (courseId: number) => Promise<void>
 }
 
 const CourseContext = createContext<CourseContextInterface | undefined>(undefined)
@@ -15,36 +13,26 @@ export function CourseProvider({children}: {children: ReactNode}){
 
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<Error | null>(null)
-    const [course, setCourse] = useState<Course[]>([])
 
-    const fetchAllCourseData = useCallback(async () => {
+    const enrollCourse = async (courseId: number) => {
         try{
             setIsLoading(true)
-            const response = await apiClient.get('http://localhost:3001/api/course', {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-
-            if(response){
-              setCourse(response.data)               
+            const enrollBody = {
+                'enrollment_status': "active"
             }
-
-            console.log(response)
-        
+            await apiClient.post(`http://localhost:3001/api/enrollment/${courseId}`, enrollBody)
+            console.log('Enrolled!')
         }catch(e){
             setError(e as Error)
         }finally{
             setIsLoading(false)
         }
-    }, [])
-
+    }
 
     const value: CourseContextInterface = {
         isLoading,
         error,
-        course,
-        fetchAllCourseData
+        enrollCourse
     }
 
     return (
