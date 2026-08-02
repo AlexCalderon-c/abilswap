@@ -19,8 +19,11 @@ const courseLoader = async () => {
 }
 
 const detailedCourseLoader = async ({params}: LoaderFunctionArgs) => {
-  const [courses, modules] = await Promise.all([apiClient.get(`http://localhost:3001/api/course/courseinfo/${params.course_id}`).then(res => res.data), apiClient.get(`http://localhost:3001/api/module/moduleinfo/${params.course_id}`).then(res => res.data)]) 
-  return {courses, modules}
+  const [courses, modules, enroll] = await Promise.all([
+    apiClient.get(`http://localhost:3001/api/course/courseinfo/${params.course_id}`).then(res => res.data), 
+    apiClient.get(`http://localhost:3001/api/module/moduleinfo/${params.course_id}`).then(res => res.data),
+    apiClient.get(`http://localhost:3001/api/enrollment/courseinfo/${params.course_id}`).then(res => res.data).catch(() => false)]) 
+  return {courses, modules, enroll}
 }
 
 const authLoader = async () => {

@@ -49,7 +49,7 @@ export default function CourseDetailPage() {
           </div>
 
           <div className='lg:col-span-1'>
-            <CourseSidebar course={loadedData.courses} />
+            <CourseSidebar course={loadedData.courses} isEnrolled={loadedData.enroll.isEnrolled} />
           </div>
         </div>
       </div>

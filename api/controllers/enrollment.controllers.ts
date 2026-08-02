@@ -41,6 +41,19 @@ export const updateEnrollment = async (req: Request, res: Response, next: NextFu
     }
 }
 
+export const getEnrollmentByCourseId = async (req: Request, res: Response, next: NextFunction) => { //NO TESTS
+    try{
+        const {course_id} = req.params
+        const response = await pool.query('SELECT * FROM enrollment WHERE course_id = $1 AND student_id = $2', [course_id, req.user?.id])
+        if(response.rowCount === 0){
+            throw new Error("Not enrolled to this course")
+        }
+        res.status(201).json({isEnrolled: true})
+    }catch(e){
+        next(e)
+    }    
+}
+
 export const deleteEnrollment = async (req: Request, res: Response, next: NextFunction) => {
     try{
         const {id} = req.params

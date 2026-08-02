@@ -1,12 +1,20 @@
+import { useState } from 'react'
 import { useCourse } from '../../../context/CourseContext'
 import type { Course } from '../../../types'
 
 interface Props {
   course: Course
+  isEnrolled: boolean
 }
 
-export default function CourseSidebar({ course }: Props) {
+export default function CourseSidebar({ course, isEnrolled }: Props) {
   const {enrollCourse} = useCourse()
+  const [enrollButton, setEnrollButton] = useState(!isEnrolled)
+
+  const submitHandler = () => {
+    setEnrollButton(false)
+    enrollCourse(course.id)
+  }
 
   return (
     <div className='sticky top-24'>
@@ -23,9 +31,15 @@ export default function CourseSidebar({ course }: Props) {
             )}
           </div>
 
-          <button onClick={() => enrollCourse(course.id)} className='w-full py-3 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-md'>
-            Inscribirse ahora
-          </button>
+            {enrollButton === true ? 
+              <button onClick={submitHandler} className='w-full py-3 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer'>
+              Inscribirse ahora
+              </button>
+            :
+              <div className='w-full py-3 text-sm font-semibold text-gray-400 bg-white rounded-xl shadow-sm text-center'>
+                Ya estás en este curso
+              </div>}
+          
 
           <hr className='border-border' />
 
