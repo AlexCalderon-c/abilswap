@@ -54,6 +54,38 @@ export const getEnrollmentByCourseId = async (req: Request, res: Response, next:
     }    
 }
 
+
+
+export const getEnrollmentDashboardById = async (req: Request, res: Response, next: NextFunction) => { //NO TEST
+    try{
+        const course = await pool.query(`
+            SELECT
+                e.id AS enrollment_id,
+                e.enrollment_status,
+                c.id AS course_id,
+                c.course_name,
+                c.description,
+                c.image_url,
+                c.category,
+                COUNT(l.id) AS total_lessons,
+                COUNT(lp.id) AS completed_lessons,
+                ROUND(COUNT(lp.id) * 100.0 / NULLIF(COUNT(l.id), 0), 1) AS progress
+            FROM enrollment e
+            JOIN course c ON c.id = e.course_id
+            JOIN module m ON m.course_id = c.id
+            JOIN lesson l ON l.module_id = m.id
+            LEFT JOIN lesson_progress lp
+                ON lp.lesson_id = l.id AND lp.student_id = e.student_id
+            WHERE e.student_id = $1
+            GROUP BY e.id, c.id
+            ORDER BY e.enrollment_date DESC
+        `, [req.user?.id])
+        res.status(201).json(course.rows)
+    }catch(e){
+        next(e)
+    }
+}
+
 export const deleteEnrollment = async (req: Request, res: Response, next: NextFunction) => {
     try{
         const {id} = req.params

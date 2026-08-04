@@ -6,8 +6,6 @@ interface Props {
 }
 
 export default function EnrolledCourseCard({ enrollment }: Props) {
-  const course = enrollment.course
-  if (!course) return null
 
   const statusColors = {
     active: 'bg-emerald-100 text-emerald-700',
@@ -28,16 +26,13 @@ export default function EnrolledCourseCard({ enrollment }: Props) {
 
       <div className='p-5'>
         <h3 className='font-semibold text-text-primary group-hover:text-primary-600 transition-colors mb-1'>
-          {course.course_name}
+          {enrollment.course_name}
         </h3>
-        <p className='text-xs text-text-muted mb-4'>
-          Inscrito el {new Date(enrollment.enrollment_date).toLocaleDateString('es-ES')}
-        </p>
 
-        <ProgressBar progress={enrollment.enrollment_status === 'completed' ? 100 : enrollment.enrollment_status === 'active' ? 60 : 0} />
+        <ProgressBar progress={enrollment.progress} />
 
         <a
-          href={`/courses/${course.id}`}
+          href={`/courses/${enrollment.course_id}`}
           className='mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors'
         >
           Continuar curso

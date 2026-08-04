@@ -4,15 +4,20 @@ import { pool } from "./db/connect.ts";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 
+const QUERY = `INSERT INTO lesson (lesson_name, module_id, content_type, video_url, content, lesson_index) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`;
+
 async function seed() {
     console.log("🌱 Iniciando seed de datos...\n");
 
     // ─── Limpiar datos existentes (orden inverso de FK) ───
     console.log("🧹 Limpiando datos existentes...");
     await pool.query("ALTER TABLE enrollment DROP CONSTRAINT IF EXISTS unique_enrollment");
+    await pool.query("ALTER TABLE rating DROP CONSTRAINT IF EXISTS unique_rating");
+    await pool.query("ALTER TABLE rating ADD CONSTRAINT unique_rating UNIQUE (id_student, id_course)");
     await pool.query("DELETE FROM comments");
-    await pool.query("DELETE FROM rating");
+    await pool.query("DELETE FROM lesson_progress");
     await pool.query("DELETE FROM resource");
+    await pool.query("DELETE FROM rating");
     await pool.query("DELETE FROM lesson");
     await pool.query("DELETE FROM module");
     await pool.query("DELETE FROM enrollment");
@@ -28,7 +33,6 @@ async function seed() {
             ADD COLUMN IF NOT EXISTS category VARCHAR(150),
             ADD COLUMN IF NOT EXISTS image_url TEXT
     `);
-    console.log("✅ Columnas category e image_url agregadas a course");
 
     // ─── Crear usuarios ───
     const password = await bcrypt.hash("123456", 10);
@@ -38,7 +42,6 @@ async function seed() {
     const student1Id = crypto.randomUUID();
     const student2Id = crypto.randomUUID();
 
-    // Teacher 1 — Alex
     await pool.query(
         `WITH u AS (INSERT INTO "user" (id, full_name, username, email, password, bio, role)
          VALUES ($1, 'Alex Martínez', 'alexdev', 'alex@email.com', $2, 'Fullstack developer y instructor de JavaScript', 'teacher'
@@ -47,229 +50,110 @@ async function seed() {
     );
     console.log("✅ Teacher creado: alex@email.com / 123456");
 
-    // Teacher 2 — María
-    const teacher2Password = await bcrypt.hash("123456", 10);
     await pool.query(
         `WITH u AS (INSERT INTO "user" (id, full_name, username, email, password, bio, role)
          VALUES ($1, 'María García', 'mariadata', 'maria@email.com', $2, 'Data scientist apasionada por la enseñanza', 'teacher'
          ) RETURNING id) INSERT INTO teacher SELECT id FROM u`,
-        [teacher2Id, teacher2Password]
+        [teacher2Id, password]
     );
     console.log("✅ Teacher creado: maria@email.com / 123456");
 
-    // Student 1 — Carlos
-    const student1Password = await bcrypt.hash("123456", 10);
     await pool.query(
         `WITH u AS (INSERT INTO "user" (id, full_name, username, email, password, bio, role)
          VALUES ($1, 'Carlos López', 'carlosl', 'carlos@email.com', $2, 'Estudiante de desarrollo web', 'student'
          ) RETURNING id) INSERT INTO student SELECT id FROM u`,
-        [student1Id, student1Password]
+        [student1Id, password]
     );
     console.log("✅ Student creado: carlos@email.com / 123456");
 
-    // Student 2 — Ana
-    const student2Password = await bcrypt.hash("123456", 10);
     await pool.query(
         `WITH u AS (INSERT INTO "user" (id, full_name, username, email, password, bio, role)
          VALUES ($1, 'Ana Rodríguez', 'anarod', 'ana@email.com', $2, 'Estudiante de ciencia de datos', 'student'
          ) RETURNING id) INSERT INTO student SELECT id FROM u`,
-        [student2Id, student2Password]
+        [student2Id, password]
     );
     console.log("✅ Student creado: ana@email.com / 123456\n");
 
     // ─── Cursos ───
-    const course1 = await pool.query(
+    const c1Id = (await pool.query(
         `INSERT INTO course (course_name, description, teacher_id, price, category, image_url)
          VALUES ('JavaScript desde Cero hasta Experto', 'Aprende JavaScript desde las bases hasta temas avanzados: closures, prototipos, async/await, promesas, módulos y más. Más de 40 horas de contenido práctico con ejercicios del mundo real.', $1, 49.99, 'Frontend', 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400')
          RETURNING id`,
         [teacher1Id]
-    );
-    const c1Id = course1.rows[0].id;
+    )).rows[0].id;
 
-    const course2 = await pool.query(
+    const c2Id = (await pool.query(
         `INSERT INTO course (course_name, description, teacher_id, price, category, image_url)
          VALUES ('Node.js: APIs Profesionales con Express', 'Construye APIs RESTful profesionales con Node.js, Express, TypeScript y PostgreSQL. Aprende autenticación JWT, rate limiting, testing y buenas prácticas de seguridad.', $1, 39.99, 'Backend', 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400')
          RETURNING id`,
         [teacher1Id]
-    );
-    const c2Id = course2.rows[0].id;
+    )).rows[0].id;
 
-    const course3 = await pool.query(
+    const c3Id = (await pool.query(
         `INSERT INTO course (course_name, description, teacher_id, price, category, image_url)
          VALUES ('Python para Data Science', 'Domina Python enfocado en análisis de datos con pandas, numpy, matplotlib y scikit-learn. Proyectos prácticos con datasets reales.', $1, 59.99, 'Data Science', 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=400')
          RETURNING id`,
         [teacher2Id]
-    );
-    const c3Id = course3.rows[0].id;
+    )).rows[0].id;
 
-    const course4 = await pool.query(
+    const c4Id = (await pool.query(
         `INSERT INTO course (course_name, description, teacher_id, price, category, image_url)
          VALUES ('Machine Learning Fundamentos', 'Introducción al Machine Learning con Python. Cubre regresión, clasificación, clustering, redes neuronales básicas y despliegue de modelos.', $1, 69.99, 'AI / ML', 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400')
          RETURNING id`,
         [teacher2Id]
-    );
-    const c4Id = course4.rows[0].id;
+    )).rows[0].id;
 
     console.log("✅ 4 cursos creados con categorías");
 
     // ─── Módulos y Lecciones ───
-    // Curso 1: JavaScript
-    const m1 = await pool.query(
-        "INSERT INTO module (module_name, module_index, course_id) VALUES ('Fundamentos de JavaScript', 1, $1) RETURNING id",
-        [c1Id]
-    );
-    const m1Id = m1.rows[0].id;
-    const l1 = await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Introducción a JavaScript", m1Id, "video", "https://www.youtube.com/watch?v=example1", 1]
-    );
-    const l1Id = l1.rows[0].id;
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, content, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Variables y Tipos de Datos", m1Id, "text", "En esta lección aprenderás sobre variables (let, const, var), tipos de datos primitivos y cómo usar typeof.", 2]
-    );
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Estructuras de Control", m1Id, "video", "https://www.youtube.com/watch?v=example2", 3]
-    );
+    const moduleIds: Record<string, number> = {};
+    const lessonIds: Record<string, number> = {};
 
-    const m2 = await pool.query(
-        "INSERT INTO module (module_name, module_index, course_id) VALUES ('Funciones y Scope', 2, $1) RETURNING id",
-        [c1Id]
-    );
-    const m2Id = m2.rows[0].id;
-    const l4 = await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Funciones: declaración vs expresión", m2Id, "video", "https://www.youtube.com/watch?v=example3", 1]
-    );
-    const l4Id = l4.rows[0].id;
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, content, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Closures y el Lexical Scope", m2Id, "text", "Los closures son una de las características más poderosas de JavaScript. Un closure ocurre cuando una función interna tiene acceso a variables de su función externa incluso después de que la externa haya terminado de ejecutarse.", 2]
-    );
+    // Curso 1: JavaScript (7 lecciones)
+    const m1 = (await pool.query("INSERT INTO module (module_name, module_index, course_id) VALUES ('Fundamentos de JavaScript', 1, $1) RETURNING id", [c1Id])).rows[0].id;
+    const m2 = (await pool.query("INSERT INTO module (module_name, module_index, course_id) VALUES ('Funciones y Scope', 2, $1) RETURNING id", [c1Id])).rows[0].id;
+    const m3 = (await pool.query("INSERT INTO module (module_name, module_index, course_id) VALUES ('Asincronía en JavaScript', 3, $1) RETURNING id", [c1Id])).rows[0].id;
 
-    const m3 = await pool.query(
-        "INSERT INTO module (module_name, module_index, course_id) VALUES ('Asincronía en JavaScript', 3, $1) RETURNING id",
-        [c1Id]
-    );
-    const m3Id = m3.rows[0].id;
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Callbacks y el Event Loop", m3Id, "video", "https://www.youtube.com/watch?v=example4", 1]
-    );
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, content, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Promesas y async/await", m3Id, "text", "Las promesas permiten manejar operaciones asíncronas de forma más elegante. Con async/await el código asíncrono se lee como síncrono.", 2]
-    );
-
+    lessonIds["c1l1"] = (await pool.query(QUERY, ["Introducción a JavaScript", m1, "video", "https://www.youtube.com/watch?v=example1", null, 1])).rows[0].id;
+    lessonIds["c1l2"] = (await pool.query(QUERY, ["Variables y Tipos de Datos", m1, "text", null, "En esta lección aprenderás sobre variables (let, const, var), tipos de datos primitivos y cómo usar typeof.", 2])).rows[0].id;
+    lessonIds["c1l3"] = (await pool.query(QUERY, ["Estructuras de Control", m1, "video", "https://www.youtube.com/watch?v=example2", null, 3])).rows[0].id;
+    lessonIds["c1l4"] = (await pool.query(QUERY, ["Funciones: declaración vs expresión", m2, "video", "https://www.youtube.com/watch?v=example3", null, 1])).rows[0].id;
+    lessonIds["c1l5"] = (await pool.query(QUERY, ["Closures y el Lexical Scope", m2, "text", null, "Los closures son una de las características más poderosas de JavaScript. Un closure ocurre cuando una función interna tiene acceso a variables de su función externa incluso después de que la externa haya terminado de ejecutarse.", 2])).rows[0].id;
+    lessonIds["c1l6"] = (await pool.query(QUERY, ["Callbacks y el Event Loop", m3, "video", "https://www.youtube.com/watch?v=example4", null, 1])).rows[0].id;
+    lessonIds["c1l7"] = (await pool.query(QUERY, ["Promesas y async/await", m3, "text", null, "Las promesas permiten manejar operaciones asíncronas de forma más elegante. Con async/await el código asíncrono se lee como síncrono.", 2])).rows[0].id;
     console.log("✅ Curso 1: 3 módulos, 7 lecciones");
 
-    // Curso 2: Node.js
-    const m4 = await pool.query(
-        "INSERT INTO module (module_name, module_index, course_id) VALUES ('Introducción a Node.js', 1, $1) RETURNING id",
-        [c2Id]
-    );
-    const m4Id = m4.rows[0].id;
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["¿Qué es Node.js y cómo funciona?", m4Id, "video", "https://www.youtube.com/watch?v=example5", 1]
-    );
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, content, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Módulos Nativos: fs, path, http", m4Id, "text", "Node.js viene con módulos nativos poderosos. El módulo 'fs' permite interactuar con el sistema de archivos, 'path' maneja rutas y 'http' crea servidores web.", 2]
-    );
+    // Curso 2: Node.js (6 lecciones)
+    const m4 = (await pool.query("INSERT INTO module (module_name, module_index, course_id) VALUES ('Introducción a Node.js', 1, $1) RETURNING id", [c2Id])).rows[0].id;
+    const m5 = (await pool.query("INSERT INTO module (module_name, module_index, course_id) VALUES ('Express y APIs REST', 2, $1) RETURNING id", [c2Id])).rows[0].id;
+    const m6 = (await pool.query("INSERT INTO module (module_name, module_index, course_id) VALUES ('Bases de Datos y Autenticación', 3, $1) RETURNING id", [c2Id])).rows[0].id;
 
-    const m5 = await pool.query(
-        "INSERT INTO module (module_name, module_index, course_id) VALUES ('Express y APIs REST', 2, $1) RETURNING id",
-        [c2Id]
-    );
-    const m5Id = m5.rows[0].id;
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Primer servidor con Express", m5Id, "video", "https://www.youtube.com/watch?v=example6", 1]
-    );
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, content, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Middlewares y Routing", m5Id, "text", "Los middlewares son funciones que se ejecutan durante el ciclo de petición/respuesta. Express los usa para parsear bodies, manejar CORS, autenticar, etc.", 2]
-    );
-
-    const m6 = await pool.query(
-        "INSERT INTO module (module_name, module_index, course_id) VALUES ('Bases de Datos y Autenticación', 3, $1) RETURNING id",
-        [c2Id]
-    );
-    const m6Id = m6.rows[0].id;
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Conexión a PostgreSQL con pg", m6Id, "video", "https://www.youtube.com/watch?v=example7", 1]
-    );
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, content, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["JWT: Access y Refresh Tokens", m6Id, "text", "JSON Web Tokens permiten autenticación stateless. El access token (corta duración) se envía en cada petición, el refresh token (larga duración) permite renovarlo sin pedir credenciales.", 2]
-    );
-
+    lessonIds["c2l1"] = (await pool.query(QUERY, ["¿Qué es Node.js y cómo funciona?", m4, "video", "https://www.youtube.com/watch?v=example5", null, 1])).rows[0].id;
+    lessonIds["c2l2"] = (await pool.query(QUERY, ["Módulos Nativos: fs, path, http", m4, "text", null, "Node.js viene con módulos nativos poderosos. El módulo 'fs' permite interactuar con el sistema de archivos, 'path' maneja rutas y 'http' crea servidores web.", 2])).rows[0].id;
+    lessonIds["c2l3"] = (await pool.query(QUERY, ["Primer servidor con Express", m5, "video", "https://www.youtube.com/watch?v=example6", null, 1])).rows[0].id;
+    lessonIds["c2l4"] = (await pool.query(QUERY, ["Middlewares y Routing", m5, "text", null, "Los middlewares son funciones que se ejecutan durante el ciclo de petición/respuesta. Express los usa para parsear bodies, manejar CORS, autenticar, etc.", 2])).rows[0].id;
+    lessonIds["c2l5"] = (await pool.query(QUERY, ["Conexión a PostgreSQL con pg", m6, "video", "https://www.youtube.com/watch?v=example7", null, 1])).rows[0].id;
+    lessonIds["c2l6"] = (await pool.query(QUERY, ["JWT: Access y Refresh Tokens", m6, "text", null, "JSON Web Tokens permiten autenticación stateless. El access token (corta duración) se envía en cada petición, el refresh token (larga duración) permite renovarlo sin pedir credenciales.", 2])).rows[0].id;
     console.log("✅ Curso 2: 3 módulos, 6 lecciones");
 
-    // Curso 3: Python Data Science
-    const m7 = await pool.query(
-        "INSERT INTO module (module_name, module_index, course_id) VALUES ('Python Esencial para Data Science', 1, $1) RETURNING id",
-        [c3Id]
-    );
-    const m7Id = m7.rows[0].id;
-    const l11 = await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Fundamentos de Python para Data Science", m7Id, "video", "https://www.youtube.com/watch?v=example8", 1]
-    );
-    const l11Id = l11.rows[0].id;
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, content, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Listas, Diccionarios y Comprensiones", m7Id, "text", "Las listas por comprensión son una característica elegante de Python. Permiten crear nuevas listas aplicando una expresión a cada elemento de una secuencia existente.", 2]
-    );
+    // Curso 3: Python Data Science (4 lecciones)
+    const m7 = (await pool.query("INSERT INTO module (module_name, module_index, course_id) VALUES ('Python Esencial para Data Science', 1, $1) RETURNING id", [c3Id])).rows[0].id;
+    const m8 = (await pool.query("INSERT INTO module (module_name, module_index, course_id) VALUES ('Pandas y Manipulación de Datos', 2, $1) RETURNING id", [c3Id])).rows[0].id;
 
-    const m8 = await pool.query(
-        "INSERT INTO module (module_name, module_index, course_id) VALUES ('Pandas y Manipulación de Datos', 2, $1) RETURNING id",
-        [c3Id]
-    );
-    const m8Id = m8.rows[0].id;
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Introducción a Pandas: DataFrames", m8Id, "video", "https://www.youtube.com/watch?v=example9", 1]
-    );
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, content, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Limpieza y Transformación de Datos", m8Id, "text", "La limpieza de datos es el paso más importante. Pandas ofrece métodos como dropna(), fillna(), apply() y merge() para preparar datasets.", 2]
-    );
-
+    lessonIds["c3l1"] = (await pool.query(QUERY, ["Fundamentos de Python para Data Science", m7, "video", "https://www.youtube.com/watch?v=example8", null, 1])).rows[0].id;
+    lessonIds["c3l2"] = (await pool.query(QUERY, ["Listas, Diccionarios y Comprensiones", m7, "text", null, "Las listas por comprensión son una característica elegante de Python. Permiten crear nuevas listas aplicando una expresión a cada elemento de una secuencia existente.", 2])).rows[0].id;
+    lessonIds["c3l3"] = (await pool.query(QUERY, ["Introducción a Pandas: DataFrames", m8, "video", "https://www.youtube.com/watch?v=example9", null, 1])).rows[0].id;
+    lessonIds["c3l4"] = (await pool.query(QUERY, ["Limpieza y Transformación de Datos", m8, "text", null, "La limpieza de datos es el paso más importante. Pandas ofrece métodos como dropna(), fillna(), apply() y merge() para preparar datasets.", 2])).rows[0].id;
     console.log("✅ Curso 3: 2 módulos, 4 lecciones");
 
-    // Curso 4: Machine Learning
-    const m9 = await pool.query(
-        "INSERT INTO module (module_name, module_index, course_id) VALUES ('Fundamentos de ML', 1, $1) RETURNING id",
-        [c4Id]
-    );
-    const m9Id = m9.rows[0].id;
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["¿Qué es Machine Learning?", m9Id, "video", "https://www.youtube.com/watch?v=example10", 1]
-    );
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, content, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Tipos de Aprendizaje: Supervisado y No Supervisado", m9Id, "text", "El aprendizaje supervisado usa datos etiquetados para predecir resultados. El no supervisado encuentra patrones ocultos en datos sin etiquetar.", 2]
-    );
+    // Curso 4: Machine Learning (4 lecciones)
+    const m9 = (await pool.query("INSERT INTO module (module_name, module_index, course_id) VALUES ('Fundamentos de ML', 1, $1) RETURNING id", [c4Id])).rows[0].id;
+    const m10 = (await pool.query("INSERT INTO module (module_name, module_index, course_id) VALUES ('Regresión y Clasificación', 2, $1) RETURNING id", [c4Id])).rows[0].id;
 
-    const m10 = await pool.query(
-        "INSERT INTO module (module_name, module_index, course_id) VALUES ('Regresión y Clasificación', 2, $1) RETURNING id",
-        [c4Id]
-    );
-    const m10Id = m10.rows[0].id;
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, video_url, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Regresión Lineal con scikit-learn", m10Id, "video", "https://www.youtube.com/watch?v=example11", 1]
-    );
-    await pool.query(
-        "INSERT INTO lesson (lesson_name, module_id, content_type, content, lesson_index) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        ["Clasificación con K-Nearest Neighbors", m10Id, "text", "KNN es uno de los algoritmos más simples: clasifica un punto basándose en la mayoría de votos de sus k vecinos más cercanos en el espacio de características.", 2]
-    );
-
+    lessonIds["c4l1"] = (await pool.query(QUERY, ["¿Qué es Machine Learning?", m9, "video", "https://www.youtube.com/watch?v=example10", null, 1])).rows[0].id;
+    lessonIds["c4l2"] = (await pool.query(QUERY, ["Tipos de Aprendizaje: Supervisado y No Supervisado", m9, "text", null, "El aprendizaje supervisado usa datos etiquetados para predecir resultados. El no supervisado encuentra patrones ocultos en datos sin etiquetar.", 2])).rows[0].id;
+    lessonIds["c4l3"] = (await pool.query(QUERY, ["Regresión Lineal con scikit-learn", m10, "video", "https://www.youtube.com/watch?v=example11", null, 1])).rows[0].id;
+    lessonIds["c4l4"] = (await pool.query(QUERY, ["Clasificación con K-Nearest Neighbors", m10, "text", null, "KNN es uno de los algoritmos más simples: clasifica un punto basándose en la mayoría de votos de sus k vecinos más cercanos en el espacio de características.", 2])).rows[0].id;
     console.log("✅ Curso 4: 2 módulos, 4 lecciones\n");
 
     // ─── Enrollments ───
@@ -288,6 +172,43 @@ async function seed() {
         );
     }
     console.log("✅ 6 enrollments creados");
+
+    // ─── Lesson Progress ───
+    const progress = [
+        // Carlos en JS (4/7 = 57%)
+        { studentId: student1Id, lessonKey: "c1l1" },
+        { studentId: student1Id, lessonKey: "c1l2" },
+        { studentId: student1Id, lessonKey: "c1l3" },
+        { studentId: student1Id, lessonKey: "c1l4" },
+        // Carlos en Python (2/4 = 50%)
+        { studentId: student1Id, lessonKey: "c3l1" },
+        { studentId: student1Id, lessonKey: "c3l2" },
+        // Carlos en ML (4/4 = 100% → curso completado)
+        { studentId: student1Id, lessonKey: "c4l1" },
+        { studentId: student1Id, lessonKey: "c4l2" },
+        { studentId: student1Id, lessonKey: "c4l3" },
+        { studentId: student1Id, lessonKey: "c4l4" },
+        // Ana en JS (3/7 = 43%)
+        { studentId: student2Id, lessonKey: "c1l1" },
+        { studentId: student2Id, lessonKey: "c1l2" },
+        { studentId: student2Id, lessonKey: "c1l3" },
+        // Ana en Node (4/6 = 67%)
+        { studentId: student2Id, lessonKey: "c2l1" },
+        { studentId: student2Id, lessonKey: "c2l2" },
+        { studentId: student2Id, lessonKey: "c2l3" },
+        { studentId: student2Id, lessonKey: "c2l4" },
+        // Ana en Python (3/4 = 75%)
+        { studentId: student2Id, lessonKey: "c3l1" },
+        { studentId: student2Id, lessonKey: "c3l2" },
+        { studentId: student2Id, lessonKey: "c3l3" },
+    ];
+    for (const p of progress) {
+        await pool.query(
+            "INSERT INTO lesson_progress (student_id, lesson_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+            [p.studentId, lessonIds[p.lessonKey]]
+        );
+    }
+    console.log("✅ 20 lesson_progress creados");
 
     // ─── Ratings ───
     const ratings = [
@@ -310,21 +231,47 @@ async function seed() {
     }
     console.log("✅ 8 ratings creados");
 
+    // ─── Resources ───
+    const resources = [
+        // Curso 1
+        { lessonKey: "c1l1", name: "Guía rápida de JavaScript", url: "https://github.com/alexdev/js-cheatsheet.pdf", type: "pdf" },
+        { lessonKey: "c1l2", name: "Ejercicios de variables y tipos", url: "https://github.com/alexdev/variables-exercises.zip", type: "file" },
+        { lessonKey: "c1l4", name: "Slides - Funciones y Scope", url: "https://github.com/alexdev/functions-slides.pdf", type: "pdf" },
+        { lessonKey: "c1l7", name: "Documentación oficial de Promesas", url: "https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Using_promises", type: "link" },
+        // Curso 2
+        { lessonKey: "c2l1", name: "Repositorio del proyecto Node.js", url: "https://github.com/alexdev/node-api-course", type: "link" },
+        { lessonKey: "c2l5", name: "Script SQL de la base de datos", url: "https://github.com/alexdev/node-api-course/schema.sql", type: "file" },
+        { lessonKey: "c2l6", name: "Cheatsheet de JWT", url: "https://github.com/alexdev/jwt-cheatsheet.pdf", type: "pdf" },
+        // Curso 3
+        { lessonKey: "c3l1", name: "Notebook de introducción a Python", url: "https://github.com/mariadata/python-ds/notebooks/01-intro.ipynb", type: "file" },
+        { lessonKey: "c3l3", name: "Dataset de práctica - Ventas", url: "https://github.com/mariadata/python-ds/datasets/ventas.csv", type: "file" },
+        // Curso 4
+        { lessonKey: "c4l3", name: "Dataset de regresión lineal", url: "https://github.com/mariadata/ml-course/datasets/housing.csv", type: "file" },
+        { lessonKey: "c4l4", name: "Código de ejemplo - KNN", url: "https://github.com/mariadata/ml-course/knn.py", type: "file" },
+    ];
+    for (const r of resources) {
+        await pool.query(
+            "INSERT INTO resource (lesson_id, resource_name, resource_url, resource_type) VALUES ($1, $2, $3, $4)",
+            [lessonIds[r.lessonKey], r.name, r.url, r.type]
+        );
+    }
+    console.log("✅ 11 resources creados");
+
     // ─── Comments ───
     const comments = [
         // Carlos
-        { content: "Muy clara la explicación, gracias profe!", userId: student1Id, lessonId: l1Id },
-        { content: "¿Podrían recomendar recursos adicionales para practicar estos conceptos?", userId: student1Id, lessonId: l4Id },
-        { content: "Excelente introducción, justo lo que necesitaba", userId: student1Id, lessonId: l11Id },
-        { content: "Muy buen material, los ejemplos son muy claros", userId: student1Id, lessonId: l11Id },
+        { content: "Muy clara la explicación, gracias profe!", userId: student1Id, lessonKey: "c1l1" },
+        { content: "¿Podrían recomendar recursos adicionales para practicar estos conceptos?", userId: student1Id, lessonKey: "c1l4" },
+        { content: "Excelente introducción, justo lo que necesitaba", userId: student1Id, lessonKey: "c3l1" },
+        { content: "Muy buen material, los ejemplos son muy claros", userId: student1Id, lessonKey: "c4l1" },
         // Ana
-        { content: "Me gustó mucho la sección de closures, muy bien explicada", userId: student2Id, lessonId: l4Id },
-        { content: "¿Hay algún repo con los ejemplos del curso?", userId: student2Id, lessonId: l1Id },
+        { content: "Me gustó mucho la sección de closures, muy bien explicada", userId: student2Id, lessonKey: "c1l5" },
+        { content: "¿Hay algún repo con los ejemplos del curso?", userId: student2Id, lessonKey: "c1l1" },
     ];
     for (const c of comments) {
         await pool.query(
-            "INSERT INTO comments (content, user_id, lesson_id) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING",
-            [c.content, c.userId, c.lessonId]
+            "INSERT INTO comments (content, user_id, lesson_id) VALUES ($1, $2, $3)",
+            [c.content, c.userId, lessonIds[c.lessonKey]]
         );
     }
     console.log("✅ 6 comments creados\n");

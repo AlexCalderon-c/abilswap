@@ -1,15 +1,21 @@
 import type { Enrollment } from '../../types'
 import EnrolledCourseCard from '../../components/dashboard/EnrolledCourseCard/EnrolledCourseCard'
-
-const mockEnrollments: Enrollment[] = [
-  { id: 1, enrollment_date: '2024-09-01', enrollment_status: 'active', student_id: '1', course_id: 1, course: { id: 1, course_name: 'Desarrollo Web Fullstack Completo', description: '', price: 49.99, teacher_name: 'Carlos Mendoza', category: 'Fullstack', created_at: '', teacher_id: '' } },
-  { id: 2, enrollment_date: '2024-08-15', enrollment_status: 'completed', student_id: '1', course_id: 2, course: { id: 2, course_name: 'React & TypeScript Avanzado', description: '', price: 39.99, teacher_name: 'Ana García', category: 'Frontend', created_at: '', teacher_id: '' } },
-  { id: 3, enrollment_date: '2024-10-10', enrollment_status: 'active', student_id: '1', course_id: 3, course: { id: 3, course_name: 'Node.js & APIs Escalables', description: '', price: 44.99, teacher_name: 'Miguel Torres', category: 'Backend', created_at: '', teacher_id: '' } },
-]
+import { useLoaderData } from 'react-router-dom'
+import { useState } from 'react'
 
 export default function DashboardPage() {
-  const active = mockEnrollments.filter((e) => e.enrollment_status === 'active')
-  const completed = mockEnrollments.filter((e) => e.enrollment_status === 'completed')
+  
+  const dashboard = useLoaderData()
+  const [enrollment, setEnrollment] = useState(dashboard)
+  console.log(enrollment)
+
+  const active = enrollment.filter((e: Enrollment) => e.enrollment_status === 'active')
+  const completed = enrollment.filter((e: Enrollment) => e.enrollment_status === 'completed')
+
+  const [activeEnrollment, setActiveEnrollment] = useState(active)
+  const [completeEnrollment, setCompleteEnrollment] = useState(completed)
+
+  
 
   return (
     <div className='min-h-screen bg-surface-secondary'>
@@ -22,29 +28,29 @@ export default function DashboardPage() {
           <a href='/courses' className='hidden sm:inline-flex px-5 py-2.5 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all'>Explorar cursos</a>
         </div>
 
-        {active.length > 0 && (
+        {activeEnrollment.length > 0 && (
           <section className='mb-12'>
             <h2 className='text-lg font-semibold text-text-primary mb-5 flex items-center gap-2'>
               <span className='w-2 h-2 rounded-full bg-emerald-500' /> En progreso
             </h2>
             <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-              {active.map((e) => <EnrolledCourseCard key={e.id} enrollment={e} />)}
+              {activeEnrollment.map((e: Enrollment) => <EnrolledCourseCard key={e.enrollment_id} enrollment={e} />)}
             </div>
           </section>
         )}
 
-        {completed.length > 0 && (
+        {completeEnrollment.length > 0 && (
           <section className='mb-12'>
             <h2 className='text-lg font-semibold text-text-primary mb-5 flex items-center gap-2'>
               <span className='w-2 h-2 rounded-full bg-blue-500' /> Completados
             </h2>
             <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-              {completed.map((e) => <EnrolledCourseCard key={e.id} enrollment={e} />)}
+              {completeEnrollment.map((e: Enrollment) => <EnrolledCourseCard key={e.enrollment_id} enrollment={e} />)}
             </div>
           </section>
         )}
 
-        {active.length === 0 && completed.length === 0 && (
+        {activeEnrollment.length === 0 && completeEnrollment === 0 && (
           <div className='text-center py-20'>
             <p className='text-lg font-medium text-text-primary'>No tienes cursos inscritos</p>
             <a href='/courses' className='mt-4 inline-flex px-5 py-2.5 text-sm font-semibold text-white bg-primary-600 rounded-xl'>Explorar cursos</a>

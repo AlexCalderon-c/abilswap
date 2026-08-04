@@ -11,6 +11,12 @@ import {CourseProvider} from './context/CourseContext'
 import { apiClient } from './api/axios'
 import type { LoaderFunctionArgs } from 'react-router-dom'
 
+const dashboardLoader = async () => {
+  const dashboard = await apiClient.get('http://localhost:3001/api/enrollment/dashboard')
+  console.log(dashboard)
+  return dashboard.data
+}
+
 const courseLoader = async () => {
     const [courses, categories] = await Promise.all([apiClient.get('http://localhost:3001/api/course').then(res => res.data), apiClient.get('http://localhost:3001/api/course/category').then(res => res.data)])
     console.log(courses)
@@ -45,7 +51,7 @@ const router = createBrowserRouter(createRoutesFromElements(
         <Route path='/courses/:course_id' element={<CourseDetailPage />} loader={detailedCourseLoader}/>
         <Route path='/login' element={<LoginPage />}  />
         <Route path='/register' element={<RegisterPage />} />
-        <Route path='/dashboard' element={<DashboardPage />} />
+        <Route path='/dashboard' element={<DashboardPage />} loader={dashboardLoader}/>
       </Route>
     </>
 ))
