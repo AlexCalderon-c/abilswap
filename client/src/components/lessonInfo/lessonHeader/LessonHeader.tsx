@@ -1,10 +1,11 @@
-import { useState } from 'react'
-import { Link, useLoaderData, useRouteLoaderData } from 'react-router-dom'
-import NavHeader from '../navHeader/NavHeader'
-import UserHeader from '../userHeader/UserHeader'
+import React, {useState} from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
+import NavHeader from '../../layout/navHeader/NavHeader'
+import UserHeader from '../../layout/userHeader/UserHeader'
 
-export default function Header() {
+
+function LessonHeader() {
   const {isAuthenticatedState} = useAuth()  
   const [scrolled, setScrolled] = useState(false)
 
@@ -39,3 +40,5 @@ export default function Header() {
     </header>
   )
 }
+
+export default LessonHeader

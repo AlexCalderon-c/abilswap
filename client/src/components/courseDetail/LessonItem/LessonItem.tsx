@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { Lesson } from '../../../types'
 
 interface Props {
@@ -30,8 +31,8 @@ const contentTypeIcons: Record<string, React.ReactNode> = {
 
 export default function LessonItem({ lesson }: Props) {
   return (
-    <a
-      href='#'
+    <Link
+      to={`/lesson/${lesson.lesson_name}/${lesson.id}`}
       className='flex items-center justify-between px-5 py-3.5 hover:bg-surface-secondary transition-colors group'
     >
       <div className='flex items-center gap-3'>
@@ -48,6 +49,6 @@ export default function LessonItem({ lesson }: Props) {
       <span className='text-xs font-medium text-text-muted group-hover:text-primary-500 transition-colors'>
         {lesson.content_type === 'video' ? '15 min' : '10 min'}
       </span>
-    </a>
+    </Link>
   )
 }

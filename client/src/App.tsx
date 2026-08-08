@@ -6,10 +6,17 @@ import CourseDetailPage from './pages/CourseDetailPage/CourseDetailPage'
 import LoginPage from './pages/LoginPage/LoginPage'
 import RegisterPage from './pages/RegisterPage/RegisterPage'
 import DashboardPage from './pages/DashboardPage/DashboardPage'
+import CreateCoursePage from './pages/CreateCoursePage/CreateCoursePage'
+import InfoLessonPage from './pages/InfoLessonPage/InfoLessonPage'
 import { AuthProvider } from './context/AuthContext'
 import {CourseProvider} from './context/CourseContext'
 import { apiClient } from './api/axios'
 import type { LoaderFunctionArgs } from 'react-router-dom'
+
+const lessonLoader = async ({params}: LoaderFunctionArgs) => {
+  const lesson = await apiClient.get(`http://localhost:3001/api/lesson/${params.lesson_id}`)
+  return lesson.data
+}
 
 const dashboardLoader = async () => {
   const dashboard = await apiClient.get('http://localhost:3001/api/enrollment/dashboard')
@@ -45,13 +52,17 @@ const authLoader = async () => {
 
 const router = createBrowserRouter(createRoutesFromElements(
     <>
-      <Route element={<Layout />} loader={authLoader} id='auth'>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/courses' element={<CoursesPage />} loader={courseLoader}/>
-        <Route path='/courses/:course_id' element={<CourseDetailPage />} loader={detailedCourseLoader}/>
-        <Route path='/login' element={<LoginPage />}  />
-        <Route path='/register' element={<RegisterPage />} />
-        <Route path='/dashboard' element={<DashboardPage />} loader={dashboardLoader}/>
+      <Route loader={authLoader} id='auth'>
+        <Route element={<Layout />}>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/courses' element={<CoursesPage />} loader={courseLoader}/>
+          <Route path='/courses/:course_id' element={<CourseDetailPage />} loader={detailedCourseLoader}/>
+          <Route path='/login' element={<LoginPage />}  />
+          <Route path='/register' element={<RegisterPage />} />
+          <Route path='/dashboard/' element={<DashboardPage />} loader={dashboardLoader}/>
+          <Route path='/newcourse/' element={<CreateCoursePage />}/>          
+        </Route>
+        <Route path='/lesson/:lesson_name/:lesson_id' element={<InfoLessonPage />} loader={lessonLoader}/>          
       </Route>
     </>
 ))

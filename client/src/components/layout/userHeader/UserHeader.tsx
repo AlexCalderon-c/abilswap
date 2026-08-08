@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
 import UserSidebar from '../userSidebar/UserSidebar'
 
@@ -35,7 +35,7 @@ function UserHeader() {
                 </svg>
             </button>
         </div>
-        {menuOpen && (<UserSidebar handleSubmit={handleSubmit}/>)}
+        {menuOpen && (<UserSidebar handleSubmit={handleSubmit} user={userState} onNavigate={() => setMenuOpen(false)} />)}
     </>   
     
   )
