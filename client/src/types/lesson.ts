@@ -5,4 +5,6 @@ export interface Lesson {
   content_type: 'video' | 'text' | 'quiz' | 'pdf'
   video_url?: string
   lesson_index: number
+  content?: string | null
+  duration?: string
 }

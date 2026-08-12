@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
+import {Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
 import Layout from './components/layout/Layout/Layout'
 import HomePage from './pages/HomePage/HomePage'
 import CoursesPage from './pages/CoursesPage/CoursesPage'
@@ -8,10 +8,10 @@ import RegisterPage from './pages/RegisterPage/RegisterPage'
 import DashboardPage from './pages/DashboardPage/DashboardPage'
 import CreateCoursePage from './pages/CreateCoursePage/CreateCoursePage'
 import InfoLessonPage from './pages/InfoLessonPage/InfoLessonPage'
-import { AuthProvider } from './context/AuthContext'
 import {CourseProvider} from './context/CourseContext'
 import { apiClient } from './api/axios'
 import type { LoaderFunctionArgs } from 'react-router-dom'
+import LessonLayout from './components/lessonInfo/lessonLayout/LessonLayout'
 
 const lessonLoader = async ({params}: LoaderFunctionArgs) => {
   const lesson = await apiClient.get(`http://localhost:3001/api/lesson/${params.lesson_id}`)
@@ -62,7 +62,9 @@ const router = createBrowserRouter(createRoutesFromElements(
           <Route path='/dashboard/' element={<DashboardPage />} loader={dashboardLoader}/>
           <Route path='/newcourse/' element={<CreateCoursePage />}/>          
         </Route>
-        <Route path='/lesson/:lesson_name/:lesson_id' element={<InfoLessonPage />} loader={lessonLoader}/>          
+        <Route element={<LessonLayout/>}>
+          <Route path='/lesson/:lesson_name/:lesson_id' element={<InfoLessonPage />} loader={lessonLoader}/> 
+        </Route>
       </Route>
     </>
 ))
