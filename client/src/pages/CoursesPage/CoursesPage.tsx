@@ -13,10 +13,8 @@ export default function CoursesPage() {
   const [filteredCourses, setFilteredCourses] = useState(courseLoaded.courses)
 
   const searchHandler = (value: string, category: string) => {
-    console.log(category)
-    console.log(value)
     const newValue = courseLoaded.courses.filter((obj: Course) => obj.course_name.toLowerCase().includes(value.toLowerCase()) &&
-    category === 'Todas' ? true : obj.category === category)
+    (category === 'Todas' || obj.category === category))
     setFilteredCourses(newValue)
   }
 

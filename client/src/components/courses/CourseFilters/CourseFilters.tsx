@@ -29,7 +29,7 @@ export default function CourseFilters({ onSearch, onSortChange }: Props) {
       
       onSearch(value, newCategory)
     }else{
-      onSearch(value, 'Todas')
+      onSearch(value, activeCategory)
     }
     
   }
