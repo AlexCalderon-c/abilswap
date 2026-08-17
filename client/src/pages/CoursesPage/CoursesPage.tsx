@@ -12,13 +12,15 @@ export default function CoursesPage() {
   const {isAuthenticatedState} = useAuth()
   const [filteredCourses, setFilteredCourses] = useState(courseLoaded.courses)
 
-  const searchHandler = (value: string) => {
-    const newValue = courseLoaded.courses.filter((obj: Course) => obj.course_name.toLowerCase().includes(value.toLowerCase()))
+  const searchHandler = (value: string, category: string) => {
+    console.log(category)
+    console.log(value)
+    const newValue = courseLoaded.courses.filter((obj: Course) => obj.course_name.toLowerCase().includes(value.toLowerCase()) &&
+    category === 'Todas' ? true : obj.category === category)
     setFilteredCourses(newValue)
   }
 
   const categoryHandler = (category: string) => {
-
     const newValue = courseLoaded.courses.filter((obj: Course) => category === 'Todas' ? true : obj.category === category)
     setFilteredCourses(newValue)
   }
@@ -38,7 +40,7 @@ export default function CoursesPage() {
 
         <div className='grid lg:grid-cols-4 gap-8'>
           <aside className='lg:col-span-1'>
-            <CourseFilters onSearch={searchHandler} onCategoryChange={categoryHandler} onSortChange={sortHandler} />
+            <CourseFilters onSearch={searchHandler} onSortChange={sortHandler} />
           </aside>
           <div className='lg:col-span-3'>
             <CourseGrid courses={filteredCourses} />

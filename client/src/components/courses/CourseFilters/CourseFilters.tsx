@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useLoaderData } from 'react-router-dom'
 
-const categories = ['Todas', 'Fullstack', 'Frontend', 'Backend', 'DevOps', 'Mobile']
 const sortOptions = [
   { value: 'popular', label: 'Más populares' },
   { value: 'newest', label: 'Más recientes' },
@@ -11,15 +10,29 @@ const sortOptions = [
 ]
 
 interface Props {
-  onSearch: (value: string) => void
-  onCategoryChange: (category: string) => void
+  onSearch: (value: string, category: string) => void
   onSortChange: (sort: string) => void
 }
 
-export default function CourseFilters({ onSearch, onCategoryChange, onSortChange }: Props) {
+export default function CourseFilters({ onSearch, onSortChange }: Props) {
   const loadedData = useLoaderData()
   const [activeCategory, setActiveCategory] = useState('Todas')
-  const [categories, setCategories] = useState(loadedData.category)
+  const [categoryInput, setCategoryInput] = useState('')
+
+  const handleCategoryChange = (value: string, category?: string) => {
+    setCategoryInput(value)
+    
+    if(category){
+      
+      const newCategory = activeCategory === category ? 'Todas' : category
+      setActiveCategory(newCategory)
+      
+      onSearch(value, newCategory)
+    }else{
+      onSearch(value, 'Todas')
+    }
+    
+  }
 
   return (
     <div className='space-y-6'>
@@ -35,8 +48,9 @@ export default function CourseFilters({ onSearch, onCategoryChange, onSortChange
         <input
           type='text'
           placeholder='Buscar cursos...'
-          onChange={(e) => onSearch(e.target.value)}
+          onChange={(e) => handleCategoryChange(e.target.value)}
           className='w-full pl-10 pr-4 py-3 bg-white border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all'
+          value={categoryInput}
         />
       </div>
 
@@ -45,8 +59,7 @@ export default function CourseFilters({ onSearch, onCategoryChange, onSortChange
           <button
             key={index}
             onClick={() => {
-              setActiveCategory(obj.category)
-              onCategoryChange(obj.category)
+              handleCategoryChange(categoryInput, obj.category)
             }}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
               activeCategory === obj.category

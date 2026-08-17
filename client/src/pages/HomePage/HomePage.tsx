@@ -1,5 +1,4 @@
 import Hero from '../../components/home/Hero/Hero'
-import FeaturedCourses from '../../components/home/FeaturedCourses/FeaturedCourses'
 import Stats from '../../components/home/Stats/Stats'
 
 export default function HomePage() {
@@ -7,7 +6,6 @@ export default function HomePage() {
     <>
       <Hero />
       <Stats />
-      <FeaturedCourses />
       <section className='py-20 md:py-28 bg-white'>
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
           <h2 className='text-3xl md:text-4xl font-bold text-text-primary mb-4'>

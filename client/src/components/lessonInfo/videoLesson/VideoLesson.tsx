@@ -36,7 +36,7 @@ function VideoLesson({ lesson }: Props) {
     : [{ src: source as string, type: getVideoType(source as string) }]
 
   return (
-    <section className='h-full w-full overflow-y-auto flex flex-col items-center justify-center gap-8 px-6 py-10'>
+    <section className='h-full overflow-y-auto flex flex-col items-center justify-center gap-8 px-6 py-10'>
       <div className='w-full max-w-4xl animate-slide-up'>
         <div className='flex items-center gap-2 mb-3'>
           <span className='inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-xs font-semibold'>
@@ -57,8 +57,8 @@ function VideoLesson({ lesson }: Props) {
         <p className='text-text-secondary mt-2 max-w-2xl'>{content.tagline}</p>
       </div>
 
-      <div className='w-full max-w-4xl rounded-2xl overflow-hidden shadow-lg ring-1 ring-border bg-surface animate-fade-in'>
-        <video
+      <div className='w-full max-w-4xl rounded-2xl shadow-lg ring-1 ring-border bg-surface animate-fade-in'>
+        {/*<video
           className='w-full aspect-video bg-black'
           controls
           playsInline
@@ -71,16 +71,16 @@ function VideoLesson({ lesson }: Props) {
             <source key={videoSource.src} src={videoSource.src} type={videoSource.type} />
           ))}
           Tu navegador no soporta la reproducción de video.
-        </video>
+        </video>*/}
 
         {usesMock && (
           <div className='px-4 py-2.5 bg-surface-secondary border-t border-border text-xs text-text-muted'>
-            Video de demostración: agrega un video_url directo (mp4/webm) a esta lección para reemplazarlo.
+            Click aquí para inciar el video. {">"}
           </div>
         )}
       </div>
 
-      {/*<div className='w-full max-w-4xl space-y-6 animate-slide-up'>
+      <div className='w-full max-w-4xl space-y-6 animate-slide-up'>
         <div className='rounded-2xl bg-surface-secondary border border-border p-6'>
           <h2 className='font-semibold text-text-primary mb-2'>Acerca de esta lección</h2>
           <p className='text-text-secondary leading-relaxed'>{content.intro}</p>
@@ -104,7 +104,7 @@ function VideoLesson({ lesson }: Props) {
             ))}
           </ul>
         </div>
-      </div>*/}
+      </div>
     </section>
   )
 }
