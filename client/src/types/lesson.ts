@@ -8,3 +8,18 @@ export interface Lesson {
   content?: string | null
   duration?: string
 }
+
+interface SectionInterface{
+  heading: string,
+  paragraph: string[]
+  code?: string,
+  image?: string
+  caption?: string
+}
+
+export interface LessonContent{
+  tagline?: string,
+  intro?: string,
+  sections: SectionInterface[]
+  takeaways: string[]
+}

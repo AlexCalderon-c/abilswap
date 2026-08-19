@@ -26,8 +26,6 @@ const dashboardLoader = async () => {
 
 const courseLoader = async () => {
     const [courses, categories] = await Promise.all([apiClient.get('http://localhost:3001/api/course').then(res => res.data), apiClient.get('http://localhost:3001/api/course/category').then(res => res.data)])
-    console.log(courses)
-    console.log(categories)
     return {courses, categories}
 }
 
