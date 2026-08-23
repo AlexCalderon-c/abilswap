@@ -1,5 +1,4 @@
 import type { Lesson } from '../../../types'
-import { getLessonContent } from '../lessonData/mockContent'
 
 interface Props {
   lesson: Lesson
@@ -27,7 +26,6 @@ function getPlayableSource(url?: string): string | null {
 }
 
 function VideoLesson({ lesson }: Props) {
-  const content = getLessonContent(lesson)
   const source = getPlayableSource(lesson.video_url)
   const usesMock = !source
 
@@ -52,9 +50,9 @@ function VideoLesson({ lesson }: Props) {
         </div>
 
         <h1 className='text-2xl md:text-3xl font-bold text-text-primary leading-tight'>
-          {content.title}
+          {lesson.lesson_name}
         </h1>
-        <p className='text-text-secondary mt-2 max-w-2xl'>{content.tagline}</p>
+        <p className='text-text-secondary mt-2 max-w-2xl'>{lesson.content?.tagline}</p>
       </div>
 
       <div className='w-full max-w-4xl rounded-2xl shadow-lg ring-1 ring-border bg-surface animate-fade-in'>
@@ -83,7 +81,7 @@ function VideoLesson({ lesson }: Props) {
       <div className='w-full max-w-4xl space-y-6 animate-slide-up'>
         <div className='rounded-2xl bg-surface-secondary border border-border p-6'>
           <h2 className='font-semibold text-text-primary mb-2'>Acerca de esta lección</h2>
-          <p className='text-text-secondary leading-relaxed'>{content.intro}</p>
+          <p className='text-text-secondary leading-relaxed'>{lesson.content?.intro}</p>
         </div>
 
         <div className='rounded-2xl bg-primary-50/60 border border-primary-100 p-6'>
@@ -94,7 +92,7 @@ function VideoLesson({ lesson }: Props) {
             Puntos clave
           </h3>
           <ul className='grid sm:grid-cols-2 gap-2.5'>
-            {content.takeaways.map((item) => (
+            {lesson.content?.takeaways.map((item) => (
               <li key={item} className='flex items-start gap-2 text-sm text-primary-900'>
                 <svg className='w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />

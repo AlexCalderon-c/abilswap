@@ -5,7 +5,7 @@ export interface Lesson {
   content_type: 'video' | 'text' | 'quiz' | 'pdf'
   video_url?: string
   lesson_index: number
-  content?: string | null
+  content?: LessonContent
   duration?: string
 }
 
@@ -20,6 +20,6 @@ interface SectionInterface{
 export interface LessonContent{
   tagline?: string,
   intro?: string,
-  sections: SectionInterface[]
+  section: SectionInterface[]
   takeaways: string[]
 }

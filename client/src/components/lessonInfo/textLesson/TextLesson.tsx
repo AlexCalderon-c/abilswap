@@ -1,12 +1,10 @@
 import type { Lesson } from '../../../types'
-import { getLessonContent } from '../lessonData/mockContent'
 
 interface Props {
   lesson: Lesson
 }
 
 function TextLesson({ lesson }: Props) {
-  const content = getLessonContent(lesson)
 
   return (
     <div className='h-full w-full overflow-hidden grid lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)]'>
@@ -23,16 +21,16 @@ function TextLesson({ lesson }: Props) {
           </div>
 
           <h1 className='text-2xl md:text-3xl font-bold text-text-primary leading-tight mb-2'>
-            {content.title}
+            {lesson.lesson_name}
           </h1>
-          <p className='text-primary-600 font-medium mb-6'>{content.tagline}</p>
+          <p className='text-primary-600 font-medium mb-6'>{lesson.content?.tagline}</p>
 
           <p className='text-text-secondary leading-relaxed mb-8 border-l-4 border-primary-200 pl-4'>
-            {content.intro}
+            {lesson.content?.intro}
           </p>
 
           <div className='space-y-8'>
-            {content.sections.map((section, index) => (
+            {lesson.content?.section.map((section, index) => (
               <section key={index}>
                 <h2 className='text-lg font-bold text-text-primary mb-2 flex items-center gap-2.5'>
                   <span className='w-7 h-7 rounded-lg bg-primary-100 text-primary-700 text-xs font-bold flex items-center justify-center flex-shrink-0'>
@@ -41,7 +39,7 @@ function TextLesson({ lesson }: Props) {
                   {section.heading}
                 </h2>
 
-                {section.paragraphs.map((paragraph, i) => (
+                {section.paragraph.map((paragraph, i) => (
                   <p key={i} className='text-text-secondary leading-relaxed mb-3 text-[15px]'>
                     {paragraph}
                   </p>
@@ -79,7 +77,7 @@ function TextLesson({ lesson }: Props) {
                 Puntos clave
               </h3>
               <ul className='space-y-2'>
-                {content.takeaways.map((item) => (
+                {lesson.content?.takeaways.map((item) => (
                   <li key={item} className='flex items-start gap-2 text-sm text-primary-900'>
                     <svg className='w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                       <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
@@ -92,7 +90,7 @@ function TextLesson({ lesson }: Props) {
           </div>
         </div>
       </div>
-
+      {/*        
       <aside className='hidden lg:block h-full overflow-hidden relative'>
         <img
           src={content.sidebar.image}
@@ -118,6 +116,7 @@ function TextLesson({ lesson }: Props) {
           </ul>
         </div>
       </aside>
+      */}
     </div>
   )
 }

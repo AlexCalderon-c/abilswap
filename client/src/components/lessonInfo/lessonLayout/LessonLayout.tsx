@@ -9,9 +9,9 @@ function LessonLayout() {
   return (
     <AuthProvider loadedData={data}>
         <LessonHeader/>
-        <main className='h-lvh w-lvw flex justify-center pt-16 md:pt-20 pb-20 overflow-hidden'>
-          <Outlet />
-        </main>
+          <main className='h-lvh w-lvw flex justify-center pt-16 md:pt-20 pb-20 overflow-hidden'>
+            <Outlet />
+          </main>
         <LessonFooter/>
     </AuthProvider>
   )

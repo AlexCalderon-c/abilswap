@@ -6,7 +6,8 @@ import UserHeader from '../../layout/userHeader/UserHeader'
 
 
 function LessonHeader() {
-  const {isAuthenticatedState} = useAuth()  
+  const {isAuthenticatedState} = useAuth() 
+  console.log('IM IN LESSON TURF!!!: ', isAuthenticatedState) 
   const [scrolled, setScrolled] = useState(false)
 
   const handleScroll = () => setScrolled(window.scrollY > 20)

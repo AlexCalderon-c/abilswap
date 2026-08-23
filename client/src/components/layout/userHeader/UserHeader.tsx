@@ -1,17 +1,18 @@
 import {useState} from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useRevalidator } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
 import UserSidebar from '../userSidebar/UserSidebar'
 
 function UserHeader() {
+    const revalidator = useRevalidator()
     const navigate = useNavigate()
     const [menuOpen, setMenuOpen] = useState(false)
     const {userState, handleLogout} = useAuth()
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-
       await handleLogout()
+      revalidator.revalidate()
       navigate('/login')
     }
     console.log(userState)

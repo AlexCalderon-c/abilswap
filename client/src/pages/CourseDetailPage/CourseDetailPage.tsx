@@ -3,20 +3,6 @@ import CourseInfo from '../../components/courseDetail/CourseInfo/CourseInfo'
 import ModuleAccordion from '../../components/courseDetail/ModuleAccordion/ModuleAccordion'
 import CourseSidebar from '../../components/courseDetail/CourseSidebar/CourseSidebar'
 import { useLoaderData } from 'react-router-dom'
-import { useState } from 'react'
-
-
-const mockCourse: Course = {
-  id: 1,
-  course_name: 'Desarrollo Web Fullstack Completo',
-  description: 'Aprende React, Node.js, TypeScript y PostgreSQL desde cero hasta desplegar aplicaciones completas. Este curso te guiará paso a paso a través de las tecnologías más demandadas en el mercado laboral actual. Construirás proyectos reales mientras aprendes buenas prácticas y arquitectura limpia.',
-  price: 49.99,
-  full_name: 'Carlos Mendoza',
-  category: 'Fullstack',
-  rating_avg: 4.9,
-  student_count: 1240,
-  created_at: '2024-01-15',
-}
 
 export default function CourseDetailPage() {
 

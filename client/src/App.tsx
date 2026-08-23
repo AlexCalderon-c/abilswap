@@ -15,6 +15,7 @@ import LessonLayout from './components/lessonInfo/lessonLayout/LessonLayout'
 
 const lessonLoader = async ({params}: LoaderFunctionArgs) => {
   const lesson = await apiClient.get(`http://localhost:3001/api/lesson/${params.lesson_id}`)
+  console.log(lesson)
   return lesson.data
 }
 
@@ -40,7 +41,7 @@ const detailedCourseLoader = async ({params}: LoaderFunctionArgs) => {
 const authLoader = async () => {
   try{
     const response = await apiClient.get('http://localhost:3001/api/user/me')
-    console.log("loaded auth")
+    console.log("I RAN AGAIN FOR SOME REASON (probably)")
     return {user: response.data, isAuthenticated: true}
   }catch(e){
     console.log('Failed auth check: ', e)

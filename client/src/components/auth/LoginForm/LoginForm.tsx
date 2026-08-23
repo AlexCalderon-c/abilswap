@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useRevalidator } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
 
 
 export default function LoginForm() {
+  const revalidator = useRevalidator()
   const navigate = useNavigate()
   const {handleLoginAxios} = useAuth()
   const [email, setEmail] = useState('')
@@ -14,6 +15,7 @@ export default function LoginForm() {
     await handleLoginAxios(e, email, password)
     console.log("logged in, supossedly")
     navigate('/courses')
+    revalidator.revalidate()
   }
 
   return (
