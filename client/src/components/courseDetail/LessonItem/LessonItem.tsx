@@ -30,9 +30,20 @@ const contentTypeIcons: Record<string, React.ReactNode> = {
 }
 
 export default function LessonItem({ lesson }: Props) {
+
+  const formatLessonTitle = (lesson: string) => {
+    const lessonArr = lesson.split('')
+    const newLesson = lessonArr.filter((letter) => letter !== '?' && letter !== '¿')
+    const result = newLesson.join('')
+    return result
+  }
+
+  const formatedTitle = formatLessonTitle(lesson.lesson_name)
+  console.log(formatedTitle)
+
   return (
     <Link
-      to={`/lesson/${lesson.lesson_name}/${lesson.id}`}
+      to={`/lesson/${formatedTitle}/${lesson.id}`}
       className='flex items-center justify-between px-5 py-3.5 hover:bg-surface-secondary transition-colors group'
     >
       <div className='flex items-center gap-3'>

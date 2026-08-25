@@ -24,8 +24,7 @@ const TextSchema = z.object({
 const VideoSchema = z.object({
     lesson_name: z.string().min(8).max(250),
     content_type: z.literal("video"),
-    video_url: z.url(),
-    content: ContentSchema
+    video_url: z.url()
 })
 
 const PdfSchema = z.object({
