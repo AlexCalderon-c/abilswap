@@ -1,55 +1,61 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
+import React from 'react'
 import { TextInput, TextareaInput, UrlInput } from './BasicInputs'
 import { type SectionFormData } from '../../../types/courseCreation'
 
+
 interface Props {
+  value?: string
+  defaultValue?: string
   section: SectionFormData
   index: number
   onUpdate: (section: SectionFormData) => void
-  onDelete: () => void
+  onDelete: (sectionId: string) => void
 }
 
-export function SectionEditor({ section, index, onUpdate, onDelete }: Props) {
+export const SectionEditor = React.memo(function SectionEditor({ section, index, onUpdate, onDelete }: Props) {
+
   const [isExpanded, setIsExpanded] = useState(true)
-  const [paragraphs, setParagraphs] = useState(section.paragraph)
   const [showCode, setShowCode] = useState(!!section.code)
   const [showImage, setShowImage] = useState(!!section.image)
 
-  const updateSection = (updates: Partial<SectionFormData>) => {
-    onUpdate({ ...section, ...updates })
-  }
+  const sectionRef = useRef(section)
+  sectionRef.current = section
 
-  const handleParagraphChange = (paragraphIndex: number, value: string) => {
-    const newParagraphs = [...paragraphs]
+  const onUpdateRef = useRef(onUpdate)
+  onUpdateRef.current = onUpdate
+
+  const updateSection = useCallback((updates: Partial<SectionFormData>) => {
+    onUpdateRef.current({ ...sectionRef.current, ...updates })
+  }, [])
+
+  const handleParagraphChange = useCallback((paragraphIndex: number, value: string) => {
+    const newParagraphs = [...sectionRef.current.paragraph]
     newParagraphs[paragraphIndex] = value
-    setParagraphs(newParagraphs)
     updateSection({ paragraph: newParagraphs })
-  }
+  }, [updateSection])
 
-  const addParagraph = () => {
-    const newParagraphs = [...paragraphs, '']
-    setParagraphs(newParagraphs)
+  const addParagraph = useCallback(() => {
+    updateSection({ paragraph: [...sectionRef.current.paragraph, ''] })
+  }, [updateSection])
+
+  const removeParagraph = useCallback((paragraphIndex: number) => {
+    if (sectionRef.current.paragraph.length <= 1) return
+    const newParagraphs = sectionRef.current.paragraph.filter((_, i) => i !== paragraphIndex)
     updateSection({ paragraph: newParagraphs })
-  }
+  }, [updateSection])
 
-  const removeParagraph = (paragraphIndex: number) => {
-    if (paragraphs.length <= 1) return
-    const newParagraphs = paragraphs.filter((_, i) => i !== paragraphIndex)
-    setParagraphs(newParagraphs)
-    updateSection({ paragraph: newParagraphs })
-  }
-
-  const handleCodeChange = (value: string) => {
+  const handleCodeChange = useCallback((value: string) => {
     updateSection({ code: value || undefined })
-  }
+  }, [updateSection])
 
-  const handleImageChange = (value: string) => {
+  const handleImageChange = useCallback((value: string) => {
     updateSection({ image: value || undefined })
-  }
+  }, [updateSection])
 
-  const handleCaptionChange = (value: string) => {
+  const handleCaptionChange = useCallback((value: string) => {
     updateSection({ caption: value || undefined })
-  }
+  }, [updateSection])
 
   return (
     <div className='bg-surface border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:border-primary-200'>
@@ -68,7 +74,7 @@ export function SectionEditor({ section, index, onUpdate, onDelete }: Props) {
         />
         <button
           type='button'
-          onClick={(e) => { e.stopPropagation(); onDelete() }}
+          onClick={(e) => { e.stopPropagation(); onDelete(section.id) }}
           className='p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors ml-auto'
           aria-label='Eliminar sección'
         >
@@ -93,7 +99,7 @@ export function SectionEditor({ section, index, onUpdate, onDelete }: Props) {
           <div className='space-y-3'>
             <label className='block text-sm font-medium text-text-secondary'>Párrafos</label>
             <div className='space-y-2'>
-              {paragraphs.map((paragraph, pIndex) => (
+              {section.paragraph.map((paragraph, pIndex) => (
                 <div key={pIndex} className='flex gap-2'>
                   <TextareaInput
                     value={paragraph}
@@ -102,7 +108,7 @@ export function SectionEditor({ section, index, onUpdate, onDelete }: Props) {
                     rows={3}
                     className='flex-1'
                   />
-                  {paragraphs.length > 1 && (
+                  {section.paragraph.length > 1 && (
                     <button
                       type='button'
                       onClick={() => removeParagraph(pIndex)}
@@ -186,4 +192,4 @@ export function SectionEditor({ section, index, onUpdate, onDelete }: Props) {
       )}
     </div>
   )
-}
+})

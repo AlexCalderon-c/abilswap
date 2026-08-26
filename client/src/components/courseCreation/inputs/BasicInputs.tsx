@@ -10,7 +10,7 @@ interface Props {
   className?: string
 }
 
-export function TextInput({ value, onChange, placeholder, label, error, disabled, className }: Props) {
+export const TextInput = React.memo(function TextInput({ value, onChange, placeholder, label, error, disabled, className }: Props) {
   return (
     <div className={`w-full ${className || ''}`}>
       {label && (
@@ -34,9 +34,9 @@ export function TextInput({ value, onChange, placeholder, label, error, disabled
       {error && <p className='mt-1.5 text-sm text-red-500'>{error}</p>}
     </div>
   )
-}
+})
 
-export function TextareaInput({ value, onChange, placeholder, label, error, disabled, className, rows = 4, autoResize = true }: Props & { rows?: number; autoResize?: boolean }) {
+export const TextareaInput = React.memo(function TextareaInput({ value, onChange, placeholder, label, error, disabled, className, rows = 4, autoResize = true }: Props & { rows?: number; autoResize?: boolean }) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
 
   React.useEffect(() => {
@@ -70,9 +70,9 @@ export function TextareaInput({ value, onChange, placeholder, label, error, disa
       {error && <p className='mt-1.5 text-sm text-red-500'>{error}</p>}
     </div>
   )
-}
+})
 
-export function NumberInput({ value, onChange, placeholder, label, error, disabled, className, min, max, step = '0.01' }: Props & { min?: number; max?: number; step?: string }) {
+export const NumberInput = React.memo(function NumberInput({ value, onChange, placeholder, label, error, disabled, className, min, max, step = '0.01' }: Props & { min?: number; max?: number; step?: string }) {
   return (
     <div className={`w-full ${className || ''}`}>
       {label && (
@@ -99,7 +99,7 @@ export function NumberInput({ value, onChange, placeholder, label, error, disabl
       {error && <p className='mt-1.5 text-sm text-red-500'>{error}</p>}
     </div>
   )
-}
+})
 
 interface SelectOption {
   value: string

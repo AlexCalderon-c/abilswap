@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import React from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { TextInput } from '../inputs/BasicInputs'
 import { LessonEditor } from '../lesson/LessonEditor'
 import { SortableList } from '../inputs/SortableList'
@@ -13,46 +14,56 @@ interface Props {
   onDuplicate: () => void
 }
 
-export function ModuleEditor({ module, index, onUpdate, onDelete, onDuplicate }: Props) {
+export const ModuleEditor = React.memo(function ModuleEditor({ module, index, onUpdate, onDelete, onDuplicate }: Props) {
   const [isExpanded, setIsExpanded] = useState(true)
   const [showAddLessonMenu, setShowAddLessonMenu] = useState(false)
 
-  const updateModule = (updates: Partial<ModuleFormData>) => {
-    onUpdate({ ...module, ...updates })
-  }
+  const moduleRef = useRef(module)
+  moduleRef.current = module
 
-  const handleLessonUpdate = (updatedLesson: LessonFormData) => {
-    const newLessons = module.lessons.map((l) =>
+  const onUpdateRef = useRef(onUpdate)
+  onUpdateRef.current = onUpdate
+
+  const updateModule = useCallback((updates: Partial<ModuleFormData>) => {
+    onUpdateRef.current({ ...moduleRef.current, ...updates })
+  }, [])
+
+  const handleLessonUpdate = useCallback((updatedLesson: LessonFormData) => {
+    const newLessons = moduleRef.current.lessons.map((l) =>
       l.id === updatedLesson.id ? updatedLesson : l
     )
-    updateModule({ lessons: newLessons })
-  }
+    onUpdateRef.current({ ...moduleRef.current, lessons: newLessons })
+  }, [])
 
-  const handleLessonDelete = (lessonId: string) => {
-    updateModule({ lessons: module.lessons.filter((l) => l.id !== lessonId) })
-  }
+  const handleLessonDelete = useCallback((lessonId: string) => {
+    onUpdateRef.current({ ...moduleRef.current, lessons: moduleRef.current.lessons.filter((l) => l.id !== lessonId) })
+  }, [])
 
-  const handleLessonDuplicate = (lesson: LessonFormData) => {
+  const handleLessonDuplicate = useCallback((lesson: LessonFormData) => {
     const duplicatedLesson: LessonFormData = {
       ...lesson,
       id: `lesson-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       lesson_name: `${lesson.lesson_name} (copia)`,
     }
-    const lessonIndex = module.lessons.findIndex((l) => l.id === lesson.id)
-    const newLessons = [...module.lessons]
+    const lessonIndex = moduleRef.current.lessons.findIndex((l) => l.id === lesson.id)
+    const newLessons = [...moduleRef.current.lessons]
     newLessons.splice(lessonIndex + 1, 0, duplicatedLesson)
-    updateModule({ lessons: newLessons })
-  }
+    onUpdateRef.current({ ...moduleRef.current, lessons: newLessons })
+  }, [])
 
-  const addLesson = (contentType: LessonFormData['content_type']) => {
+  const addLesson = useCallback((contentType: LessonFormData['content_type']) => {
     const newLesson = createEmptyLesson(contentType)
-    updateModule({ lessons: [...module.lessons, newLesson] })
+    onUpdateRef.current({ ...moduleRef.current, lessons: [...moduleRef.current.lessons, newLesson] })
     setShowAddLessonMenu(false)
-  }
+  }, [])
 
-  const handleReorderLessons = (items: { id: string; data: LessonFormData }[]) => {
-    updateModule({ lessons: items.map((item) => item.data) })
-  }
+  const handleReorderLessons = useCallback((items: { id: string; data: LessonFormData }[]) => {
+    onUpdateRef.current({ ...moduleRef.current, lessons: items.map((item) => item.data) })
+  }, [])
+
+  const handleModuleNameChange = useCallback((v: string) => {
+    updateModule({ module_name: v })
+  }, [updateModule])
 
   return (
     <div className='bg-surface border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:border-primary-200'>
@@ -66,7 +77,7 @@ export function ModuleEditor({ module, index, onUpdate, onDelete, onDuplicate }:
 
         <TextInput
           value={module.module_name}
-          onChange={(v) => updateModule({ module_name: v })}
+          onChange={handleModuleNameChange}
           placeholder='Nombre del módulo'
           className='flex-1 min-w-0 max-w-md'
         />
@@ -132,8 +143,8 @@ export function ModuleEditor({ module, index, onUpdate, onDelete, onDuplicate }:
                 lesson={item.data}
                 index={lessonIndex}
                 onUpdate={handleLessonUpdate}
-                onDelete={() => handleLessonDelete(item.id)}
-                onDuplicate={() => handleLessonDuplicate(item.data)}
+                onDelete={handleLessonDelete}
+                onDuplicate={handleLessonDuplicate}
               />
             )}
             placeholder={
@@ -185,4 +196,4 @@ export function ModuleEditor({ module, index, onUpdate, onDelete, onDuplicate }:
       )}
     </div>
   )
-}
+})

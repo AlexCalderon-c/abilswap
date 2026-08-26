@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
+import React from 'react'
 import { TextInput } from '../inputs/BasicInputs'
 import { ContentTypeSelector, ContentTypeBadge } from '../inputs/ContentTypeSelector'
 import { TextContentEditor } from '../inputs/TextContentEditor'
@@ -7,64 +8,115 @@ import { QuizContentEditor } from '../inputs/QuizContentEditor'
 import { ArticleContentEditor } from '../inputs/ArticleContentEditor'
 import { type LessonFormData, type ContentType } from '../../../types/courseCreation'
 
+interface QuizQuestion {
+  id: string
+  question: string
+  options: string[]
+  correctAnswer: number
+  explanation?: string
+  points: number
+}
+
+interface QuizContent {
+  tagline?: string
+  intro?: string
+  questions: QuizQuestion[]
+}
+
 interface Props {
   lesson: LessonFormData
   index: number
   onUpdate: (lesson: LessonFormData) => void
-  onDelete: () => void
-  onDuplicate: () => void
+  onDelete: (lessonId: string) => void
+  onDuplicate: (lesson: LessonFormData) => void
 }
 
-export function LessonEditor({ lesson, index, onUpdate, onDelete, onDuplicate }: Props) {
+export const LessonEditor = React.memo(function LessonEditor({ lesson, index, onUpdate, onDelete, onDuplicate }: Props) {
   const [isExpanded, setIsExpanded] = useState(true)
   const [showContentTypeSelector, setShowContentTypeSelector] = useState(false)
 
-  const updateLesson = (updates: Partial<LessonFormData>) => {
-    onUpdate({ ...lesson, ...updates })
-  }
+  const lessonRef = useRef(lesson)
+  lessonRef.current = lesson
 
-  const handleContentTypeChange = (newType: ContentType) => {
-    if (newType === lesson.content_type) return
+  const onUpdateRef = useRef(onUpdate)
+  onUpdateRef.current = onUpdate
+
+  const updateLesson = useCallback((updates: Partial<LessonFormData>) => {
+    onUpdateRef.current({ ...lessonRef.current, ...updates })
+  }, [])
+
+  const handleContentTypeChange = useCallback((newType: ContentType) => {
+    if (newType === lessonRef.current.content_type) return
 
     const newLesson: LessonFormData = {
-      ...lesson,
+      ...lessonRef.current,
       content_type: newType,
-      video_url: newType === 'video' ? lesson.video_url : '',
+      video_url: newType === 'video' ? lessonRef.current.video_url : '',
       content: newType !== 'video'
         ? {
-            tagline: lesson.content?.tagline || '',
-            intro: lesson.content?.intro || '',
-            section: lesson.content?.section || [
+            tagline: lessonRef.current.content?.tagline || '',
+            intro: lessonRef.current.content?.intro || '',
+            section: lessonRef.current.content?.section || [
               { id: `section-${Date.now()}`, heading: '', paragraph: [''], code: '', image: '', caption: '' }
             ],
-            takeaways: lesson.content?.takeaways || [''],
+            takeaways: lessonRef.current.content?.takeaways || [''],
           }
         : undefined,
     }
-    onUpdate(newLesson)
+    onUpdateRef.current(newLesson)
     setShowContentTypeSelector(false)
-  }
+  }, [])
 
-  const ContentEditor = () => {
-    switch (lesson.content_type) {
+  const handleLessonNameChange = useCallback((v: string) => {
+    updateLesson({ lesson_name: v })
+  }, [updateLesson])
+
+  const handleContentChange = useCallback((content: LessonFormData['content']) => {
+    updateLesson({ content })
+  }, [updateLesson])
+
+  const handleVideoUrlChange = useCallback((url: string) => {
+    updateLesson({ video_url: url })
+  }, [updateLesson])
+
+  const handleQuizChange = useCallback((c: QuizContent) => {
+    updateLesson({
+      content: {
+        tagline: c.tagline,
+        intro: c.intro,
+        section: c.questions.map((q) => ({
+          id: q.id,
+          heading: q.question,
+          paragraph: q.options,
+          code: '',
+          image: '',
+          caption: '',
+        })),
+        takeaways: [],
+      }
+    })
+  }, [updateLesson])
+
+  const ContentEditor = useCallback(() => {
+    switch (lessonRef.current.content_type) {
       case 'text':
-        return lesson.content && (
-          <TextContentEditor content={lesson.content} onChange={(c) => updateLesson({ content: c })} />
+        return lessonRef.current.content && (
+          <TextContentEditor content={lessonRef.current.content} onChange={handleContentChange} />
         )
       case 'video':
         return (
           <VideoContentEditor
-            videoUrl={lesson.video_url || ''}
-            onChange={(url) => updateLesson({ video_url: url })}
+            videoUrl={lessonRef.current.video_url || ''}
+            onChange={handleVideoUrlChange}
           />
         )
       case 'quiz':
-        return lesson.content && (
+        return lessonRef.current.content && (
           <QuizContentEditor
             content={{
-              tagline: lesson.content.tagline || '',
-              intro: lesson.content.intro || '',
-              questions: lesson.content.section.map((s) => ({
+              tagline: lessonRef.current.content.tagline || '',
+              intro: lessonRef.current.content.intro || '',
+              questions: lessonRef.current.content.section.map((s) => ({
                 id: s.id,
                 question: s.heading,
                 options: s.paragraph,
@@ -73,31 +125,17 @@ export function LessonEditor({ lesson, index, onUpdate, onDelete, onDuplicate }:
                 points: 1,
               })),
             }}
-            onChange={(c) => updateLesson({
-              content: {
-                tagline: c.tagline,
-                intro: c.intro,
-                section: c.questions.map((q) => ({
-                  id: q.id,
-                  heading: q.question,
-                  paragraph: q.options,
-                  code: '',
-                  image: '',
-                  caption: '',
-                })),
-                takeaways: [],
-              }
-            })}
+            onChange={handleQuizChange}
           />
         )
       case 'article':
-        return lesson.content && (
-          <ArticleContentEditor content={lesson.content} onChange={(c) => updateLesson({ content: c })} />
+        return lessonRef.current.content && (
+          <ArticleContentEditor content={lessonRef.current.content} onChange={handleContentChange} />
         )
       default:
         return null
     }
-  }
+  }, [handleContentChange, handleVideoUrlChange, handleQuizChange])
 
   return (
     <div className='bg-surface border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:border-primary-200'>
@@ -113,7 +151,7 @@ export function LessonEditor({ lesson, index, onUpdate, onDelete, onDuplicate }:
 
         <TextInput
           value={lesson.lesson_name}
-          onChange={(v) => updateLesson({ lesson_name: v })}
+          onChange={handleLessonNameChange}
           placeholder='Título de la lección'
           className='flex-1 min-w-0 max-w-md'
         />
@@ -132,7 +170,7 @@ export function LessonEditor({ lesson, index, onUpdate, onDelete, onDuplicate }:
 
           <button
             type='button'
-            onClick={(e) => { e.stopPropagation(); onDuplicate() }}
+            onClick={(e) => { e.stopPropagation(); onDuplicate(lesson) }}
             className='p-2 text-text-muted hover:text-text-primary hover:bg-surface rounded-xl transition-colors'
             aria-label='Duplicar lección'
           >
@@ -143,7 +181,7 @@ export function LessonEditor({ lesson, index, onUpdate, onDelete, onDuplicate }:
 
           <button
             type='button'
-            onClick={(e) => { e.stopPropagation(); onDelete() }}
+            onClick={(e) => { e.stopPropagation(); onDelete(lesson.id) }}
             className='p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors'
             aria-label='Eliminar lección'
           >
@@ -167,7 +205,7 @@ export function LessonEditor({ lesson, index, onUpdate, onDelete, onDuplicate }:
 
       {isExpanded && (
         <div className='p-5 animate-slide-down'>
-          <ContentEditor />
+          {ContentEditor()}
         </div>
       )}
 
@@ -195,4 +233,4 @@ export function LessonEditor({ lesson, index, onUpdate, onDelete, onDuplicate }:
       )}
     </div>
   )
-}
+})

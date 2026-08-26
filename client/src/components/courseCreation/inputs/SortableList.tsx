@@ -23,6 +23,7 @@ export function SortableList<T extends { id: string }>({
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
   const itemsRef = useRef<HTMLDivElement[]>([])
+  console.log('Hola')
 
   const handleDragStart = (index: number, e: React.DragEvent) => {
     setDraggedIndex(index)

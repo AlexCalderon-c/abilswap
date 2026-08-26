@@ -123,7 +123,6 @@ export function CreateCoursePage() {
     setIsSubmitting(true)
 
     try {
-      // 1. Create course
       const courseResponse = await apiClient.post('/api/course', {
         course_name: courseData.course_name,
         description: courseData.description,
@@ -134,7 +133,6 @@ export function CreateCoursePage() {
 
       const courseId = courseResponse.data.id
 
-      // 2. Create modules and lessons
       for (let moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
         const module = modules[moduleIndex]
         if (!module.module_name.trim()) continue

@@ -47,7 +47,7 @@ export const CONTENT_TYPES: { value: ContentType; label: string; icon: string }[
 
 export function createEmptyModule(): ModuleFormData {
   return {
-    id: `module-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     module_name: '',
     lessons: [],
   }

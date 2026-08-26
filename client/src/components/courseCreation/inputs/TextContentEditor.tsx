@@ -3,30 +3,34 @@ import { SectionEditor } from './SectionEditor'
 import { TakeawaysEditor } from './TakeawaysEditor'
 import { type LessonContentFormData, type SectionFormData } from '../../../types/courseCreation'
 import { SortableList } from './SortableList'
+import { useCallback } from 'react'
+import React, {useRef} from 'react'
 
 interface Props {
   content: LessonContentFormData
   onChange: (content: LessonContentFormData) => void
 }
 
-export function TextContentEditor({ content, onChange }: Props) {
-  const updateContent = (updates: Partial<LessonContentFormData>) => {
-    onChange({ ...content, ...updates })
-  }
+export const TextContentEditor = React.memo(function TextContentEditor({ content, onChange }: Props) {
+  const contentRef = useRef(content)
+  contentRef.current = content
 
-  const handleSectionUpdate = (updatedSection: SectionFormData) => {
-    const newSections = content.section.map((s) =>
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
+
+  const handleSectionUpdate = useCallback((updatedSection: SectionFormData) => {
+    const newSections = contentRef.current.section.map((s) =>
       s.id === updatedSection.id ? updatedSection : s
     )
-    updateContent({ section: newSections })
-  }
+    onChangeRef.current({ ...contentRef.current, section: newSections })
+  }, [])
 
-  const handleSectionDelete = (sectionId: string) => {
-    if (content.section.length <= 1) return
-    updateContent({ section: content.section.filter((s) => s.id !== sectionId) })
-  }
+  const handleSectionDelete = useCallback((sectionId: string) => {
+    if (contentRef.current.section.length <= 1) return
+    onChangeRef.current({ ...contentRef.current, section: contentRef.current.section.filter((s) => s.id !== sectionId) })
+  }, [])
 
-  const addSection = () => {
+  const addSection = useCallback(() => {
     const newSection: SectionFormData = {
       id: `section-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       heading: '',
@@ -35,25 +39,37 @@ export function TextContentEditor({ content, onChange }: Props) {
       image: '',
       caption: '',
     }
-    updateContent({ section: [...content.section, newSection] })
-  }
+    onChangeRef.current({ ...contentRef.current, section: [...contentRef.current.section, newSection] })
+  }, [])
 
-  const handleReorderSections = (sections: { id: string; data: SectionFormData }[]) => {
-    updateContent({ section: sections.map((s) => s.data) })
-  }
+  const handleReorderSections = useCallback((sections: { id: string; data: SectionFormData }[]) => {
+    onChangeRef.current({ ...contentRef.current, section: sections.map((s) => s.data) })
+  }, [])
+
+  const handleTakeawaysChange = useCallback((takeaways: string[]) => {
+    onChangeRef.current({ ...contentRef.current, takeaways })
+  }, [])
+
+  const handleTaglineChange = useCallback((v: string) => {
+    onChangeRef.current({ ...contentRef.current, tagline: v || undefined })
+  }, [])
+
+  const handleIntroChange = useCallback((v: string) => {
+    onChangeRef.current({ ...contentRef.current, intro: v || undefined })
+  }, [])
 
   return (
     <div className='space-y-6'>
       <div className='space-y-4'>
         <TextInput
           value={content.tagline || ''}
-          onChange={(v) => updateContent({ tagline: v || undefined })}
+          onChange={handleTaglineChange}
           placeholder='Tagline / Subtítulo breve'
           label='Tagline'
         />
         <TextareaInput
           value={content.intro || ''}
-          onChange={(v) => updateContent({ intro: v || undefined })}
+          onChange={handleIntroChange}
           placeholder='Introducción a la lección...'
           label='Introducción'
           rows={4}
@@ -88,7 +104,7 @@ export function TextContentEditor({ content, onChange }: Props) {
               section={item.data}
               index={index}
               onUpdate={handleSectionUpdate}
-              onDelete={() => handleSectionDelete(item.id)}
+              onDelete={handleSectionDelete}
             />
           )}
           placeholder={
@@ -100,9 +116,9 @@ export function TextContentEditor({ content, onChange }: Props) {
       <div className='pt-4 border-t border-border'>
         <TakeawaysEditor
           takeaways={content.takeaways}
-          onChange={(takeaways) => updateContent({ takeaways })}
+          onChange={handleTakeawaysChange}
         />
       </div>
     </div>
   )
-}
+})

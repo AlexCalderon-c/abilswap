@@ -1,25 +1,33 @@
 import { TextInput } from './BasicInputs'
+import { useCallback, useRef } from 'react'
+import React from 'react'
 
 interface Props {
   takeaways: string[]
   onChange: (takeaways: string[]) => void
 }
 
-export function TakeawaysEditor({ takeaways, onChange }: Props) {
-  const handleChange = (index: number, value: string) => {
-    const newTakeaways = [...takeaways]
+export const TakeawaysEditor = React.memo(function TakeawaysEditor({ takeaways, onChange }: Props) {
+  const takeawaysRef = useRef(takeaways)
+  takeawaysRef.current = takeaways
+
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
+
+  const handleChange = useCallback((index: number, value: string) => {
+    const newTakeaways = [...takeawaysRef.current]
     newTakeaways[index] = value
-    onChange(newTakeaways)
-  }
+    onChangeRef.current(newTakeaways)
+  }, [])
 
-  const addTakeaway = () => {
-    onChange([...takeaways, ''])
-  }
+  const addTakeaway = useCallback(() => {
+    onChangeRef.current([...takeawaysRef.current, ''])
+  }, [])
 
-  const removeTakeaway = (index: number) => {
-    if (takeaways.length <= 1) return
-    onChange(takeaways.filter((_, i) => i !== index))
-  }
+  const removeTakeaway = useCallback((index: number) => {
+    if (takeawaysRef.current.length <= 1) return
+    onChangeRef.current(takeawaysRef.current.filter((_, i) => i !== index))
+  }, [])
 
   return (
     <div className='space-y-3'>
@@ -63,4 +71,4 @@ export function TakeawaysEditor({ takeaways, onChange }: Props) {
       </div>
     </div>
   )
-}
+})
