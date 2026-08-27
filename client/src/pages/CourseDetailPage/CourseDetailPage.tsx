@@ -28,6 +28,7 @@ export default function CourseDetailPage() {
                     module={mod}
                     lessons={mod.lessons}
                     defaultOpen={mod.module_index === 1}
+                    isEnrolled={loadedData.enroll}
                   />
                 ))}
               </div>
@@ -35,7 +36,7 @@ export default function CourseDetailPage() {
           </div>
 
           <div className='lg:col-span-1'>
-            <CourseSidebar course={loadedData.courses} isEnrolled={loadedData.enroll.isEnrolled} />
+            <CourseSidebar course={loadedData.courses} isEnrolled={loadedData.enroll} />
           </div>
         </div>
       </div>

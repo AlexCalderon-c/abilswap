@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useCourse } from '../../../context/CourseContext'
 import type { Course } from '../../../types'
+import { useRouteLoaderData } from 'react-router-dom'
 
 interface Props {
   course: Course
@@ -8,8 +9,10 @@ interface Props {
 }
 
 export default function CourseSidebar({ course, isEnrolled }: Props) {
+  const loadedUser = useRouteLoaderData('auth')
   const {enrollCourse} = useCourse()
   const [enrollButton, setEnrollButton] = useState(!isEnrolled)
+  console.log('Desde sidebar: ', loadedUser)
 
   const submitHandler = () => {
     setEnrollButton(false)
@@ -31,14 +34,12 @@ export default function CourseSidebar({ course, isEnrolled }: Props) {
             )}
           </div>
 
-            {enrollButton === true ? 
+            {enrollButton === true && loadedUser.user.role === 'student' ? 
               <button onClick={submitHandler} className='w-full py-3 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer'>
               Inscribirse ahora
               </button>
             :
-              <div className='w-full py-3 text-sm font-semibold text-gray-400 bg-white rounded-xl shadow-sm text-center'>
-                Ya estás en este curso
-              </div>}
+              <></>}
           
 
           <hr className='border-border' />

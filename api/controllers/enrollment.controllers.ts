@@ -45,10 +45,7 @@ export const getEnrollmentByCourseId = async (req: Request, res: Response, next:
     try{
         const {course_id} = req.params
         const response = await pool.query('SELECT * FROM enrollment WHERE course_id = $1 AND student_id = $2', [course_id, req.user?.id])
-        if(response.rowCount === 0){
-            throw new Error("Not enrolled to this course")
-        }
-        res.status(201).json({isEnrolled: true})
+        res.status(201).json(response.rowCount! > 0)
     }catch(e){
         next(e)
     }    

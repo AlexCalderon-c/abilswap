@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 
 export default function Hero() {
+
   return (
     <section className='relative min-h-[90vh] flex items-center overflow-hidden'>
       <div className='absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50' />
@@ -12,9 +13,6 @@ export default function Hero() {
 
           <h1 className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary leading-[1.1] tracking-tight mb-6 animate-slide-up'>
             Aprende
-            <span className='block text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-accent-500'>
-              Programación Fullstack
-            </span>
             Desde Cero
           </h1>
 

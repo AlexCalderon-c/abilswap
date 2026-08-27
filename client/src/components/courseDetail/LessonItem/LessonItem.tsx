@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom'
 import type { Lesson } from '../../../types'
+import { useRouteLoaderData } from 'react-router-dom'
 
 interface Props {
-  lesson: Lesson
+  lesson: Lesson,
+  isEnrolled: boolean
 }
 
 const contentTypeIcons: Record<string, React.ReactNode> = {
+
   video: (
     <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
       <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z' />
@@ -29,7 +32,7 @@ const contentTypeIcons: Record<string, React.ReactNode> = {
   ),
 }
 
-export default function LessonItem({ lesson }: Props) {
+export default function LessonItem({ lesson, isEnrolled }: Props) {
 
   const formatLessonTitle = (lesson: string) => {
     const lessonArr = lesson.split('')
@@ -39,9 +42,12 @@ export default function LessonItem({ lesson }: Props) {
   }
 
   const formatedTitle = formatLessonTitle(lesson.lesson_name)
-  console.log(formatedTitle)
+  console.log('Am I enrolled: ', isEnrolled)
 
   return (
+    
+    <>
+    {isEnrolled === true ? 
     <Link
       to={`/lesson/${formatedTitle}/${lesson.id}`}
       className='flex items-center justify-between px-5 py-3.5 hover:bg-surface-secondary transition-colors group'
@@ -61,5 +67,24 @@ export default function LessonItem({ lesson }: Props) {
         {lesson.content_type === 'video' ? '15 min' : '10 min'}
       </span>
     </Link>
+    : 
+    <div className='flex items-center justify-between px-5 py-3.5 group'>
+      <div className='flex items-center gap-3'>
+        <span className='text-text-muted'>
+          {contentTypeIcons[lesson.content_type] || contentTypeIcons.text}
+        </span>
+        <div>
+          <p className='text-sm text-text-primary font-medium'>
+            {lesson.lesson_name}
+          </p>
+          <p className='text-xs text-text-muted capitalize'>{lesson.content_type}</p>
+        </div>
+      </div>
+      <span className='text-xs font-medium text-text-muted'>
+        {lesson.content_type === 'video' ? '15 min' : '10 min'}
+      </span>
+    </div>
+    }
+    </>
   )
 }

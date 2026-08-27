@@ -7,10 +7,12 @@ interface Props {
   module: Module
   lessons: Lesson[]
   defaultOpen?: boolean
+  isEnrolled: boolean
 }
 
-export default function ModuleAccordion({ module, lessons, defaultOpen = false }: Props) {
+export default function ModuleAccordion({ module, lessons, defaultOpen = false, isEnrolled }: Props) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
+  console.log('No deberia ser un objeto: ', isEnrolled)
 
   return (
     <div className='border border-border rounded-xl overflow-hidden bg-white transition-all duration-200'>
@@ -40,7 +42,7 @@ export default function ModuleAccordion({ module, lessons, defaultOpen = false }
       {isOpen && (
         <div className='border-t border-border divide-y divide-border animate-slide-down'>
           {lessons.map((lesson) => (
-            <LessonItem key={lesson.id} lesson={lesson} />
+            <LessonItem key={lesson.id} lesson={lesson} isEnrolled={isEnrolled}/>
           ))}
         </div>
       )}
