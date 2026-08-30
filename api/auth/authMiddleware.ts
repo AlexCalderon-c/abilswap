@@ -25,8 +25,10 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
         const payload = {
             id: userObject.id,
+            email: userObject.email,
             username: userObject.username,
-            role: userObject.role
+            role: userObject.role,
+            profile_pic: userObject.profile_pic
         }
 
         const accessToken = generateAccessToken(payload)
@@ -47,9 +49,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
-        res.json({
-            message: "Login successful"
-        })
+        res.json(payload)
 
     } catch (error) {
         next(error);

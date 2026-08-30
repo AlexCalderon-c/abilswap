@@ -23,22 +23,31 @@ export const verifyAccessToken = (req: Request, res: Response, next: NextFunctio
 
 export const refreshTokenCookie = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {refreshToken} = req.cookies;        
+        const {refreshToken} = req.cookies;
         if (!refreshToken) {
             throw new Error("No refresh token provided");
         }
         const verifyTokenDb = await pool.query('SELECT token FROM refreshToken WHERE token = $1', [refreshToken])
         const user = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as payloadType;
 
-        if(verifyTokenDb.rowCount === 0){
+        if(verifyTokenDb.rowCount === 0){ 
             await deleteRefreshToken(user.id)
             throw new Error('Unauthorized')
         }
 
-        const accessToken = generateAccessToken({id: user.id, username: user.username, role: user.role})
+        const payload = {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            profile_pic: user.profile_pic,
+            role: user.role
+        }
+
+        const accessToken = generateAccessToken(payload)
         await pool.query('DELETE FROM refreshToken WHERE token = $1', [refreshToken])
-        const newRefreshToken = await generateRefreshToken({id: user.id, username: user.username, role: user.role}, user.id)
+        const newRefreshToken = await generateRefreshToken(payload, user.id)
         res.cookie("accessToken", accessToken, {
+            path: "/",
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",

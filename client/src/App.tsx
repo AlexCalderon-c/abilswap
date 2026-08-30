@@ -1,35 +1,77 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
+import Layout from './components/layout/Layout/Layout'
+import HomePage from './pages/HomePage/HomePage'
+import CoursesPage from './pages/CoursesPage/CoursesPage'
+import CourseDetailPage from './pages/CourseDetailPage/CourseDetailPage'
+import LoginPage from './pages/LoginPage/LoginPage'
+import RegisterPage from './pages/RegisterPage/RegisterPage'
+import DashboardPage from './pages/DashboardPage/DashboardPage'
+import CreateCoursePage from './pages/CreateCoursePage/CreateCoursePage'
+import InfoLessonPage from './pages/InfoLessonPage/InfoLessonPage'
+import {CourseProvider} from './context/CourseContext'
+import { apiClient } from './api/axios'
+import type { LoaderFunctionArgs } from 'react-router-dom'
+import LessonLayout from './components/lessonInfo/lessonLayout/LessonLayout'
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+const lessonLoader = async ({params}: LoaderFunctionArgs) => {
+  const lesson = await apiClient.get(`http://localhost:3001/api/lesson/${params.lesson_id}`)
+  console.log(lesson)
+  return lesson.data
 }
 
-export default App
+const dashboardLoader = async () => {
+  const dashboard = await apiClient.get('http://localhost:3001/api/enrollment/dashboard')
+  console.log(dashboard)
+  return dashboard.data
+}
+
+const courseLoader = async () => {
+    const [courses, categories] = await Promise.all([apiClient.get('http://localhost:3001/api/course').then(res => res.data), apiClient.get('http://localhost:3001/api/course/category').then(res => res.data)])
+    return {courses, categories}
+}
+
+const detailedCourseLoader = async ({params}: LoaderFunctionArgs) => {
+  const [courses, modules, enroll] = await Promise.all([
+    apiClient.get(`http://localhost:3001/api/course/courseinfo/${params.course_id}`).then(res => res.data), 
+    apiClient.get(`http://localhost:3001/api/module/moduleinfo/${params.course_id}`).then(res => res.data),
+    apiClient.get(`http://localhost:3001/api/enrollment/courseinfo/${params.course_id}`).then(res => res.data).catch(() => false)]) 
+  return {courses, modules, enroll}
+}
+
+const authLoader = async () => {
+  try{
+    const response = await apiClient.get('http://localhost:3001/api/user/me')
+    console.log("I RAN AGAIN FOR SOME REASON (probably)")
+    return {user: response.data, isAuthenticated: true}
+  }catch(e){
+    console.log('Failed auth check: ', e)
+    return {user: null, isAuthenticated: false} 
+  }  
+}
+
+const router = createBrowserRouter(createRoutesFromElements(
+    <>
+      <Route loader={authLoader} id='auth'>
+        <Route element={<Layout />}>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/courses' element={<CoursesPage />} loader={courseLoader}/>
+          <Route path='/courses/:course_id' element={<CourseDetailPage />} loader={detailedCourseLoader}/>
+          <Route path='/login' element={<LoginPage />}  />
+          <Route path='/register' element={<RegisterPage />} />
+          <Route path='/dashboard/' element={<DashboardPage />} loader={dashboardLoader}/>
+          <Route path='/newcourse/' element={<CreateCoursePage />}/>          
+        </Route>
+        <Route element={<LessonLayout/>}>
+          <Route path='/lesson/:lesson_name/:lesson_id' element={<InfoLessonPage />} loader={lessonLoader}/> 
+        </Route>
+      </Route>
+    </>
+))
+
+export default function App() { 
+  return (
+      <CourseProvider>
+        <RouterProvider router = {router}/>
+      </CourseProvider>
+  )
+}

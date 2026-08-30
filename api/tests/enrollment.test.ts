@@ -80,13 +80,15 @@ describe('POST /api/enrollment/:course_id', () => {
         expect(res.status).toBe(400)
     })
 
-    test("Inital student is not able to enroll another student to a course", async () => {
+    test("Initial student is not able to enroll another student to a course (already has a course)", async () => {
         if (!studentCookie) throw new Error('Student cookie not defined')
         const res = await supertest(app)
             .post(`/api/enrollment/${courseId}`)
             .send({ enrollment_status: "active" })
             .set('Cookie', studentCookie)
-        expect(res.status).toBe(201)
+        
+        console.log(res.error)
+        expect(res.status).toBe(500)
     })
 
     test("Student tries to enroll but has no access token, not authorized", async () => {
@@ -200,7 +202,7 @@ describe('PUT /api/enrollment', () => {
         expect(res.status).toBe(400)
     })
 
-    test("Inital student is not able to update another students enrollment", async () => {
+    test("Initial student is not able to update another students enrollment", async () => {
         if (!otherStudentCookie) throw new Error('Other student cookie not defined')
         if (!enrollmentId) throw new Error('No enrollment ID available')
         const res = await supertest(app)

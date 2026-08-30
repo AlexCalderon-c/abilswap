@@ -132,7 +132,7 @@ describe('GET api/rating', () => {
             .post(`/api/rating/${courseId}`)
             .send({ rating_score: 5 })
             .set('Cookie', studentCookie)
-        ratingId = res.body.rows?.[0]?.id
+        ratingId = res.body.id
     })
 
     afterAll(async () => {
@@ -172,7 +172,7 @@ describe('PUT api/rating', () => {
             .post(`/api/rating/${courseId}`)
             .send({ rating_score: 3 })
             .set('Cookie', studentCookie)
-        ratingId = res.body.rows?.[0]?.id
+        ratingId = res.body.id
     })
 
     afterAll(async () => {
@@ -268,7 +268,7 @@ describe('DELETE api/rating', () => {
             .post(`/api/rating/${courseId}`)
             .send({ rating_score: 2 })
             .set('Cookie', studentCookie)
-        ratingId = res.body.rows?.[0]?.id
+        ratingId = res.body.id
     })
 
     afterAll(async () => {
