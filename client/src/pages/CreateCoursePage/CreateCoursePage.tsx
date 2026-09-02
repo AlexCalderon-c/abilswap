@@ -7,6 +7,7 @@ import { apiClient } from '../../api/axios'
 import {
   type CourseFormData,
   type ModuleFormData,
+  type LessonFormData,
   createEmptyModule,
 } from '../../types/courseCreation'
 
@@ -22,13 +23,13 @@ export function CreateCoursePage() {
   const navigate = useNavigate()
   const [courseData, setCourseData] = useState<CourseFormData>(INITIAL_COURSE_DATA)
   const [modules, setModules] = useState<ModuleFormData[]>([createEmptyModule()])
-  const [errors, setErrors] = useState<Partial<Record<keyof CourseFormData, string>>>({})
+  const [errors, setErrors] = useState<Partial<Record<keyof CourseFormData | keyof ModuleFormData | keyof LessonFormData, string>>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'info' | 'content'>('info')
 
   const validateCourse = useCallback(() => {
-    const newErrors: Partial<Record<keyof CourseFormData, string>> = {}
+    const newErrors: Partial<Record<keyof CourseFormData | keyof ModuleFormData | keyof LessonFormData, string>> = {}
 
     if (!courseData.course_name.trim()) {
       newErrors.course_name = 'El nombre del curso es obligatorio'
@@ -44,6 +45,16 @@ export function CreateCoursePage() {
       newErrors.description = 'La descripción no puede exceder 3000 caracteres'
     }
 
+    if(modules.some(module => module.module_name.length < 8)){
+      newErrors.module_name = 'El nombre no puede ser menor a 8 caracteres'
+    }
+
+    if(modules.some(module => {
+      module.lessons.some(lesson => lesson.lesson_name.length < 8)
+    })){
+      newErrors.lesson_name = 'El nombre no puede ser menor a 8 caracteres'
+    }
+
     if (courseData.price < 0) {
       newErrors.price = 'El precio no puede ser negativo'
     }
@@ -55,6 +66,8 @@ export function CreateCoursePage() {
         newErrors.image_url = 'La URL de la imagen no es válida'
       }
     }
+
+    
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -136,6 +149,7 @@ export function CreateCoursePage() {
       for (let moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
         const module = modules[moduleIndex]
         if (!module.module_name.trim()) continue
+        console.log("INFORMACIÓN DE MODULE: ", module)
 
         const moduleResponse = await apiClient.post(`/api/module/${courseId}`, {
           module_name: module.module_name,
@@ -158,6 +172,8 @@ export function CreateCoursePage() {
           } else if (lesson.content) {
             lessonData.content = lesson.content
           }
+
+          console.log('INFORMACIÓN DE LESSON: ', lessonData)
 
           await apiClient.post(`/api/lesson/${moduleId}`, lessonData)
         }
@@ -324,6 +340,7 @@ export function CreateCoursePage() {
                     onUpdate={handleModuleUpdate}
                     onDelete={() => handleModuleDelete(item.id)}
                     onDuplicate={() => handleModuleDuplicate(item.data)}
+                    errors={errors}
                   />
                 )}
                 placeholder={

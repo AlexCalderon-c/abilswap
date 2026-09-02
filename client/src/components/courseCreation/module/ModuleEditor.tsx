@@ -12,9 +12,10 @@ interface Props {
   onUpdate: (module: ModuleFormData) => void
   onDelete: () => void
   onDuplicate: () => void
+  errors: Partial<Record<keyof ModuleFormData, string>>
 }
 
-export const ModuleEditor = React.memo(function ModuleEditor({ module, index, onUpdate, onDelete, onDuplicate }: Props) {
+export const ModuleEditor = React.memo(function ModuleEditor({ module, index, onUpdate, onDelete, onDuplicate, errors }: Props) {
   const [isExpanded, setIsExpanded] = useState(true)
   const [showAddLessonMenu, setShowAddLessonMenu] = useState(false)
 
@@ -80,6 +81,7 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
           onChange={handleModuleNameChange}
           placeholder='Nombre del módulo'
           className='flex-1 min-w-0 max-w-md'
+          error={errors?.module_name}
         />
 
         <span className='text-sm text-text-muted px-3 py-1 rounded-full bg-surface border border-border'>
@@ -145,6 +147,7 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
                 onUpdate={handleLessonUpdate}
                 onDelete={handleLessonDelete}
                 onDuplicate={handleLessonDuplicate}
+                errors={errors}
               />
             )}
             placeholder={

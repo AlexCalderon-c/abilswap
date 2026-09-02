@@ -29,9 +29,10 @@ interface Props {
   onUpdate: (lesson: LessonFormData) => void
   onDelete: (lessonId: string) => void
   onDuplicate: (lesson: LessonFormData) => void
+  errors: Partial<Record<keyof LessonFormData, string>>
 }
 
-export const LessonEditor = React.memo(function LessonEditor({ lesson, index, onUpdate, onDelete, onDuplicate }: Props) {
+export const LessonEditor = React.memo(function LessonEditor({ lesson, index, onUpdate, onDelete, onDuplicate, errors }: Props) {
   const [isExpanded, setIsExpanded] = useState(true)
   const [showContentTypeSelector, setShowContentTypeSelector] = useState(false)
 
@@ -154,6 +155,7 @@ export const LessonEditor = React.memo(function LessonEditor({ lesson, index, on
           onChange={handleLessonNameChange}
           placeholder='Título de la lección'
           className='flex-1 min-w-0 max-w-md'
+          error={errors?.lesson_name}
         />
 
         <div className='flex items-center gap-2 ml-auto'>

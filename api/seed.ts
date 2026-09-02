@@ -7,13 +7,13 @@ import crypto from "crypto";
 function makeContent(data: {
   tagline: string;
   intro: string;
-  sections: Array<{
+  sections: {
     heading: string;
     paragraphs: string[];
     code?: string;
     image?: string;
     caption?: string;
-  }>;
+  }[];
   takeaways: string[];
 }) {
   return {

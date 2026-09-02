@@ -41,27 +41,7 @@ export default function CourseInfo({ course }: Props) {
           <span className='text-sm text-text-muted'>({course.student_count} estudiantes)</span>
         </div>
       </div>
-
-      <div className='mt-8 p-6 rounded-2xl bg-surface-secondary border border-border'>
-        <h3 className='font-semibold text-text-primary mb-3'>Este curso incluye:</h3>
-        <div className='grid sm:grid-cols-2 gap-3 text-sm text-text-secondary'>
-          {[
-            'Videos bajo demanda',
-            'Ejercicios prácticos',
-            'Certificado de finalización',
-            'Acceso de por vida',
-            'Soporte de la comunidad',
-            'Proyectos reales',
-          ].map((feature) => (
-            <div key={feature} className='flex items-center gap-2'>
-              <svg className='w-4 h-4 text-primary-500 flex-shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
-              </svg>
-              {feature}
-            </div>
-          ))}
-        </div>
-      </div>
+      
     </div>
   )
 }
