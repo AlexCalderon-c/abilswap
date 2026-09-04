@@ -12,6 +12,7 @@ import {CourseProvider} from './context/CourseContext'
 import { apiClient } from './api/axios'
 import type { LoaderFunctionArgs } from 'react-router-dom'
 import LessonLayout from './components/lessonInfo/lessonLayout/LessonLayout'
+import ProfilePage from './pages/ProfilePage/ProfilePage'
 
 const lessonLoader = async ({params}: LoaderFunctionArgs) => {
   const lesson = await apiClient.get(`http://localhost:3001/api/lesson/${params.lesson_id}`)
@@ -59,7 +60,8 @@ const router = createBrowserRouter(createRoutesFromElements(
           <Route path='/login' element={<LoginPage />}  />
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/dashboard/' element={<DashboardPage />} loader={dashboardLoader}/>
-          <Route path='/newcourse/' element={<CreateCoursePage />}/>          
+          <Route path='/newcourse/' element={<CreateCoursePage />}/>
+          <Route path='/profile/:username' element={<ProfilePage/>}></Route>   
         </Route>
         <Route element={<LessonLayout/>}>
           <Route path='/lesson/:lesson_name/:lesson_id' element={<InfoLessonPage />} loader={lessonLoader}/> 

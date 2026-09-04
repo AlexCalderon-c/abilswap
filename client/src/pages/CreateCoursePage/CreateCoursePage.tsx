@@ -44,16 +44,20 @@ export function CreateCoursePage() {
     } else if (courseData.description.length > 3000) {
       newErrors.description = 'La descripción no puede exceder 3000 caracteres'
     }
+    
 
-    if(modules.some(module => module.module_name.length < 8)){
-      newErrors.module_name = 'El nombre no puede ser menor a 8 caracteres'
-    }
-
-    if(modules.some(module => {
-      module.lessons.some(lesson => lesson.lesson_name.length < 8)
-    })){
-      newErrors.lesson_name = 'El nombre no puede ser menor a 8 caracteres'
-    }
+    modules.forEach((module, index) => {
+      console.log(`DEBERIA SER MAYOR: ${module.module_name.length < 8}`)
+      if(module.module_name.length < 8){
+        newErrors[`module_name`] = 'El nombre no puede ser menor a 8 caracteres'
+      }
+      
+      module.lessons.forEach((lesson, index) => {
+        if(lesson.lesson_name.length < 8){
+        newErrors[`lesson_name`] = 'El nombre no puede ser menor a 8 caracteres'
+      }
+      })
+    })
 
     if (courseData.price < 0) {
       newErrors.price = 'El precio no puede ser negativo'

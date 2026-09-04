@@ -1,10 +1,10 @@
-import {string, z} from "zod"
+import {literal, string, z} from "zod"
 
 const SectionSchema = z.object({
     heading: z.string(),
     paragraph: z.array(z.string()),
     code: z.string().optional(),
-    image: z.url().optional(),
+    image: z.url().optional().or(z.literal('')),
     caption: z.string().optional()
 })
 
