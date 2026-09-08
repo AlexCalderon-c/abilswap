@@ -15,7 +15,7 @@ function TextLesson({ lesson }: Props) {
               <svg className='w-3.5 h-3.5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                 <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' />
               </svg>
-              Lección de texto
+              Text Lesson
             </span>
             <span className='text-xs text-text-muted'>Tiempo estimado: 10 min</span>
           </div>
@@ -74,7 +74,7 @@ function TextLesson({ lesson }: Props) {
                 <svg className='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
                   <path fillRule='evenodd' d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' clipRule='evenodd' />
                 </svg>
-                Puntos clave
+                Key Takeaways
               </h3>
               <ul className='space-y-2'>
                 {lesson.content?.takeaways.map((item) => (
@@ -100,7 +100,7 @@ function TextLesson({ lesson }: Props) {
         <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20' />
         <div className='absolute inset-x-0 bottom-0 p-7 text-white'>
           <span className='inline-block px-2.5 py-1 rounded-full bg-white/20 backdrop-blur text-[11px] font-semibold uppercase tracking-wider mb-3'>
-            Nota de la lección
+            Lesson Note
           </span>
           <h3 className='text-xl font-bold mb-2'>{content.sidebar.title}</h3>
           <p className='text-sm text-white/85 leading-relaxed mb-4'>{content.sidebar.description}</p>

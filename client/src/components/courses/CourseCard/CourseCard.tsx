@@ -28,7 +28,7 @@ export default function CourseCard({ course }: Props) {
           </div>
           <div className='absolute top-3 right-3'>
             <span className='px-2.5 py-1 text-xs font-semibold bg-white/90 backdrop-blur-sm rounded-md text-primary-600'>
-              {course.price === 0 ? 'Gratis' : `$${course.price}`}
+              {course.price === 0 ? 'Free' : `$${course.price}`}
             </span>
           </div>
         </div>

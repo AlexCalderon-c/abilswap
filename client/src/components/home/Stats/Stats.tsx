@@ -1,10 +1,10 @@
 import { useScrollAnimation } from '../../../hooks/useScrollAnimation'
 
 const stats = [
-  { icon: '🎓', value: '2,500+', label: 'Estudiantes activos' },
-  { icon: '📚', value: '120+', label: 'Cursos disponibles' },
-  { icon: '👨‍🏫', value: '45+', label: 'Docentes expertos' },
-  { icon: '⭐', value: '4.8/5', label: 'Calificación promedio' },
+  { icon: '🎓', value: '2,500+', label: 'Active Students' },
+  { icon: '📚', value: '120+', label: 'Available Courses' },
+  { icon: '👨‍🏫', value: '45+', label: 'Expert Instructors' },
+  { icon: '⭐', value: '4.8/5', label: 'Average Rating' },
 ]
 
 export default function Stats() {

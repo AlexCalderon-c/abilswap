@@ -75,14 +75,14 @@ export function QuizContentEditor({ content, onChange }: Props) {
         <TextInput
           value={content.tagline || ''}
           onChange={(v) => updateContent({ tagline: v || undefined })}
-          placeholder='Tagline / Subtítulo breve'
+          placeholder='Tagline / Brief subtitle'
           label='Tagline'
         />
         <TextareaInput
           value={content.intro || ''}
           onChange={(v) => updateContent({ intro: v || undefined })}
-          placeholder='Introducción al quiz...'
-          label='Introducción'
+          placeholder='Quiz introduction...'
+          label='Introduction'
           rows={4}
         />
       </div>
@@ -93,7 +93,7 @@ export function QuizContentEditor({ content, onChange }: Props) {
             <svg className='w-5 h-5 text-amber-500' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' />
             </svg>
-            Preguntas
+            Questions
           </h3>
           <button
             type='button'
@@ -103,7 +103,7 @@ export function QuizContentEditor({ content, onChange }: Props) {
             <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
             </svg>
-            Añadir pregunta
+            Add Question
           </button>
         </div>
 
@@ -178,7 +178,7 @@ function QuestionEditor({ question, index, onUpdate, onDelete }: QuestionEditorP
         <TextInput
           value={question.question}
           onChange={(v) => updateQuestion({ question: v })}
-          placeholder='Escribe tu pregunta...'
+          placeholder='Write your question...'
           className='flex-1 min-w-0'
         />
         <div className='flex items-center gap-2'>
@@ -194,7 +194,7 @@ function QuestionEditor({ question, index, onUpdate, onDelete }: QuestionEditorP
             type='button'
             onClick={(e) => { e.stopPropagation(); onDelete() }}
             className='p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors'
-            aria-label='Eliminar pregunta'
+            aria-label='Delete question'
           >
             <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />
@@ -204,7 +204,7 @@ function QuestionEditor({ question, index, onUpdate, onDelete }: QuestionEditorP
             type='button'
             onClick={(e) => e.stopPropagation()}
             className='p-2 text-text-muted hover:text-text-primary transition-colors'
-            aria-label={isExpanded ? 'Contraer' : 'Expandir'}
+            aria-label={isExpanded ? 'Collapse' : 'Expand'}
           >
             <svg className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
@@ -216,7 +216,7 @@ function QuestionEditor({ question, index, onUpdate, onDelete }: QuestionEditorP
       {isExpanded && (
         <div className='p-5 space-y-4 animate-slide-down'>
           <div className='space-y-3'>
-            <label className='block text-sm font-medium text-text-secondary'>Opciones de respuesta</label>
+            <label className='block text-sm font-medium text-text-secondary'>Answer Options</label>
             <div className='space-y-2'>
               {options.map((option, oIndex) => (
                 <div key={oIndex} className='flex items-center gap-2'>
@@ -231,7 +231,7 @@ function QuestionEditor({ question, index, onUpdate, onDelete }: QuestionEditorP
                     <TextInput
                       value={option}
                       onChange={(v) => handleOptionChange(oIndex, v)}
-                      placeholder={`Opción ${oIndex + 1}`}
+                      placeholder={`Option ${oIndex + 1}`}
                       className='flex-1 min-w-0 mb-0'
                     />
                   </label>
@@ -240,7 +240,7 @@ function QuestionEditor({ question, index, onUpdate, onDelete }: QuestionEditorP
                       type='button'
                       onClick={() => removeOption(oIndex)}
                       className='p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors'
-                      aria-label={`Eliminar opción ${oIndex + 1}`}
+                      aria-label={`Remove option ${oIndex + 1}`}
                     >
                       <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                         <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
@@ -258,7 +258,7 @@ function QuestionEditor({ question, index, onUpdate, onDelete }: QuestionEditorP
                   <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
                   </svg>
-                  Añadir opción
+                  Add Option
                 </button>
               )}
             </div>
@@ -267,8 +267,8 @@ function QuestionEditor({ question, index, onUpdate, onDelete }: QuestionEditorP
           <TextareaInput
             value={question.explanation || ''}
             onChange={(v) => updateQuestion({ explanation: v || undefined })}
-            placeholder='Explicación de la respuesta correcta (opcional)'
-            label='Explicación'
+            placeholder='Explanation of correct answer (optional)'
+            label='Explanation'
             rows={3}
           />
         </div>

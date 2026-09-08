@@ -17,8 +17,8 @@ export function ArticleContentEditor({ content, onChange }: Props) {
             </svg>
           </div>
           <div>
-            <h4 className='font-semibold text-green-800'>Modo Artículo</h4>
-            <p className='text-sm text-green-700'>Diseñado para contenido de lectura larga con formato elegante</p>
+            <h4 className='font-semibold text-green-800'>Article Mode</h4>
+            <p className='text-sm text-green-700'>Designed for long-form reading content with elegant formatting</p>
           </div>
         </div>
       </div>

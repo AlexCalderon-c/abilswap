@@ -153,7 +153,7 @@ export const LessonEditor = React.memo(function LessonEditor({ lesson, index, on
         <TextInput
           value={lesson.lesson_name}
           onChange={handleLessonNameChange}
-          placeholder='Título de la lección'
+          placeholder='Lesson title'
           className='flex-1 min-w-0 max-w-md'
           error={errors?.lesson_name}
         />
@@ -163,7 +163,7 @@ export const LessonEditor = React.memo(function LessonEditor({ lesson, index, on
             type='button'
             onClick={(e) => { e.stopPropagation(); setShowContentTypeSelector(true) }}
             className='p-2 text-text-muted hover:text-text-primary hover:bg-surface rounded-xl transition-colors'
-            aria-label='Cambiar tipo de contenido'
+            aria-label='Change content type'
           >
             <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M7 16a1 1 0 011-1h1a1 1 0 110 2H8a1 1 0 01-1-1zm0-4a1 1 0 011-1h7a1 1 0 110 2H8a1 1 0 01-1-1zm0-4a1 1 0 011-1h7a1 1 0 110 2H8a1 1 0 01-1-1z' />
@@ -174,7 +174,7 @@ export const LessonEditor = React.memo(function LessonEditor({ lesson, index, on
             type='button'
             onClick={(e) => { e.stopPropagation(); onDuplicate(lesson) }}
             className='p-2 text-text-muted hover:text-text-primary hover:bg-surface rounded-xl transition-colors'
-            aria-label='Duplicar lección'
+            aria-label='Duplicate lesson'
           >
             <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z' />
@@ -185,7 +185,7 @@ export const LessonEditor = React.memo(function LessonEditor({ lesson, index, on
             type='button'
             onClick={(e) => { e.stopPropagation(); onDelete(lesson.id) }}
             className='p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors'
-            aria-label='Eliminar lección'
+            aria-label='Delete lesson'
           >
             <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />
@@ -196,7 +196,7 @@ export const LessonEditor = React.memo(function LessonEditor({ lesson, index, on
             type='button'
             onClick={(e) => e.stopPropagation()}
             className='p-2 text-text-muted hover:text-text-primary transition-colors'
-            aria-label={isExpanded ? 'Contraer' : 'Expandir'}
+            aria-label={isExpanded ? 'Collapse' : 'Expand'}
           >
             <svg className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
@@ -215,7 +215,7 @@ export const LessonEditor = React.memo(function LessonEditor({ lesson, index, on
         <div className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fade-in' onClick={() => setShowContentTypeSelector(false)}>
           <div className='bg-surface rounded-2xl p-6 w-full max-w-md animate-slide-up' onClick={(e) => e.stopPropagation()}>
             <div className='flex items-center justify-between mb-4'>
-              <h3 className='text-lg font-semibold text-text-primary'>Cambiar tipo de contenido</h3>
+              <h3 className='text-lg font-semibold text-text-primary'>Change Content Type</h3>
               <button
                 type='button'
                 onClick={() => setShowContentTypeSelector(false)}

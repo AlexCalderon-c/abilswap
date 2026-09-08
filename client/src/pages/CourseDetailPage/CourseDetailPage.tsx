@@ -20,7 +20,7 @@ export default function CourseDetailPage() {
             <CourseInfo course={loadedData.courses} />
 
             <div>
-              <h2 className='text-xl font-bold text-text-primary mb-5'>Contenido del curso</h2>
+              <h2 className='text-xl font-bold text-text-primary mb-5'>Course Content</h2>
               <div className='space-y-3'>
                 {loadedData.modules.map((mod: Module) => (
                   <ModuleAccordion

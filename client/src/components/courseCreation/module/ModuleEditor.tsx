@@ -44,7 +44,7 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
     const duplicatedLesson: LessonFormData = {
       ...lesson,
       id: `lesson-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      lesson_name: `${lesson.lesson_name} (copia)`,
+      lesson_name: `${lesson.lesson_name} (copy)`,
     }
     const lessonIndex = moduleRef.current.lessons.findIndex((l) => l.id === lesson.id)
     const newLessons = [...moduleRef.current.lessons]
@@ -79,13 +79,13 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
         <TextInput
           value={module.module_name}
           onChange={handleModuleNameChange}
-          placeholder='Nombre del módulo'
+          placeholder='Module name'
           className='flex-1 min-w-0 max-w-md'
           error={errors?.module_name}
         />
 
         <span className='text-sm text-text-muted px-3 py-1 rounded-full bg-surface border border-border'>
-          {module.lessons.length} lección{module.lessons.length !== 1 ? 'es' : ''}
+          {module.lessons.length} lesson{module.lessons.length !== 1 ? 's' : ''}
         </span>
 
         <div className='flex items-center gap-2 ml-auto'>
@@ -97,14 +97,14 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
             <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
             </svg>
-            Añadir lección
+Add Lesson
           </button>
 
           <button
             type='button'
             onClick={(e) => { e.stopPropagation(); onDuplicate() }}
             className='p-2 text-text-muted hover:text-text-primary hover:bg-surface rounded-xl transition-colors'
-            aria-label='Duplicar módulo'
+            aria-label='Duplicate module'
           >
             <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z' />
@@ -115,7 +115,7 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
             type='button'
             onClick={(e) => { e.stopPropagation(); onDelete() }}
             className='p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors'
-            aria-label='Eliminar módulo'
+            aria-label='Delete module'
           >
             <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />
@@ -126,7 +126,7 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
             type='button'
             onClick={(e) => e.stopPropagation()}
             className='p-2 text-text-muted hover:text-text-primary transition-colors'
-            aria-label={isExpanded ? 'Contraer' : 'Expandir'}
+            aria-label={isExpanded ? 'Collapse' : 'Expand'}
           >
             <svg className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
@@ -157,8 +157,8 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={1.5} d='M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' />
                   </svg>
                 </div>
-                <p className='text-text-muted'>No hay lecciones en este módulo</p>
-                <p className='text-sm text-text-muted mt-1'>Haz clic en "Añadir lección" para crear la primera</p>
+                <p className='text-text-muted'>No lessons in this module</p>
+                <p className='text-sm text-text-muted mt-1'>Click "Add Lesson" to create the first one</p>
               </div>
             }
           />
@@ -169,7 +169,7 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
         <div className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fade-in' onClick={() => setShowAddLessonMenu(false)}>
           <div className='bg-surface rounded-2xl p-6 w-full max-w-md animate-slide-up' onClick={(e) => e.stopPropagation()}>
             <div className='flex items-center justify-between mb-4'>
-              <h3 className='text-lg font-semibold text-text-primary'>Añadir nueva lección</h3>
+              <h3 className='text-lg font-semibold text-text-primary'>Add New Lesson</h3>
               <button
                 type='button'
                 onClick={() => setShowAddLessonMenu(false)}
@@ -180,7 +180,7 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
                 </svg>
               </button>
             </div>
-            <p className='text-sm text-text-secondary mb-4'>Selecciona el tipo de contenido para la lección</p>
+            <p className='text-sm text-text-secondary mb-4'>Select the content type for the lesson</p>
             <div className='grid grid-cols-2 gap-3'>
               {CONTENT_TYPES.map((type) => (
                 <button

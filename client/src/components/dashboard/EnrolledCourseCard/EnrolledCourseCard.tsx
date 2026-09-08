@@ -19,7 +19,7 @@ export default function EnrolledCourseCard({ enrollment }: Props) {
         <div className='absolute inset-0 bg-black/10' />
         <div className='absolute top-3 right-3'>
           <span className={`px-2.5 py-1 text-xs font-semibold rounded-md capitalize ${statusColors[enrollment.enrollment_status]}`}>
-            {enrollment.enrollment_status === 'active' ? 'En progreso' : enrollment.enrollment_status === 'completed' ? 'Completado' : 'Abandonado'}
+            {enrollment.enrollment_status === 'active' ? 'In Progress' : enrollment.enrollment_status === 'completed' ? 'Completed' : 'Dropped'}
           </span>
         </div>
       </div>
@@ -35,7 +35,7 @@ export default function EnrolledCourseCard({ enrollment }: Props) {
           href={`/courses/${enrollment.course_id}`}
           className='mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors'
         >
-          Continuar curso
+          Continue Course
           <svg className='w-3.5 h-3.5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M17 8l4 4m0 0l-4 4m4-4H3' />
           </svg>

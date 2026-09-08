@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { useLoaderData } from 'react-router-dom'
 
 const sortOptions = [
-  { value: 'popular', label: 'Más populares' },
-  { value: 'newest', label: 'Más recientes' },
-  { value: 'rating', label: 'Mejor calificados' },
-  { value: 'price-asc', label: 'Menor precio' },
-  { value: 'price-desc', label: 'Mayor precio' },
+  { value: 'popular', label: 'Most Popular' },
+  { value: 'newest', label: 'Newest' },
+  { value: 'rating', label: 'Highest Rated' },
+  { value: 'price-asc', label: 'Lowest Price' },
+  { value: 'price-desc', label: 'Highest Price' },
 ]
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
 
 export default function CourseFilters({ onSearch, onSortChange }: Props) {
   const loadedData = useLoaderData()
-  const [activeCategory, setActiveCategory] = useState('Todas')
+  const [activeCategory, setActiveCategory] = useState('All')
   const [categoryInput, setCategoryInput] = useState('')
 
   const handleCategoryChange = (value: string, category?: string) => {
@@ -24,7 +24,7 @@ export default function CourseFilters({ onSearch, onSortChange }: Props) {
     
     if(category){
       
-      const newCategory = activeCategory === category ? 'Todas' : category
+      const newCategory = activeCategory === category ? 'All' : category
       setActiveCategory(newCategory)
       
       onSearch(value, newCategory)
@@ -47,7 +47,7 @@ export default function CourseFilters({ onSearch, onSortChange }: Props) {
         </svg>
         <input
           type='text'
-          placeholder='Buscar cursos...'
+          placeholder='Search courses...'
           onChange={(e) => handleCategoryChange(e.target.value)}
           className='w-full pl-10 pr-4 py-3 bg-white border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all'
           value={categoryInput}
@@ -73,7 +73,7 @@ export default function CourseFilters({ onSearch, onSortChange }: Props) {
       </div>
 
       <div className='flex items-center justify-between'>
-        <span className='text-sm text-text-muted'>Ordenar por:</span>
+        <span className='text-sm text-text-muted'>Sort by:</span>
         <select
           onChange={(e) => onSortChange(e.target.value)}
           className='px-3 py-2 bg-white border border-border rounded-lg text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-200 transition-all'

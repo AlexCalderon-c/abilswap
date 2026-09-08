@@ -31,7 +31,7 @@ export const TakeawaysEditor = React.memo(function TakeawaysEditor({ takeaways, 
 
   return (
     <div className='space-y-3'>
-      <label className='block text-sm font-medium text-text-secondary'>Puntos clave</label>
+      <label className='block text-sm font-medium text-text-secondary'>Key Takeaways</label>
       <div className='space-y-2'>
         {takeaways.map((takeaway, index) => (
           <div key={index} className='flex items-start gap-3'>
@@ -40,7 +40,7 @@ export const TakeawaysEditor = React.memo(function TakeawaysEditor({ takeaways, 
               <TextInput
                 value={takeaway}
                 onChange={(v) => handleChange(index, v)}
-                placeholder={`Punto clave ${index + 1}`}
+                placeholder={`Key Takeaway ${index + 1}`}
                 className='mb-0'
               />
             </div>
@@ -49,7 +49,7 @@ export const TakeawaysEditor = React.memo(function TakeawaysEditor({ takeaways, 
                 type='button'
                 onClick={() => removeTakeaway(index)}
                 className='p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors self-start'
-                aria-label={`Eliminar punto clave ${index + 1}`}
+                aria-label={`Remove key takeaway ${index + 1}`}
               >
                 <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
@@ -66,7 +66,7 @@ export const TakeawaysEditor = React.memo(function TakeawaysEditor({ takeaways, 
           <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
           </svg>
-          Añadir punto clave
+          Add Key Takeaway
         </button>
       </div>
     </div>

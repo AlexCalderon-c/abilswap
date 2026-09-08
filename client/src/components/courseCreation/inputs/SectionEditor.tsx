@@ -69,14 +69,14 @@ export const SectionEditor = React.memo(function SectionEditor({ section, index,
         <TextInput
           value={section.heading}
           onChange={(v) => updateSection({ heading: v })}
-          placeholder='Título de la sección'
+          placeholder='Section title'
           className='flex-1 min-w-0'
         />
         <button
           type='button'
           onClick={(e) => { e.stopPropagation(); onDelete(section.id) }}
           className='p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors ml-auto'
-          aria-label='Eliminar sección'
+          aria-label='Delete section'
         >
           <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' />
@@ -86,7 +86,7 @@ export const SectionEditor = React.memo(function SectionEditor({ section, index,
           type='button'
           onClick={(e) => e.stopPropagation()}
           className='p-2 text-text-muted hover:text-text-primary transition-colors'
-          aria-label={isExpanded ? 'Contraer' : 'Expandir'}
+          aria-label={isExpanded ? 'Collapse' : 'Expand'}
         >
           <svg className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
@@ -97,14 +97,14 @@ export const SectionEditor = React.memo(function SectionEditor({ section, index,
       {isExpanded && (
         <div className='p-5 space-y-4 animate-slide-down'>
           <div className='space-y-3'>
-            <label className='block text-sm font-medium text-text-secondary'>Párrafos</label>
+            <label className='block text-sm font-medium text-text-secondary'>Paragraphs</label>
             <div className='space-y-2'>
               {section.paragraph.map((paragraph, pIndex) => (
                 <div key={pIndex} className='flex gap-2'>
                   <TextareaInput
                     value={paragraph}
                     onChange={(v) => handleParagraphChange(pIndex, v)}
-                    placeholder={`Párrafo ${pIndex + 1}`}
+                    placeholder={`Paragraph ${pIndex + 1}`}
                     rows={3}
                     className='flex-1'
                   />
@@ -113,7 +113,7 @@ export const SectionEditor = React.memo(function SectionEditor({ section, index,
                       type='button'
                       onClick={() => removeParagraph(pIndex)}
                       className='p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors self-start mt-2'
-                      aria-label={`Eliminar párrafo ${pIndex + 1}`}
+                      aria-label={`Remove paragraph ${pIndex + 1}`}
                     >
                       <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                         <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
@@ -130,7 +130,7 @@ export const SectionEditor = React.memo(function SectionEditor({ section, index,
                 <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
                 </svg>
-                Añadir párrafo
+                Add Paragraph
               </button>
             </div>
           </div>
@@ -144,16 +144,16 @@ export const SectionEditor = React.memo(function SectionEditor({ section, index,
                   onChange={(e) => setShowCode(e.target.checked)}
                   className='w-4 h-4 text-primary-600 border-border rounded focus:ring-primary-500'
                 />
-                <span className='text-sm font-medium text-text-secondary'>Bloque de código</span>
+                <span className='text-sm font-medium text-text-secondary'>Code Block</span>
               </label>
             </div>
             {showCode && (
               <TextareaInput
                 value={section.code || ''}
                 onChange={handleCodeChange}
-                placeholder='Código de ejemplo...'
+                placeholder='Example code...'
                 rows={6}
-                label='Código'
+                label='Code'
                 className='font-mono text-sm'
               />
             )}
@@ -168,7 +168,7 @@ export const SectionEditor = React.memo(function SectionEditor({ section, index,
                   onChange={(e) => setShowImage(e.target.checked)}
                   className='w-4 h-4 text-primary-600 border-border rounded focus:ring-primary-500'
                 />
-                <span className='text-sm font-medium text-text-secondary'>Imagen</span>
+                <span className='text-sm font-medium text-text-secondary'>Image</span>
               </label>
             </div>
             {showImage && (
@@ -176,14 +176,14 @@ export const SectionEditor = React.memo(function SectionEditor({ section, index,
                 <UrlInput
                   value={section.image || ''}
                   onChange={handleImageChange}
-                  placeholder='https://ejemplo.com/imagen.jpg'
-                  label='URL de la imagen'
+                  placeholder='https://example.com/image.jpg'
+                  label='Image URL'
                 />
                 <TextInput
                   value={section.caption || ''}
                   onChange={handleCaptionChange}
-                  placeholder='Pie de foto (opcional)'
-                  label='Pie de foto'
+                  placeholder='Caption (optional)'
+                  label='Caption'
                 />
               </div>
             )}

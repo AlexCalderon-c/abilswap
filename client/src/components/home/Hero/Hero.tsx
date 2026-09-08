@@ -12,13 +12,13 @@ export default function Hero() {
         <div className='max-w-3xl'>
 
           <h1 className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary leading-[1.1] tracking-tight mb-6 animate-slide-up'>
-            Aprende
-            Desde Cero
+            Learn
+            From Scratch
           </h1>
 
           <p className='text-lg md:text-xl text-text-secondary leading-relaxed max-w-2xl mb-8 animate-slide-up'>
-            Domina las tecnologías más demandadas con cursos prácticos creados por profesionales.
-            Construye proyectos reales y acelera tu carrera en el mundo tech.
+            Master the most in-demand technologies with practical courses created by professionals.
+            Build real projects and accelerate your career in the tech world.
           </p>
 
           <div className='flex flex-col sm:flex-row gap-4 animate-slide-up'>
@@ -26,7 +26,7 @@ export default function Hero() {
               to='/courses'
               className='px-8 py-3.5 text-center text-white font-semibold bg-primary-600 rounded-xl hover:bg-primary-700 transition-all duration-200 shadow-lg shadow-primary-200 hover:shadow-xl hover:shadow-primary-300 hover:-translate-y-0.5'
             >
-              Explorar cursos
+              Browse Courses
             </Link>
           </div> 
         </div>

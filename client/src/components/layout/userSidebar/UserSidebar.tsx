@@ -9,9 +9,9 @@ interface UserSidebarProps {
 }
 
 const roleLabel: Record<string, string> = {
-  student: 'Estudiante',
-  teacher: 'Docente',
-  admin: 'Administrador'
+  student: 'Student',
+  teacher: 'Teacher',
+  admin: 'Admin'
 }
 
 function UserSidebar({ handleSubmit, user, onNavigate }: UserSidebarProps) {
@@ -24,8 +24,8 @@ function UserSidebar({ handleSubmit, user, onNavigate }: UserSidebarProps) {
           {initials}
         </div>
         <div className='flex flex-col items-center'>
-          <p className='font-bold text-text-primary'>{user?.username || 'Usuario'}</p>
-          <span className='text-sm text-text-secondary text-center'>{user ? roleLabel[user.role] || user.role : 'Rol'}</span>
+          <p className='font-bold text-text-primary'>{user?.username || 'User'}</p>
+          <span className='text-sm text-text-secondary text-center'>{user ? roleLabel[user.role] || user.role : 'Role'}</span>
         </div>
       </div>
 
@@ -38,7 +38,7 @@ function UserSidebar({ handleSubmit, user, onNavigate }: UserSidebarProps) {
           <svg className='w-5 h-5 text-primary-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 13h6V4H4v9zm0 7h6v-5H4v5zm10 0h6V11h-6v9zm0-13v5h6V7h-6z' />
           </svg>
-          Mi panel
+          My Dashboard
         </Link>
         <Link
           to='/courses'
@@ -48,7 +48,7 @@ function UserSidebar({ handleSubmit, user, onNavigate }: UserSidebarProps) {
           <svg className='w-5 h-5 text-primary-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' />
           </svg>
-          Explorar cursos
+          Browse Courses
         </Link>
         <Link
           to={`/profile/${user?.username}`}
@@ -58,7 +58,7 @@ function UserSidebar({ handleSubmit, user, onNavigate }: UserSidebarProps) {
           <svg className='w-5 h-5 text-primary-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' />
           </svg>
-          Mi perfil
+          My Profile
         </Link>
         {user?.role === 'teacher' ? 
           <Link
@@ -66,7 +66,7 @@ function UserSidebar({ handleSubmit, user, onNavigate }: UserSidebarProps) {
             onClick={onNavigate}
             className='flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-text-primary rounded-lg hover:bg-surface-tertiary transition-colors'
           >
-            Crear cursos
+            Create Courses
           </Link>
           :
           <></>
@@ -79,7 +79,7 @@ function UserSidebar({ handleSubmit, user, onNavigate }: UserSidebarProps) {
           onClick={handleSubmit}
           className='block w-full px-4 py-2.5 text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors text-center'
         >
-          Cerrar Sesión
+          Sign Out
         </button>
       </div>
     </div>

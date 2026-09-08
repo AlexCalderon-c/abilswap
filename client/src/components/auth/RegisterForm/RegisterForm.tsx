@@ -31,36 +31,36 @@ export default function RegisterForm() {
           <div className='w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center mx-auto mb-4'>
             <span className='text-white font-bold text-lg'>A</span>
           </div>
-          <h1 className='text-2xl font-bold text-text-primary'>Crear tu cuenta</h1>
-          <p className='text-sm text-text-secondary mt-2'>Comienza tu viaje de aprendizaje</p>
+          <h1 className='text-2xl font-bold text-text-primary'>Create Your Account</h1>
+          <p className='text-sm text-text-secondary mt-2'>Start your learning journey</p>
         </div>
 
         <form onSubmit={handleSubmit} className='space-y-5'>
           <div>
             <label htmlFor='name' className='block text-sm font-medium text-text-primary mb-1.5'>
-              Nombre completo
+              Full Name
             </label>
             <input
               id='name'
               type='text'
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder='Tu nombre'
+              placeholder='Your name'
               className='w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all'
               required
             />
           </div>
 
           <div>
-            <label htmlFor='name' className='block text-sm font-medium text-text-primary mb-1.5'>
-              Nombre de usuario
+            <label htmlFor='username' className='block text-sm font-medium text-text-primary mb-1.5'>
+              Username
             </label>
             <input
-              id='name'
+              id='username'
               type='text'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder='Tu nombre'
+              placeholder='Your username'
               className='w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all'
               required
             />
@@ -69,14 +69,14 @@ export default function RegisterForm() {
 
           <div>
             <label htmlFor='email' className='block text-sm font-medium text-text-primary mb-1.5'>
-              Correo electrónico
+              Email
             </label>
             <input
               id='email'
               type='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder='tu@correo.com'
+              placeholder='you@email.com'
               className='w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all'
               required
             />
@@ -84,14 +84,14 @@ export default function RegisterForm() {
 
           <div>
             <label htmlFor='password' className='block text-sm font-medium text-text-primary mb-1.5'>
-              Contraseña
+              Password
             </label>
             <input
               id='password'
               type='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder='Mínimo 8 caracteres'
+              placeholder='Minimum 8 characters'
               className='w-full px-4 py-2.5 bg-white border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all'
               required
               minLength={8}
@@ -99,7 +99,7 @@ export default function RegisterForm() {
           </div>
 
           <div>
-            <label className='block text-sm font-medium text-text-primary mb-2'>Tipo de cuenta</label>
+            <label className='block text-sm font-medium text-text-primary mb-2'>Account Type</label>
             <div className='grid grid-cols-2 gap-3'>
               <button
                 type='button'
@@ -110,7 +110,7 @@ export default function RegisterForm() {
                     : 'border-border text-text-secondary hover:border-primary-200'
                 }`}
               >
-                Estudiante
+                Student
               </button>
               <button
                 type='button'
@@ -121,7 +121,7 @@ export default function RegisterForm() {
                     : 'border-border text-text-secondary hover:border-primary-200'
                 }`}
               >
-                Docente
+                Teacher
               </button>
             </div>
           </div>
@@ -130,14 +130,14 @@ export default function RegisterForm() {
             type='submit'
             className='w-full py-2.5 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-md'
           >
-            Crear cuenta
+            Create Account
           </button>
         </form>
 
         <p className='text-center text-sm text-text-secondary mt-6'>
-          ¿Ya tienes cuenta?{' '}
+          Already have an account?{' '}
           <Link to='/login' className='text-primary-600 hover:text-primary-700 font-medium transition-colors'>
-            Inicia sesión
+            Sign In
           </Link>
         </p>
       </div>

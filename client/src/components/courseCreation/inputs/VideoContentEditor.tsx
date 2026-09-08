@@ -29,10 +29,10 @@ export function VideoContentEditor({ videoUrl, onChange }: Props) {
         setIsValidUrl(true)
         setPreviewUrl(url)
       } else {
-        setUrlError('URL no soportada. Usa YouTube, Vimeo o enlaces directos a video (mp4, webm, ogg, mov)')
+        setUrlError('Unsupported URL. Use YouTube, Vimeo, or direct video links (mp4, webm, ogg, mov)')
       }
     } catch {
-      setUrlError('URL inválida')
+      setUrlError('Invalid URL')
     }
   }
 
@@ -65,27 +65,27 @@ export function VideoContentEditor({ videoUrl, onChange }: Props) {
             </svg>
           </div>
           <div>
-            <h3 className='text-lg font-semibold text-text-primary'>Enlace de video</h3>
-            <p className='text-sm text-text-muted'>YouTube, Vimeo o enlace directo (mp4, webm, ogg, mov)</p>
+            <h3 className='text-lg font-semibold text-text-primary'>Video Link</h3>
+            <p className='text-sm text-text-muted'>YouTube, Vimeo, or direct link (mp4, webm, ogg, mov)</p>
           </div>
         </div>
 
         <UrlInput
           value={videoUrl}
           onChange={validateAndPreview}
-          placeholder='https://youtube.com/watch?v=... o https://vimeo.com/...'
-          label='URL del video'
+          placeholder='https://youtube.com/watch?v=... or https://vimeo.com/...'
+          label='Video URL'
           error={urlError || undefined}
         />
 
         {isValidUrl && (
           <div className='mt-4 p-4 bg-surface rounded-xl border border-border'>
-            <p className='text-sm font-medium text-text-secondary mb-3'>Vista previa:</p>
+            <p className='text-sm font-medium text-text-secondary mb-3'>Preview:</p>
             <div className='aspect-video rounded-lg overflow-hidden bg-black'>
               {embedUrl && previewUrl && /youtube\.com|youtu\.be/.test(previewUrl) && (
                 <iframe
                   src={embedUrl}
-                  title='Vista previa del video'
+                  title='Video preview'
                   className='w-full h-full'
                   frameBorder='0'
                   allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
@@ -95,7 +95,7 @@ export function VideoContentEditor({ videoUrl, onChange }: Props) {
               {embedUrl && previewUrl && /vimeo\.com/.test(previewUrl) && (
                 <iframe
                   src={embedUrl}
-                  title='Vista previa del video'
+                  title='Video preview'
                   className='w-full h-full'
                   frameBorder='0'
                   allow='autoplay; fullscreen; picture-in-picture'
@@ -121,26 +121,26 @@ export function VideoContentEditor({ videoUrl, onChange }: Props) {
           <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' />
           </svg>
-          Consejos
+          Tips
         </h4>
         <ul className='space-y-2 text-sm text-primary-900'>
           <li className='flex items-start gap-2'>
             <svg className='w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
             </svg>
-            Usa URLs de YouTube o Vimeo para mejor compatibilidad
+            Use YouTube or Vimeo URLs for better compatibility
           </li>
           <li className='flex items-start gap-2'>
             <svg className='w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
             </svg>
-            Para archivos directos, asegúrate de que el servidor permita CORS
+            For direct files, ensure the server allows CORS
           </li>
           <li className='flex items-start gap-2'>
             <svg className='w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
             </svg>
-            Los videos de YouTube deben ser públicos o no listados
+            YouTube videos must be public or unlisted
           </li>
         </ul>
       </div>
