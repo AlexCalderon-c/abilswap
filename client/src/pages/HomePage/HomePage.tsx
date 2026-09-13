@@ -1,5 +1,6 @@
 import Hero from '../../components/home/Hero/Hero'
 import Stats from '../../components/home/Stats/Stats'
+import Footer from '../../components/layout/Footer/Footer'
 
 export default function HomePage() {
   return (
@@ -22,6 +23,7 @@ export default function HomePage() {
           </a>
         </div>
       </section>
+      <Footer/>
     </>
   )
 }

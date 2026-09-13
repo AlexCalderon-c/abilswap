@@ -89,7 +89,7 @@ export const getCourseCompleteById = async (req: Request, res: Response, next: N
 
 export const getCategoriesFromCourses = async (req: Request, res: Response, next: NextFunction) => { //HASN'T BEEN TESTED
     try {
-        const course: QueryResult<CourseObject> = await pool.query("SELECT category FROM course GROUP BY category")
+        const course: QueryResult<CourseObject> = await pool.query("SELECT category FROM course WHERE category IS NOT NULL GROUP BY category ")
         const courseObject = course.rows;
         return res.status(200).json(courseObject);
     } catch (error) {

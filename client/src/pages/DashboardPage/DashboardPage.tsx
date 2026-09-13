@@ -15,8 +15,6 @@ export default function DashboardPage() {
   const [activeEnrollment, setActiveEnrollment] = useState(active)
   const [completeEnrollment, setCompleteEnrollment] = useState(completed)
 
-  
-
   return (
     <div className='min-h-screen bg-surface-secondary'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16'>

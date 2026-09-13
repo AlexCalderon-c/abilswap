@@ -17,7 +17,7 @@ export default function CourseCard({ course }: Props) {
     
     <Link to ={`/courses/${course.id}`}>
       <div
-        className='group block bg-white rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary-200'
+        className='group block bg-white rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary-200 min-h-full'
       >
         <div className={`h-40 ${categoryColors[course.category ?? ''] || 'bg-gradient-to-br from-primary-500 to-accent-500'} relative overflow-hidden`}>
           <div className='absolute inset-0 bg-black/10' />
@@ -33,7 +33,7 @@ export default function CourseCard({ course }: Props) {
           </div>
         </div>
 
-        <div className='p-5'>
+        <div className='p-5 min-h-[100%]'>
           <h3 className='font-semibold text-text-primary group-hover:text-primary-600 transition-colors mb-2 line-clamp-2'>
             {course.course_name}
           </h3>

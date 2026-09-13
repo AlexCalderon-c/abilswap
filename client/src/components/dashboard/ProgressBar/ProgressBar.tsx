@@ -13,7 +13,7 @@ export default function ProgressBar({ progress }: Props) {
       </div>
       <div className='w-full h-2 rounded-full bg-surface-tertiary overflow-hidden'>
         <div
-          className='h-full rounded-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-700 ease-out'
+          className='h-full rounded-full bg-primary-500 transition-all duration-700 ease-out'
           style={{ width: `${clampedProgress}%` }}
         />
       </div>

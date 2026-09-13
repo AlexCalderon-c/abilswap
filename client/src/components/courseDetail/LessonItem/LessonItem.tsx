@@ -77,7 +77,6 @@ export default function LessonItem({ lesson, isEnrolled }: Props) {
           <p className='text-sm text-text-primary font-medium'>
             {lesson.lesson_name}
           </p>
-          <p className='text-xs text-text-muted capitalize'>{lesson.content_type}</p>
         </div>
       </div>
       <span className='text-xs font-medium text-text-muted'>

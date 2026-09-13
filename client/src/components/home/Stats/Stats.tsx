@@ -17,14 +17,16 @@ export default function Stats() {
           {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className={`text-center p-6 rounded-2xl bg-surface-secondary transition-all duration-500 ${
+              className={`text-center p-6 rounded-2xl bg-surface-secondary transition-all duration-500 flex justify-center gap-5 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-              } hover:shadow-md hover:-translate-y-1`}
+              }`}
               style={{ transitionDelay: `${index * 150}ms` }}
             >
               <span className='text-3xl mb-3 block'>{stat.icon}</span>
-              <p className='text-2xl md:text-3xl font-bold text-text-primary mb-1'>{stat.value}</p>
-              <p className='text-sm text-text-secondary'>{stat.label}</p>
+              <div className='flex flex-col'>
+                <p className='text-2xl md:text-3xl font-bold text-text-primary mb-1'>{stat.value}</p>
+                <p className='text-sm text-text-secondary'>{stat.label}</p>
+              </div>
             </div>
           ))}
         </div>

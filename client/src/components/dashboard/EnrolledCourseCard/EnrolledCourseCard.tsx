@@ -14,13 +14,10 @@ export default function EnrolledCourseCard({ enrollment }: Props) {
   }
 
   return (
-    <div className='group bg-white rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5'>
+    <div className='group bg-white rounded-2xl border border-border overflow-hidden transition-all duration-300'>
       <div className='h-32 bg-gradient-to-br from-primary-400 to-accent-400 relative'>
         <div className='absolute inset-0 bg-black/10' />
         <div className='absolute top-3 right-3'>
-          <span className={`px-2.5 py-1 text-xs font-semibold rounded-md capitalize ${statusColors[enrollment.enrollment_status]}`}>
-            {enrollment.enrollment_status === 'active' ? 'In Progress' : enrollment.enrollment_status === 'completed' ? 'Completed' : 'Dropped'}
-          </span>
         </div>
       </div>
 
