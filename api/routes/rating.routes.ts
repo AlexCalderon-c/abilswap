@@ -7,7 +7,7 @@ import { RatingSchema } from "../validators/rating.validator.ts";
 
 const route = Router()
 
-route.get('/:id', verifyAccessToken, roleMiddleware(['student', 'teacher']), getRatingById)
+route.get('/:course_id', verifyAccessToken, roleMiddleware(['student', 'teacher']), getRatingById)
 route.post('/:course_id', verifyAccessToken, roleMiddleware(['student']), validateMiddleware(RatingSchema), createRating)
 route.put('/:id', verifyAccessToken, roleMiddleware(['student']), validateMiddleware(RatingSchema), updateRating)
 route.delete('/:id', verifyAccessToken, roleMiddleware(['student']), deleteRating)

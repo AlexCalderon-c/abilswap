@@ -17,7 +17,7 @@ export default function HomePage() {
           </p>
           <a
             href='/register'
-            className='inline-flex px-8 py-3.5 text-white font-semibold bg-primary-600 rounded-xl hover:bg-primary-700 transition-all duration-200 shadow-lg shadow-primary-200 hover:shadow-xl hover:-translate-y-0.5'
+            className='inline-flex px-8 py-3.5 text-white font-semibold bg-primary-600 hover:bg-primary-700 transition-all duration-200 shadow-lg shadow-primary-200 hover:shadow-xl hover:-translate-y-0.5'
           >
             Create Free Account
           </a>

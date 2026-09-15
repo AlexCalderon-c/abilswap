@@ -16,8 +16,8 @@ export const createRating = async (req: Request, res: Response, next: NextFuncti
 
 export const getRatingById = async (req: Request, res: Response, next: NextFunction) => {
     try{
-        const {id} = req.params
-        const response: QueryResult<RatingObject> = await pool.query('SELECT * FROM rating WHERE id = $1', [id])
+        const {course_id} = req.params
+        const response: QueryResult<RatingObject> = await pool.query('SELECT * FROM rating WHERE id_student = $1 AND id_course = $2', [req.user?.id, course_id])
         res.status(201).json(response.rows[0])
     }catch(error){
         next(error)

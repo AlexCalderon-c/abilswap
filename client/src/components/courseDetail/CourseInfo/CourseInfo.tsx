@@ -1,4 +1,5 @@
 import type { Course } from '../../../types'
+import RatingItem from '../RatingItem/RatingItem'
 
 interface Props {
   course: Course
@@ -7,12 +8,6 @@ interface Props {
 export default function CourseInfo({ course }: Props) {
   return (
     <div>
-      <div className='flex items-center gap-3 mb-4'>
-        <span className='px-3 py-1 text-xs font-semibold rounded-full bg-primary-50 text-primary-700'>
-          {course.category || 'General'}
-        </span>
-        <span className='text-sm text-text-muted'>Recently updated</span>
-      </div>
 
       <h1 className='text-3xl md:text-4xl font-bold text-text-primary mb-4 leading-tight'>
         {course.course_name}
@@ -40,6 +35,9 @@ export default function CourseInfo({ course }: Props) {
           <span className='text-sm font-semibold text-text-primary'>{course.rating_avg}</span>
         </div>
       </div>
+      
+
+      <RatingItem courseid={course.id}/>
       
     </div>
   )

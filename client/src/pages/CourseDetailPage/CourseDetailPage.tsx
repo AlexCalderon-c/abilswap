@@ -18,7 +18,6 @@ export default function CourseDetailPage() {
         <div className='grid lg:grid-cols-3 gap-8'>
           <div className='lg:col-span-2 space-y-8'>
             <CourseInfo course={loadedData.courses} />
-
             <div>
               <h2 className='text-xl font-bold text-text-primary mb-5'>Course Content</h2>
               <div className='space-y-3'>

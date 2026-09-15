@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { Lesson } from '../../../types'
 import { useRouteLoaderData } from 'react-router-dom'
+import RatingItem from '../RatingItem/RatingItem'
 
 interface Props {
   lesson: Lesson,
@@ -60,7 +61,6 @@ export default function LessonItem({ lesson, isEnrolled }: Props) {
           <p className='text-sm text-text-primary group-hover:text-primary-600 transition-colors font-medium'>
             {lesson.lesson_name}
           </p>
-          <p className='text-xs text-text-muted capitalize'>{lesson.content_type}</p>
         </div>
       </div>
       <span className='text-xs font-medium text-text-muted group-hover:text-primary-500 transition-colors'>
