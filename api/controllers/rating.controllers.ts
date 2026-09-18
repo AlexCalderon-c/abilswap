@@ -26,9 +26,9 @@ export const getRatingById = async (req: Request, res: Response, next: NextFunct
 
 export const updateRating = async (req: Request, res: Response, next: NextFunction) => {
     try{
-        const {id} = req.params
+        const {course_id} = req.params
         const {rating_score, comment} = req.body
-        const response: QueryResult<RatingObject> = await pool.query('UPDATE rating SET rating_score = $1, comment = $2 WHERE id = $3 AND id_student = $4', [rating_score, comment, id, req.user?.id])
+        const response: QueryResult<RatingObject> = await pool.query('UPDATE rating SET rating_score = $1, comment = $2 WHERE id_course = $3 AND id_student = $4', [rating_score, comment, course_id, req.user?.id])
         if(response.rowCount === 0){
             throw new Error('Unauthorized')
         }

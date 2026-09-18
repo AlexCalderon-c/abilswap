@@ -3,10 +3,13 @@ import CourseInfo from '../../components/courseDetail/CourseInfo/CourseInfo'
 import ModuleAccordion from '../../components/courseDetail/ModuleAccordion/ModuleAccordion'
 import CourseSidebar from '../../components/courseDetail/CourseSidebar/CourseSidebar'
 import { useLoaderData } from 'react-router-dom'
+import { useState } from 'react'
 
 export default function CourseDetailPage() {
 
   const loadedData = useLoaderData()
+
+  const [isEnrolledState, setIsEnrolledState] = useState(loadedData.enroll)
 
   console.log(loadedData)
   console.log(loadedData.modules[0].lessons)
@@ -17,7 +20,7 @@ export default function CourseDetailPage() {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12'>
         <div className='grid lg:grid-cols-3 gap-8'>
           <div className='lg:col-span-2 space-y-8'>
-            <CourseInfo course={loadedData.courses} />
+            <CourseInfo course={loadedData.courses} rating={loadedData.rating} isEnrolled={isEnrolledState} />
             <div>
               <h2 className='text-xl font-bold text-text-primary mb-5'>Course Content</h2>
               <div className='space-y-3'>
@@ -35,7 +38,7 @@ export default function CourseDetailPage() {
           </div>
 
           <div className='lg:col-span-1'>
-            <CourseSidebar course={loadedData.courses} isEnrolled={loadedData.enroll} />
+            <CourseSidebar course={loadedData.courses} isEnrolled={loadedData.enroll} setEnroll={setIsEnrolledState}/>
           </div>
         </div>
       </div>

@@ -1,15 +1,17 @@
-import { useState } from 'react'
+import { useState, type Dispatch, type SetStateAction } from 'react'
 import { useCourse } from '../../../context/CourseContext'
 import type { Course } from '../../../types'
-import { useRouteLoaderData } from 'react-router-dom'
+import { useRevalidator, useRouteLoaderData } from 'react-router-dom'
 
 interface Props {
   course: Course
   isEnrolled: boolean
+  setEnroll: Dispatch<SetStateAction<Boolean>>
 }
 
-export default function CourseSidebar({ course, isEnrolled }: Props) {
+export default function CourseSidebar({ course, isEnrolled, setEnroll }: Props) {
   const loadedUser = useRouteLoaderData('auth')
+  const revalidator = useRevalidator()
   const {enrollCourse} = useCourse()
   const [enrollButton, setEnrollButton] = useState(!isEnrolled)
   console.log('Desde sidebar: ', loadedUser)
@@ -17,6 +19,7 @@ export default function CourseSidebar({ course, isEnrolled }: Props) {
   const submitHandler = () => {
     setEnrollButton(false)
     enrollCourse(course.id)
+    setEnroll(true)
   }
 
   return (

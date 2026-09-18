@@ -1,20 +1,29 @@
 import {useState, useCallback} from 'react'
 import { apiClient } from '../../../api/axios'
+import type { Rating } from '../../../types'
+
 
 interface RatingProps{
-    courseid: number
+    courseid: number,
+    rating: Rating
 }
 
-function RatingItem({courseid}: RatingProps) {
-    const [ratingState, setRatingState] = useState(0)
+function RatingItem({courseid, rating}: RatingProps) {
+    const [ratingState, setRatingState] = useState(rating.rating_score ? rating.rating_score : 0)
     const [hoverState, setHoverState] = useState(0)
 
-    const handleRating = useCallback(async (rating: number) => {
+    const handleRating = useCallback(async (ratingScore: number) => {
         const ratingBody = {
-            rating_score: rating
+            rating_score: ratingScore
         }
-        await apiClient.post(`/api/rating/${courseid}`, ratingBody)
-        setRatingState(rating)
+        console.log("SOY PUTO: ", rating)
+
+        if(rating){
+            await apiClient.put(`/api/rating/${courseid}`, ratingBody)
+        }else{
+            await apiClient.post(`/api/rating/${courseid}`, ratingBody)
+        }
+        setRatingState(ratingScore)
     }, [courseid])
 
   return (

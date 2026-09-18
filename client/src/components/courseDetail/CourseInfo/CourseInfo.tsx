@@ -1,11 +1,18 @@
+import { useState } from 'react'
 import type { Course } from '../../../types'
+import type { Rating } from '../../../types'
 import RatingItem from '../RatingItem/RatingItem'
+
 
 interface Props {
   course: Course
+  rating: Rating
+  isEnrolled: boolean
 }
 
-export default function CourseInfo({ course }: Props) {
+export default function CourseInfo({ course, rating, isEnrolled }: Props) {
+
+  
   return (
     <div>
 
@@ -37,8 +44,10 @@ export default function CourseInfo({ course }: Props) {
       </div>
       
 
-      <RatingItem courseid={course.id}/>
-      
+      {
+        isEnrolled &&
+        <RatingItem courseid={course.id} rating={rating}/>
+      }
     </div>
   )
 }
