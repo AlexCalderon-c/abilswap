@@ -12,7 +12,7 @@ interface Props {
 export default function CourseSidebar({ course, isEnrolled, setEnroll }: Props) {
   const loadedUser = useRouteLoaderData('auth')
   const revalidator = useRevalidator()
-  const {enrollCourse} = useCourse()
+  const {enrollCourse, deleteEnroll} = useCourse()
   const [enrollButton, setEnrollButton] = useState(!isEnrolled)
   console.log('Desde sidebar: ', loadedUser)
 
@@ -20,6 +20,12 @@ export default function CourseSidebar({ course, isEnrolled, setEnroll }: Props) 
     setEnrollButton(false)
     enrollCourse(course.id)
     setEnroll(true)
+  }
+
+  const cancelHandler = () => {
+    setEnrollButton(true)
+    deleteEnroll(course.id)
+    setEnroll(false)
   }
 
   return (
@@ -42,7 +48,9 @@ export default function CourseSidebar({ course, isEnrolled, setEnroll }: Props) 
               Enroll Now
               </button>
             :
-              <></>}
+              <button onClick={cancelHandler} className='w-full py-3 text-sm font-semibold text-white bg-accent-600 rounded-xl hover:bg-accent-700 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer'>
+              Cancel Enrollment
+              </button>}
           
 
           <hr className='border-border' />

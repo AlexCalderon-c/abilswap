@@ -9,27 +9,27 @@ interface RatingProps{
 }
 
 function RatingItem({courseid, rating}: RatingProps) {
-    const [ratingState, setRatingState] = useState(rating.rating_score ? rating.rating_score : 0)
+    const [ratingValueState, setRatingValueState] = useState(rating.rating_score ? rating.rating_score : 0)
+    const [ratingState, setRatingState] = useState(rating)
     const [hoverState, setHoverState] = useState(0)
 
     const handleRating = useCallback(async (ratingScore: number) => {
         const ratingBody = {
             rating_score: ratingScore
         }
-        console.log("SOY PUTO: ", rating)
-
-        if(rating){
+        if(ratingState){
             await apiClient.put(`/api/rating/${courseid}`, ratingBody)
         }else{
-            await apiClient.post(`/api/rating/${courseid}`, ratingBody)
+            const response = await apiClient.post(`/api/rating/${courseid}`, ratingBody)
+            setRatingState(response.data)
         }
-        setRatingState(ratingScore)
-    }, [courseid])
+        setRatingValueState(ratingScore)
+    }, [courseid, ratingState])
 
   return (
     <div className='mt-5'>
         <p>Rate this course: </p>
-        <p>Rating: {ratingState}</p>
+        <p>Rating: {ratingValueState}</p>
         <div className='flex gap-2'>
             {
             [...Array(5)].map((_, index) => {
