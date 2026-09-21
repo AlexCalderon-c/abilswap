@@ -8,8 +8,8 @@ interface AuthContextType {
   isAuthenticatedState: boolean
   handleLogout: () => Promise<AxiosResponse<any, any, {}> | undefined>
   handleLoginAxios: (e: React.SubmitEvent<HTMLFormElement>, userEmail: string, userPassword: string) => Promise<AxiosResponse<any, any, {}> | undefined>
-  handleRegisterStudentAxios: (e: React.SubmitEvent<HTMLFormElement>, fullname: string, username: string, email: string, password: string, bio?: string, profile_pic?: string) => void
-  handleRegisterTeacherAxios: (e: React.SubmitEvent<HTMLFormElement>, fullname: string, username: string, email: string, password: string, bio?: string, profile_pic?: string) => void
+  handleRegisterStudentAxios: (e: React.SubmitEvent<HTMLFormElement>, fullname: string, username: string, email: string, password: string, bio?: string, profile_pic?: string) => Promise<AxiosResponse<any, any, {}> | undefined>
+  handleRegisterTeacherAxios: (e: React.SubmitEvent<HTMLFormElement>, fullname: string, username: string, email: string, password: string, bio?: string, profile_pic?: string) => Promise<AxiosResponse<any, any, {}> | undefined>
 }
 
 interface LoadedDataType {
@@ -21,7 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children, loadedData }: { children: ReactNode, loadedData: LoadedDataType }) {
   const {user, isAuthenticated} = loadedData
-  console.log("FROM CONTEXT: ",loadedData)
+  console.log("FROM CONTEXT: ", loadedData)
   const [userState, setUserState] = useState<User | null>(user)
   const [isAuthenticatedState, setIsAuthenticatedState] = useState<boolean>(isAuthenticated)
 
@@ -71,6 +71,11 @@ export function AuthProvider({ children, loadedData }: { children: ReactNode, lo
         }
       })
       console.log(response)
+      if(response){
+        setUserState(response.data.result)
+        setIsAuthenticatedState(true)
+        return response
+      }
     }catch(e){
       console.log(e)
     }
@@ -95,6 +100,11 @@ export function AuthProvider({ children, loadedData }: { children: ReactNode, lo
         }
       })
       console.log(response)
+      if(response){
+        setUserState(response.data.result)
+        setIsAuthenticatedState(true)
+        return response
+      }
     }catch(e){
       console.log(e)
     }

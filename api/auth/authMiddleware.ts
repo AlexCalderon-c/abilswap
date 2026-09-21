@@ -62,11 +62,39 @@ export const registerStudent = async (req: Request, res: Response, next: NextFun
         const { full_name, username, email, password, bio, profile_pic} = req.body;
         logger.info(req.body, "Registration data");
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await pool.query(`WITH userQuery AS (INSERT INTO "user" (full_name, username, email, password, bio, profile_pic, role) VALUES ($1, $2, $3, $4, $5, $6, 'student') RETURNING id) INSERT INTO student SELECT id FROM userQuery`, [full_name, username, email, hashedPassword, bio, profile_pic])
+        const user = await pool.query(`WITH userQuery AS (INSERT INTO "user" (full_name, username, email, password, bio, profile_pic, role) VALUES ($1, $2, $3, $4, $5, $6, 'student') RETURNING *), studentInsert AS (INSERT INTO student SELECT id FROM userQuery) SELECT * FROM userQuery`, [full_name, username, email, hashedPassword, bio, profile_pic])
         const userObject = user.rows[0];
+        logger.info(user)
+
+        const payload = {
+            id: userObject.id,
+            email: userObject.email,
+            username: userObject.username,
+            role: userObject.role,
+            profile_pic: userObject.profile_pic
+        }
+        
+        const accessToken = generateAccessToken(payload)
+        const refreshToken = await generateRefreshToken(payload, payload.id)
+
+        res.cookie("accessToken", accessToken, {
+            path: "/",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+            maxAge: 15 * 60 * 1000
+        })
+        res.cookie("refreshToken", refreshToken, {
+            path: "/",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+
         res.status(201).json({
             message: "User registered successfully",
-            result: userObject
+            result: payload
         })
     } catch (error) {
         next(error);
@@ -77,10 +105,36 @@ export const registerTeacher = async (req: Request, res: Response, next: NextFun
     try {
         const { full_name, username, email, password, bio, profile_pic } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await pool.query(`WITH userQuery AS (INSERT INTO "user" (full_name, username, email, password, bio, profile_pic, role) VALUES ($1, $2, $3, $4, $5, $6, 'teacher') RETURNING id) INSERT INTO teacher SELECT id FROM userQuery`, [full_name, username, email, hashedPassword, bio, profile_pic])
+        const user = await pool.query(`WITH userQuery AS (INSERT INTO "user" (full_name, username, email, password, bio, profile_pic, role) VALUES ($1, $2, $3, $4, $5, $6, 'teacher') RETURNING *), teacherInsert AS (INSERT INTO teacher SELECT id FROM userQuery) SELECT * FROM userQuery`, [full_name, username, email, hashedPassword, bio, profile_pic])
         const userObject = user.rows[0];
+        const payload = {
+            id: userObject.id,
+            email: userObject.email,
+            username: userObject.username,
+            role: userObject.role,
+            profile_pic: userObject.profile_pic
+        }
+        
+        const accessToken = generateAccessToken(payload)
+        const refreshToken = await generateRefreshToken(payload, payload.id)
+
+        res.cookie("accessToken", accessToken, {
+            path: "/",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+            maxAge: 15 * 60 * 1000
+        })
+        res.cookie("refreshToken", refreshToken, {
+            path: "/",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
         res.status(201).json({
-            message: "User registered successfully"
+            message: "User registered successfully",
+            result: payload
         })
     } catch (error) {
         next(error);

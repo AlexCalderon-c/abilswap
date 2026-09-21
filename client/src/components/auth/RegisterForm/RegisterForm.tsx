@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useRevalidator } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
 
 export default function RegisterForm() {
 
   const {handleRegisterStudentAxios, handleRegisterTeacherAxios} = useAuth()
+  const navigate = useNavigate()
+  const revalidator = useRevalidator()
 
 
   const [name, setName] = useState('')
@@ -13,15 +15,17 @@ export default function RegisterForm() {
   const [password, setPassword] = useState('')
   const [role, setRole] = useState<'student' | 'teacher'>('student')
 
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if(role === 'student'){
-      handleRegisterStudentAxios(e, name, username, email, password)
+      await handleRegisterStudentAxios(e, name, username, email, password)
     }
     if(role === 'teacher'){
-      handleRegisterTeacherAxios(e, name, username, email, password)
+      await handleRegisterTeacherAxios(e, name, username, email, password)
     }
+    navigate('/courses')
+    revalidator.revalidate()
   }
 
   return (
