@@ -7,7 +7,6 @@ export default function DashboardPage() {
   
   const dashboard = useLoaderData()
   const [enrollment, setEnrollment] = useState(dashboard)
-  console.log(enrollment)
 
   const active = enrollment.filter((e: Enrollment) => e.enrollment_status === 'active')
   const completed = enrollment.filter((e: Enrollment) => e.enrollment_status === 'completed')

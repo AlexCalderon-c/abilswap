@@ -9,7 +9,6 @@ const route = Router()
 
 route.get("/teacher/", verifyAccessToken, roleMiddleware(["teacher"]), getEveryCourseByTeacher)
 route.get("/courseinfo/:course_id", verifyAccessToken, roleMiddleware(["teacher", "student"]), getCourseCompleteById)
-
 route.get("/category/", verifyAccessToken, roleMiddleware(["teacher", "student"]), getCategoriesFromCourses)
 route.post("/", verifyAccessToken, roleMiddleware(["teacher"]), validateMiddleware(CourseSchema), createCourse);
 route.get("/:course_id", verifyAccessToken, roleMiddleware(["teacher"]), getCourseByTeacher);

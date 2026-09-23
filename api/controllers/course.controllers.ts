@@ -32,7 +32,7 @@ export const getCourseByTeacher = async (req: Request, res: Response, next: Next
 export const getEveryCourseByTeacher = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const course: QueryResult<CourseObject> = await pool.query("SELECT * FROM course WHERE teacher_id = $1", [req.user?.id])
-        const courseObject = course.rows[0];
+        const courseObject = course.rows;
         return res.status(200).json(courseObject);
     } catch (error) {
         next(error);

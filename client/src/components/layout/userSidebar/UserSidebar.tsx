@@ -31,14 +31,14 @@ function UserSidebar({ handleSubmit, user, onNavigate }: UserSidebarProps) {
 
       <nav className='p-2 space-y-1'>
         <Link
-          to='/dashboard'
+          to={user?.role == 'teacher' ? '/dashboardTeacher' : '/dashboard'}
           onClick={onNavigate}
           className='flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-text-primary rounded-lg hover:bg-surface-tertiary transition-colors'
         >
           <svg className='w-5 h-5 text-primary-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 13h6V4H4v9zm0 7h6v-5H4v5zm10 0h6V11h-6v9zm0-13v5h6V7h-6z' />
           </svg>
-          My Dashboard
+          My Courses
         </Link>
         <Link
           to='/courses'
