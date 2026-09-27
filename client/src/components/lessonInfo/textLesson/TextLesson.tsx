@@ -52,7 +52,7 @@ function TextLesson({ lesson }: Props) {
                 )}
 
                 {section.image && (
-                  <figure className='my-4 lg:hidden'>
+                  <figure className='my-4'>
                     <img
                       src={section.image}
                       alt={section.caption ?? section.heading}
@@ -68,25 +68,29 @@ function TextLesson({ lesson }: Props) {
                 )}
               </section>
             ))}
-
-            <div className='rounded-2xl bg-primary-50/60 border border-primary-100 p-5'>
-              <h3 className='font-semibold text-primary-700 mb-3 flex items-center gap-2'>
-                <svg className='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
-                  <path fillRule='evenodd' d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' clipRule='evenodd' />
-                </svg>
-                Key Takeaways
-              </h3>
-              <ul className='space-y-2'>
-                {lesson.content?.takeaways.map((item) => (
-                  <li key={item} className='flex items-start gap-2 text-sm text-primary-900'>
-                    <svg className='w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
+            {
+              lesson.content?.takeaways.length! > 0 && (
+                <div className='rounded-2xl bg-primary-50/60 border border-primary-100 p-5'>
+                  <h3 className='font-semibold text-primary-700 mb-3 flex items-center gap-2'>
+                    <svg className='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
+                      <path fillRule='evenodd' d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' clipRule='evenodd' />
                     </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    Key Takeaways
+                  </h3>
+                  <ul className='space-y-2'>
+                    {lesson.content?.takeaways.map((item) => (
+                      <li key={item} className='flex items-start gap-2 text-sm text-primary-900'>
+                        <svg className='w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                          <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
+                        </svg>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            }
+            
           </div>
         </div>
       </div>

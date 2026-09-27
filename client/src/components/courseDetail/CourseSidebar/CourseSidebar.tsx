@@ -11,7 +11,6 @@ interface Props {
 
 export default function CourseSidebar({ course, isEnrolled, setEnroll }: Props) {
   const loadedUser = useRouteLoaderData('auth')
-  const revalidator = useRevalidator()
   const {enrollCourse, deleteEnroll} = useCourse()
   const [enrollButton, setEnrollButton] = useState(!isEnrolled)
   console.log('Desde sidebar: ', loadedUser)
@@ -31,7 +30,19 @@ export default function CourseSidebar({ course, isEnrolled, setEnroll }: Props) 
   return (
     <div className='sticky top-24'>
       <div className='bg-white rounded-2xl border border-border overflow-hidden shadow-sm'>
-        <div className='h-48 bg-gradient-to-br from-primary-500 to-accent-500 relative' />
+        <div className='h-48 bg-gradient-to-br from-primary-500 to-accent-500 relative overflow-hidden'>
+          {course.image_url && (
+            <img
+              src={course.image_url}
+              alt={course.course_name}
+              className='absolute inset-0 h-full w-full object-cover'
+              loading='lazy'
+              onError={(event) => {
+                event.currentTarget.style.display = 'none'
+              }}
+            />
+          )}
+        </div>
 
         <div className='p-6 space-y-5'>
           <div>
@@ -47,10 +58,12 @@ export default function CourseSidebar({ course, isEnrolled, setEnroll }: Props) 
               <button onClick={submitHandler} className='w-full py-3 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer'>
               Enroll Now
               </button>
-            :
+            : loadedUser.user.role === 'student' ?
               <button onClick={cancelHandler} className='w-full py-3 text-sm font-semibold text-white bg-accent-600 rounded-xl hover:bg-accent-700 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer'>
               Cancel Enrollment
-              </button>}
+              </button>
+            :
+              <></>}
           
 
           <hr className='border-border' />

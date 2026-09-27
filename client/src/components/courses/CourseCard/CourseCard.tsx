@@ -19,7 +19,18 @@ export default function CourseCard({ course }: Props) {
       <div
         className='group block bg-white rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary-200 min-h-full'
       >
-        <div className={`h-40 ${categoryColors[course.category ?? ''] || 'bg-gradient-to-br from-primary-500 to-accent-500'} relative overflow-hidden`}>
+        <div className={`relative h-40 overflow-hidden bg-gradient-to-br from-primary-500 to-accent-500`}>
+          {course.image_url && (
+            <img
+              src={course.image_url}
+              alt={course.course_name}
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
+              onError={(event) => {
+                event.currentTarget.style.display = 'none'
+              }}
+            />
+          )}
           <div className='absolute inset-0 bg-black/10' />
           <div className='absolute top-3 left-3'>
             <span className='px-2.5 py-1 text-xs font-semibold bg-white/90 backdrop-blur-sm rounded-md text-text-primary'>

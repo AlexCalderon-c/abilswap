@@ -47,6 +47,7 @@ export function CreateCoursePage() {
 
     modules.forEach((module) => {
       if (module.module_name.length < 8) {
+        console.log('module: ', module.module_name.length)
         newErrors[`module_name`] = 'Name must be at least 8 characters'
       }
 
@@ -145,6 +146,7 @@ export function CreateCoursePage() {
         category: courseData.category || undefined,
         image_url: courseData.image_url || undefined,
       })
+      console.log(courseResponse.data)
 
       const courseId = courseResponse.data.id
 

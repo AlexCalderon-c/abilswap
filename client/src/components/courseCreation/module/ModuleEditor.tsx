@@ -26,7 +26,7 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
   onUpdateRef.current = onUpdate
 
   const updateModule = useCallback((updates: Partial<ModuleFormData>) => {
-    onUpdateRef.current({ ...moduleRef.current, ...updates })
+    onUpdateRef.current({ ...moduleRef.current, ...updates }) 
   }, [])
 
   const handleLessonUpdate = useCallback((updatedLesson: LessonFormData) => {

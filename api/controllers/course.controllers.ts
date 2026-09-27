@@ -5,8 +5,8 @@ import { type CourseObject } from "../types/course.types.ts";
 
 export const createCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { course_name, description, price} = req.body;
-        const course: QueryResult<CourseObject> = await pool.query(`INSERT INTO "course" (course_name, description, teacher_id, price) VALUES ($1, $2, $3, $4) RETURNING *`, [course_name, description, req.user?.id, price])
+        const { course_name, description, price, image_url} = req.body;
+        const course: QueryResult<CourseObject> = await pool.query(`INSERT INTO "course" (course_name, description, teacher_id, price, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *`, [course_name, description, req.user?.id, price, image_url])
         const courseObject = course.rows[0];
         res.status(201).json({
             ...courseObject,
