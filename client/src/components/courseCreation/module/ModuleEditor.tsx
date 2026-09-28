@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import { TextInput } from '../inputs/BasicInputs'
 import { LessonEditor } from '../lesson/LessonEditor'
 import { SortableList } from '../inputs/SortableList'
@@ -19,26 +19,20 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
   const [isExpanded, setIsExpanded] = useState(true)
   const [showAddLessonMenu, setShowAddLessonMenu] = useState(false)
 
-  const moduleRef = useRef(module)
-  moduleRef.current = module
-
-  const onUpdateRef = useRef(onUpdate)
-  onUpdateRef.current = onUpdate
-
   const updateModule = useCallback((updates: Partial<ModuleFormData>) => {
-    onUpdateRef.current({ ...moduleRef.current, ...updates }) 
-  }, [])
+    onUpdate({ ...module, ...updates })
+  }, [module, onUpdate])
 
   const handleLessonUpdate = useCallback((updatedLesson: LessonFormData) => {
-    const newLessons = moduleRef.current.lessons.map((l) =>
+    const newLessons = module.lessons.map((l) =>
       l.id === updatedLesson.id ? updatedLesson : l
     )
-    onUpdateRef.current({ ...moduleRef.current, lessons: newLessons })
-  }, [])
+    onUpdate({ ...module, lessons: newLessons })
+  }, [module, onUpdate])
 
   const handleLessonDelete = useCallback((lessonId: string) => {
-    onUpdateRef.current({ ...moduleRef.current, lessons: moduleRef.current.lessons.filter((l) => l.id !== lessonId) })
-  }, [])
+    onUpdate({ ...module, lessons: module.lessons.filter((l) => l.id !== lessonId) })
+  }, [module, onUpdate])
 
   const handleLessonDuplicate = useCallback((lesson: LessonFormData) => {
     const duplicatedLesson: LessonFormData = {
@@ -46,21 +40,21 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
       id: `lesson-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       lesson_name: `${lesson.lesson_name} (copy)`,
     }
-    const lessonIndex = moduleRef.current.lessons.findIndex((l) => l.id === lesson.id)
-    const newLessons = [...moduleRef.current.lessons]
+    const lessonIndex = module.lessons.findIndex((l) => l.id === lesson.id)
+    const newLessons = [...module.lessons]
     newLessons.splice(lessonIndex + 1, 0, duplicatedLesson)
-    onUpdateRef.current({ ...moduleRef.current, lessons: newLessons })
-  }, [])
+    onUpdate({ ...module, lessons: newLessons })
+  }, [module, onUpdate])
 
   const addLesson = useCallback((contentType: LessonFormData['content_type']) => {
     const newLesson = createEmptyLesson(contentType)
-    onUpdateRef.current({ ...moduleRef.current, lessons: [...moduleRef.current.lessons, newLesson] })
+    onUpdate({ ...module, lessons: [...module.lessons, newLesson] })
     setShowAddLessonMenu(false)
-  }, [])
+  }, [module, onUpdate])
 
   const handleReorderLessons = useCallback((items: { id: string; data: LessonFormData }[]) => {
-    onUpdateRef.current({ ...moduleRef.current, lessons: items.map((item) => item.data) })
-  }, [])
+    onUpdate({ ...module, lessons: items.map((item) => item.data) })
+  }, [module, onUpdate])
 
   const handleModuleNameChange = useCallback((v: string) => {
     updateModule({ module_name: v })
@@ -97,7 +91,7 @@ export const ModuleEditor = React.memo(function ModuleEditor({ module, index, on
             <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
             </svg>
-Add Lesson
+            Add Lesson
           </button>
 
           <button

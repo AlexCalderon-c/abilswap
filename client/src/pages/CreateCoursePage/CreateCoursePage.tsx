@@ -28,7 +28,7 @@ export function CreateCoursePage() {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'info' | 'content'>('info')
 
-  const validateCourse = useCallback(() => {
+const validateCourse = useCallback(() => {
     const newErrors: Partial<Record<keyof CourseFormData | keyof ModuleFormData | keyof LessonFormData, string>> = {}
 
     if (!courseData.course_name.trim()) {
@@ -47,7 +47,6 @@ export function CreateCoursePage() {
 
     modules.forEach((module) => {
       if (module.module_name.length < 8) {
-        console.log('module: ', module.module_name.length)
         newErrors[`module_name`] = 'Name must be at least 8 characters'
       }
 
@@ -71,10 +70,9 @@ export function CreateCoursePage() {
     }
 
     
-
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
-  }, [courseData])
+  }, [courseData, modules])
 
   const handleCourseChange = useCallback((updates: Partial<CourseFormData>) => {
     setCourseData((prev) => ({ ...prev, ...updates }))
@@ -183,7 +181,7 @@ export function CreateCoursePage() {
         }
       }
 
-      navigate('/dashboard')
+      navigate('/dashboardTeacher')
     } catch (error: unknown) {
       console.error('Error creating course:', error)
       const err = error as { response?: { data?: { message?: string } } }
@@ -197,7 +195,6 @@ export function CreateCoursePage() {
 
   return (
     <div className='min-h-screen bg-surface'>
-      {/* Header */}
       <header className='sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-border'>
         <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'>
           <div className='flex items-center justify-between h-16'>

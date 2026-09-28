@@ -1,7 +1,7 @@
 import { useState, type Dispatch, type SetStateAction } from 'react'
 import { useCourse } from '../../../context/CourseContext'
 import type { Course } from '../../../types'
-import { useRevalidator, useRouteLoaderData } from 'react-router-dom'
+import { useRouteLoaderData } from 'react-router-dom'
 
 interface Props {
   course: Course
