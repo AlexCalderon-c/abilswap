@@ -5,6 +5,7 @@ import { type LessonObject } from "../types/lesson.types.ts";
 
 export const createLesson = async (req: Request, res: Response, next: NextFunction) => {
     try{
+        console.log("Req recibido: ", req.body)
         const {module_id} = req.params
         const {lesson_name, content_type, video_url, content} = req.body
         const response: QueryResult<LessonObject> = await pool.query('INSERT INTO lesson (lesson_name, module_id, content_type, video_url, content) SELECT $1, $2, $3, $4, $5 WHERE EXISTS (SELECT 1 FROM module JOIN course ON course.id = module.course_id WHERE module.id = $2 AND course.teacher_id = $6) RETURNING *', [lesson_name, module_id, content_type, video_url, content, req.user?.id])

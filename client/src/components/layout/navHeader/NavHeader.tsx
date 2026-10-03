@@ -8,13 +8,13 @@ function NavHeader() {
             to='/login'
             className='px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors'
         >
-            Iniciar sesión
+            Sign In
         </Link>
         <Link
             to='/register'
             className='px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-all duration-200 shadow-sm hover:shadow-md'
         >
-            Comenzar gratis
+            Start Free
         </Link>
     </div>
   )

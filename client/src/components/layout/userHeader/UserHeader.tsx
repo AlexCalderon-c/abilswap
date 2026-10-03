@@ -25,7 +25,7 @@ function UserHeader() {
             
                 onClick={() => setMenuOpen(!menuOpen)}
                 className='p-2 rounded-lg text-text-secondary hover:bg-surface-tertiary transition-colors'
-                aria-label='Menú'
+                aria-label='Menu'
             >
                 <svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     {menuOpen ? (

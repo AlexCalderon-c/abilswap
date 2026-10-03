@@ -17,9 +17,20 @@ export default function CourseCard({ course }: Props) {
     
     <Link to ={`/courses/${course.id}`}>
       <div
-        className='group block bg-white rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary-200'
+        className='group block bg-white rounded-2xl border border-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary-200 min-h-full'
       >
-        <div className={`h-40 ${categoryColors[course.category ?? ''] || 'bg-gradient-to-br from-primary-500 to-accent-500'} relative overflow-hidden`}>
+        <div className={`relative h-40 overflow-hidden bg-gradient-to-br from-primary-500 to-accent-500`}>
+          {course.image_url && (
+            <img
+              src={course.image_url}
+              alt={course.course_name}
+              className="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
+              onError={(event) => {
+                event.currentTarget.style.display = 'none'
+              }}
+            />
+          )}
           <div className='absolute inset-0 bg-black/10' />
           <div className='absolute top-3 left-3'>
             <span className='px-2.5 py-1 text-xs font-semibold bg-white/90 backdrop-blur-sm rounded-md text-text-primary'>
@@ -28,12 +39,12 @@ export default function CourseCard({ course }: Props) {
           </div>
           <div className='absolute top-3 right-3'>
             <span className='px-2.5 py-1 text-xs font-semibold bg-white/90 backdrop-blur-sm rounded-md text-primary-600'>
-              {course.price === 0 ? 'Gratis' : `$${course.price}`}
+              {course.price === 0 ? 'Free' : `$${course.price}`}
             </span>
           </div>
         </div>
 
-        <div className='p-5'>
+        <div className='p-5 min-h-[100%]'>
           <h3 className='font-semibold text-text-primary group-hover:text-primary-600 transition-colors mb-2 line-clamp-2'>
             {course.course_name}
           </h3>

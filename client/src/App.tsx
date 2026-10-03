@@ -12,11 +12,18 @@ import {CourseProvider} from './context/CourseContext'
 import { apiClient } from './api/axios'
 import type { LoaderFunctionArgs } from 'react-router-dom'
 import LessonLayout from './components/lessonInfo/lessonLayout/LessonLayout'
+import ProfilePage from './pages/ProfilePage/ProfilePage'
+import TeacherCoursesPage from './pages/TeacherCoursesPage/TeacherCoursesPage'
 
 const lessonLoader = async ({params}: LoaderFunctionArgs) => {
   const lesson = await apiClient.get(`http://localhost:3001/api/lesson/${params.lesson_id}`)
   console.log(lesson)
   return lesson.data
+}
+
+const teacherCoursesLoader = async () => {
+  const teacherCourses = await apiClient.get(`api/course/teacher/`)
+  return teacherCourses.data
 }
 
 const dashboardLoader = async () => {
@@ -31,11 +38,12 @@ const courseLoader = async () => {
 }
 
 const detailedCourseLoader = async ({params}: LoaderFunctionArgs) => {
-  const [courses, modules, enroll] = await Promise.all([
+  const [courses, modules, enroll, rating] = await Promise.all([
     apiClient.get(`http://localhost:3001/api/course/courseinfo/${params.course_id}`).then(res => res.data), 
     apiClient.get(`http://localhost:3001/api/module/moduleinfo/${params.course_id}`).then(res => res.data),
-    apiClient.get(`http://localhost:3001/api/enrollment/courseinfo/${params.course_id}`).then(res => res.data).catch(() => false)]) 
-  return {courses, modules, enroll}
+    apiClient.get(`http://localhost:3001/api/enrollment/courseinfo/${params.course_id}`).then(res => res.data).catch(() => false),
+    apiClient.get(`/api/rating/${params.course_id}`).then(res => res.data)]) 
+  return {courses, modules, enroll, rating}
 }
 
 const authLoader = async () => {
@@ -59,7 +67,9 @@ const router = createBrowserRouter(createRoutesFromElements(
           <Route path='/login' element={<LoginPage />}  />
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/dashboard/' element={<DashboardPage />} loader={dashboardLoader}/>
-          <Route path='/newcourse/' element={<CreateCoursePage />}/>          
+          <Route path='/newcourse/' element={<CreateCoursePage />}/>
+          <Route path='/profile/:username' element={<ProfilePage/>}></Route>
+          <Route path='/dashboardTeacher/' element={<TeacherCoursesPage/>} loader={teacherCoursesLoader}/>   
         </Route>
         <Route element={<LessonLayout/>}>
           <Route path='/lesson/:lesson_name/:lesson_id' element={<InfoLessonPage />} loader={lessonLoader}/> 

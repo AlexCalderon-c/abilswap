@@ -2,27 +2,27 @@ import { Link } from 'react-router-dom'
 
 const footerLinks = [
   {
-    title: 'Plataforma',
+    title: 'Platform',
     links: [
-      { label: 'Cursos', to: '/courses' },
-      { label: 'Docentes', to: '/teachers' },
-      { label: 'Precios', to: '/pricing' },
+      { label: 'Courses', to: '/courses' },
+      { label: 'Teachers', to: '/teachers' },
+      { label: 'Pricing', to: '/pricing' },
     ],
   },
   {
-    title: 'Soporte',
+    title: 'Support',
     links: [
       { label: 'FAQ', to: '/faq' },
-      { label: 'Contacto', to: '/contact' },
-      { label: 'Términos', to: '/terms' },
+      { label: 'Contact', to: '/contact' },
+      { label: 'Terms', to: '/terms' },
     ],
   },
   {
-    title: 'Compañía',
+    title: 'Company',
     links: [
-      { label: 'Sobre nosotros', to: '/about' },
+      { label: 'About Us', to: '/about' },
       { label: 'Blog', to: '/blog' },
-      { label: 'Privacidad', to: '/privacy' },
+      { label: 'Privacy', to: '/privacy' },
     ],
   },
 ]
@@ -42,7 +42,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className='text-sm text-text-secondary leading-relaxed mb-4'>
-              Plataforma de cursos de programación fullstack. Aprende con profesionales y lleva tu carrera al siguiente nivel.
+              Fullstack programming course platform. Learn from professionals and take your career to the next level.
             </p>
             
           </div>
@@ -68,14 +68,14 @@ export default function Footer() {
 
         <div className='mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4'>
           <p className='text-sm text-text-muted'>
-            &copy; {new Date().getFullYear()} AbilSwap. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} AbilSwap. All rights reserved.
           </p>
           <div className='flex gap-6'>
             <Link to='/terms' className='text-sm text-text-muted hover:text-text-secondary transition-colors'>
-              Términos
+              Terms
             </Link>
             <Link to='/privacy' className='text-sm text-text-muted hover:text-text-secondary transition-colors'>
-              Privacidad
+              Privacy
             </Link>
           </div>
         </div>

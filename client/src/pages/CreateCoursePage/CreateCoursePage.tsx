@@ -7,6 +7,7 @@ import { apiClient } from '../../api/axios'
 import {
   type CourseFormData,
   type ModuleFormData,
+  type LessonFormData,
   createEmptyModule,
 } from '../../types/courseCreation'
 
@@ -22,43 +23,56 @@ export function CreateCoursePage() {
   const navigate = useNavigate()
   const [courseData, setCourseData] = useState<CourseFormData>(INITIAL_COURSE_DATA)
   const [modules, setModules] = useState<ModuleFormData[]>([createEmptyModule()])
-  const [errors, setErrors] = useState<Partial<Record<keyof CourseFormData, string>>>({})
+  const [errors, setErrors] = useState<Partial<Record<keyof CourseFormData | keyof ModuleFormData | keyof LessonFormData, string>>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'info' | 'content'>('info')
 
-  const validateCourse = useCallback(() => {
-    const newErrors: Partial<Record<keyof CourseFormData, string>> = {}
+const validateCourse = useCallback(() => {
+    const newErrors: Partial<Record<keyof CourseFormData | keyof ModuleFormData | keyof LessonFormData, string>> = {}
 
     if (!courseData.course_name.trim()) {
-      newErrors.course_name = 'El nombre del curso es obligatorio'
+      newErrors.course_name = 'Course name is required'
     } else if (courseData.course_name.length < 6) {
-      newErrors.course_name = 'El nombre debe tener al menos 6 caracteres'
+      newErrors.course_name = 'Name must be at least 6 characters'
     } else if (courseData.course_name.length > 150) {
-      newErrors.course_name = 'El nombre no puede exceder 150 caracteres'
+      newErrors.course_name = 'Name cannot exceed 150 characters'
     }
 
     if (!courseData.description.trim()) {
-      newErrors.description = 'La descripción es obligatoria'
+      newErrors.description = 'Description is required'
     } else if (courseData.description.length > 3000) {
-      newErrors.description = 'La descripción no puede exceder 3000 caracteres'
+      newErrors.description = 'Description cannot exceed 3000 characters'
     }
 
+    modules.forEach((module) => {
+      if (module.module_name.length < 8) {
+        newErrors[`module_name`] = 'Name must be at least 8 characters'
+      }
+
+      module.lessons.forEach((lesson) => {
+        if (lesson.lesson_name.length < 8) {
+          newErrors[`lesson_name`] = 'Name must be at least 8 characters'
+        }
+      })
+    })
+
     if (courseData.price < 0) {
-      newErrors.price = 'El precio no puede ser negativo'
+      newErrors.price = 'Price cannot be negative'
     }
 
     if (courseData.image_url && courseData.image_url.trim()) {
       try {
         new URL(courseData.image_url)
       } catch {
-        newErrors.image_url = 'La URL de la imagen no es válida'
+        newErrors.image_url = 'Invalid image URL'
       }
     }
 
+    
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
-  }, [courseData])
+  }, [courseData, modules])
 
   const handleCourseChange = useCallback((updates: Partial<CourseFormData>) => {
     setCourseData((prev) => ({ ...prev, ...updates }))
@@ -82,11 +96,11 @@ export function CreateCoursePage() {
     const duplicatedModule: ModuleFormData = {
       ...module,
       id: `module-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      module_name: `${module.module_name} (copia)`,
+      module_name: `${module.module_name} (copy)`,
       lessons: module.lessons.map((l) => ({
         ...l,
         id: `lesson-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        lesson_name: `${l.lesson_name} (copia)`,
+        lesson_name: `${l.lesson_name} (copy)`,
       })),
     }
     const moduleIndex = modules.findIndex((m) => m.id === module.id)
@@ -115,7 +129,7 @@ export function CreateCoursePage() {
     }
 
     if (modules.length === 0 || modules.every((m) => m.lessons.length === 0)) {
-      setSubmitError('Debes añadir al menos un módulo con una lección')
+      setSubmitError('You must add at least one module with a lesson')
       setActiveTab('content')
       return
     }
@@ -130,12 +144,14 @@ export function CreateCoursePage() {
         category: courseData.category || undefined,
         image_url: courseData.image_url || undefined,
       })
+      console.log(courseResponse.data)
 
       const courseId = courseResponse.data.id
 
       for (let moduleIndex = 0; moduleIndex < modules.length; moduleIndex++) {
         const module = modules[moduleIndex]
         if (!module.module_name.trim()) continue
+        console.log("MODULE INFO: ", module)
 
         const moduleResponse = await apiClient.post(`/api/module/${courseId}`, {
           module_name: module.module_name,
@@ -159,15 +175,17 @@ export function CreateCoursePage() {
             lessonData.content = lesson.content
           }
 
+          console.log('LESSON INFO: ', lessonData)
+
           await apiClient.post(`/api/lesson/${moduleId}`, lessonData)
         }
       }
 
-      navigate('/dashboard')
+      navigate('/dashboardTeacher')
     } catch (error: unknown) {
       console.error('Error creating course:', error)
       const err = error as { response?: { data?: { message?: string } } }
-      setSubmitError(err.response?.data?.message || 'Error al crear el curso. Inténtalo de nuevo.')
+      setSubmitError(err.response?.data?.message || 'Error creating course. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -177,7 +195,6 @@ export function CreateCoursePage() {
 
   return (
     <div className='min-h-screen bg-surface'>
-      {/* Header */}
       <header className='sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-border'>
         <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'>
           <div className='flex items-center justify-between h-16'>
@@ -186,16 +203,16 @@ export function CreateCoursePage() {
                 type='button'
                 onClick={() => navigate(-1)}
                 className='p-2 text-text-muted hover:text-text-primary hover:bg-surface-secondary rounded-xl transition-colors'
-                aria-label='Volver'
+                aria-label='Go back'
               >
                 <svg className='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 19l-7-7 7-7' />
                 </svg>
               </button>
               <div>
-                <h1 className='text-xl font-bold text-text-primary'>Nuevo curso</h1>
+                <h1 className='text-xl font-bold text-text-primary'>New Course</h1>
                 <p className='text-sm text-text-muted'>
-                  {modules.length} módulo{modules.length !== 1 ? 's' : ''} · {totalLessons} lección{totalLessons !== 1 ? 'es' : ''}
+                  {modules.length} module{modules.length !== 1 ? 's' : ''} · {totalLessons} lesson{totalLessons !== 1 ? 's' : ''}
                 </p>
               </div>
             </div>
@@ -207,7 +224,7 @@ export function CreateCoursePage() {
                 className='px-4 py-2 text-sm font-medium text-text-secondary bg-surface-secondary rounded-xl hover:bg-surface-tertiary transition-colors'
                 disabled={isSubmitting}
               >
-                Vista previa
+                Preview
               </button>
               <button
                 type='submit'
@@ -221,10 +238,10 @@ export function CreateCoursePage() {
                       <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4' />
                       <path className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z' />
                     </svg>
-                    Publicando...
+                    Publishing...
                   </>
                 ) : (
-                  'Publicar curso'
+                  'Publish Course'
                 )}
               </button>
             </div>
@@ -241,7 +258,7 @@ export function CreateCoursePage() {
                   : 'text-text-muted hover:text-text-primary hover:bg-surface-secondary'
               }`}
             >
-              Información
+              Information
             </button>
             <button
               type='button'
@@ -252,7 +269,7 @@ export function CreateCoursePage() {
                   : 'text-text-muted hover:text-text-primary hover:bg-surface-secondary'
               }`}
             >
-              Contenido
+              Content
             </button>
           </div>
         </div>
@@ -278,8 +295,8 @@ export function CreateCoursePage() {
           <div className='space-y-8 animate-fade-in'>
             <div className='flex items-center justify-between'>
               <div>
-                <h2 className='text-2xl font-bold text-text-primary'>Módulos y lecciones</h2>
-                <p className='text-text-muted mt-1'>Organiza el contenido de tu curso arrastrando y soltando</p>
+                <h2 className='text-2xl font-bold text-text-primary'>Modules & Lessons</h2>
+                <p className='text-text-muted mt-1'>Organize your course content by dragging and dropping</p>
               </div>
               <button
                 type='button'
@@ -289,7 +306,7 @@ export function CreateCoursePage() {
                 <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
                 </svg>
-                Añadir módulo
+                Add Module
               </button>
             </div>
 
@@ -300,8 +317,8 @@ export function CreateCoursePage() {
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={1.5} d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' />
                   </svg>
                 </div>
-                <h3 className='text-lg font-medium text-text-primary mb-2'>No hay módulos aún</h3>
-                <p className='text-text-muted mb-6'>Crea tu primer módulo para empezar a añadir lecciones</p>
+                <h3 className='text-lg font-medium text-text-primary mb-2'>No modules yet</h3>
+                <p className='text-text-muted mb-6'>Create your first module to start adding lessons</p>
                 <button
                   type='button'
                   onClick={addModule}
@@ -310,7 +327,7 @@ export function CreateCoursePage() {
                   <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
                   </svg>
-                  Crear primer módulo
+                  Create First Module
                 </button>
               </div>
             ) : (
@@ -324,6 +341,7 @@ export function CreateCoursePage() {
                     onUpdate={handleModuleUpdate}
                     onDelete={() => handleModuleDelete(item.id)}
                     onDuplicate={() => handleModuleDuplicate(item.data)}
+                    errors={errors}
                   />
                 )}
                 placeholder={

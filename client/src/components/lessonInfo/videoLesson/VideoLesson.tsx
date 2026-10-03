@@ -40,7 +40,7 @@ function VideoLesson({ lesson }: Props) {
   if (!videoUrl) {
     return (
       <div className='flex h-full items-center justify-center bg-surface'>
-        <p className='text-text-muted'>No hay video disponible para esta lección</p>
+        <p className='text-text-muted'>No video available for this lesson</p>
       </div>
     )
   }
@@ -87,7 +87,7 @@ function VideoLesson({ lesson }: Props) {
         )}
         {!youtubeEmbed && !vimeoEmbed && !directVideo && (
           <div className='flex w-full h-full items-center justify-center bg-surface-secondary text-text-muted'>
-            <p>Formato de video no soportado. Usa YouTube, Vimeo o archivos directos (mp4, webm, ogg).</p>
+            <p>Unsupported video format. Use YouTube, Vimeo, or direct files (mp4, webm, ogg).</p>
           </div>
         )}
       </div>

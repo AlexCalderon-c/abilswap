@@ -10,15 +10,6 @@ function TextLesson({ lesson }: Props) {
     <div className='h-full w-full overflow-hidden grid lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)]'>
       <div className='h-full overflow-y-auto'>
         <div className='max-w-2xl mx-auto px-6 md:px-10 py-10 md:py-12'>
-          <div className='flex items-center gap-2 mb-3'>
-            <span className='inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-xs font-semibold'>
-              <svg className='w-3.5 h-3.5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' />
-              </svg>
-              Lección de texto
-            </span>
-            <span className='text-xs text-text-muted'>Tiempo estimado: 10 min</span>
-          </div>
 
           <h1 className='text-2xl md:text-3xl font-bold text-text-primary leading-tight mb-2'>
             {lesson.lesson_name}
@@ -52,7 +43,7 @@ function TextLesson({ lesson }: Props) {
                 )}
 
                 {section.image && (
-                  <figure className='my-4 lg:hidden'>
+                  <figure className='my-4'>
                     <img
                       src={section.image}
                       alt={section.caption ?? section.heading}
@@ -68,25 +59,29 @@ function TextLesson({ lesson }: Props) {
                 )}
               </section>
             ))}
-
-            <div className='rounded-2xl bg-primary-50/60 border border-primary-100 p-5'>
-              <h3 className='font-semibold text-primary-700 mb-3 flex items-center gap-2'>
-                <svg className='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
-                  <path fillRule='evenodd' d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' clipRule='evenodd' />
-                </svg>
-                Puntos clave
-              </h3>
-              <ul className='space-y-2'>
-                {lesson.content?.takeaways.map((item) => (
-                  <li key={item} className='flex items-start gap-2 text-sm text-primary-900'>
-                    <svg className='w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
+            {
+              lesson.content?.takeaways.length! > 0 && (
+                <div className='rounded-2xl bg-primary-50/60 border border-primary-100 p-5'>
+                  <h3 className='font-semibold text-primary-700 mb-3 flex items-center gap-2'>
+                    <svg className='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
+                      <path fillRule='evenodd' d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' clipRule='evenodd' />
                     </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    Key Takeaways
+                  </h3>
+                  <ul className='space-y-2'>
+                    {lesson.content?.takeaways.map((item) => (
+                      <li key={item} className='flex items-start gap-2 text-sm text-primary-900'>
+                        <svg className='w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                          <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
+                        </svg>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            }
+            
           </div>
         </div>
       </div>
@@ -100,7 +95,7 @@ function TextLesson({ lesson }: Props) {
         <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20' />
         <div className='absolute inset-x-0 bottom-0 p-7 text-white'>
           <span className='inline-block px-2.5 py-1 rounded-full bg-white/20 backdrop-blur text-[11px] font-semibold uppercase tracking-wider mb-3'>
-            Nota de la lección
+            Lesson Note
           </span>
           <h3 className='text-xl font-bold mb-2'>{content.sidebar.title}</h3>
           <p className='text-sm text-white/85 leading-relaxed mb-4'>{content.sidebar.description}</p>

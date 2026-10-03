@@ -14,12 +14,12 @@ export default function CoursesPage() {
 
   const searchHandler = (value: string, category: string) => {
     const newValue = courseLoaded.courses.filter((obj: Course) => obj.course_name.toLowerCase().includes(value.toLowerCase()) &&
-    (category === 'Todas' || obj.category === category))
+    (category === 'All' || obj.category === category))
     setFilteredCourses(newValue)
   }
 
   const categoryHandler = (category: string) => {
-    const newValue = courseLoaded.courses.filter((obj: Course) => category === 'Todas' ? true : obj.category === category)
+    const newValue = courseLoaded.courses.filter((obj: Course) => category === 'All' ? true : obj.category === category)
     setFilteredCourses(newValue)
   }
 
@@ -32,8 +32,8 @@ export default function CoursesPage() {
     <div className='min-h-screen bg-surface-secondary'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16'>
         <div className='mb-8'>
-          <h1 className='text-3xl md:text-4xl font-bold text-text-primary mb-3'>Todos los cursos</h1>
-          <p className='text-lg text-text-secondary'>Encuentra el curso perfecto para tu aprendizaje</p>
+          <h1 className='text-3xl md:text-4xl font-bold text-text-primary mb-3'>All Courses</h1>
+          <p className='text-lg text-text-secondary'>Find the perfect course for your learning journey</p>
         </div>
 
         <div className='grid lg:grid-cols-4 gap-8'>

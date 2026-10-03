@@ -5,8 +5,8 @@ import { type CourseObject } from "../types/course.types.ts";
 
 export const createCourse = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { course_name, description, price} = req.body;
-        const course: QueryResult<CourseObject> = await pool.query(`INSERT INTO "course" (course_name, description, teacher_id, price) VALUES ($1, $2, $3, $4) RETURNING *`, [course_name, description, req.user?.id, price])
+        const { course_name, description, price, image_url} = req.body;
+        const course: QueryResult<CourseObject> = await pool.query(`INSERT INTO "course" (course_name, description, teacher_id, price, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *`, [course_name, description, req.user?.id, price, image_url])
         const courseObject = course.rows[0];
         res.status(201).json({
             ...courseObject,
@@ -32,7 +32,7 @@ export const getCourseByTeacher = async (req: Request, res: Response, next: Next
 export const getEveryCourseByTeacher = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const course: QueryResult<CourseObject> = await pool.query("SELECT * FROM course WHERE teacher_id = $1", [req.user?.id])
-        const courseObject = course.rows[0];
+        const courseObject = course.rows;
         return res.status(200).json(courseObject);
     } catch (error) {
         next(error);
@@ -89,7 +89,7 @@ export const getCourseCompleteById = async (req: Request, res: Response, next: N
 
 export const getCategoriesFromCourses = async (req: Request, res: Response, next: NextFunction) => { //HASN'T BEEN TESTED
     try {
-        const course: QueryResult<CourseObject> = await pool.query("SELECT category FROM course GROUP BY category")
+        const course: QueryResult<CourseObject> = await pool.query("SELECT category FROM course WHERE category IS NOT NULL GROUP BY category ")
         const courseObject = course.rows;
         return res.status(200).json(courseObject);
     } catch (error) {

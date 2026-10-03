@@ -21,8 +21,8 @@ export function CourseBasicInfo({ data, onChange, errors }: Props) {
           </svg>
         </div>
         <div>
-          <h3 className='text-lg font-semibold text-primary-800'>Información del curso</h3>
-          <p className='text-sm text-primary-700'>Configura los datos básicos de tu curso</p>
+          <h3 className='text-lg font-semibold text-primary-800'>Course Information</h3>
+          <p className='text-sm text-primary-700'>Configure the basic details of your course</p>
         </div>
       </div>
 
@@ -30,8 +30,8 @@ export function CourseBasicInfo({ data, onChange, errors }: Props) {
         <TextInput
           value={data.course_name}
           onChange={(v) => updateData('course_name', v)}
-          placeholder='Ej: Introducción a React'
-          label='Nombre del curso *'
+          placeholder='E.g., Introduction to React'
+          label='Course Name *'
           error={errors?.course_name}
           className='md:col-span-2'
         />
@@ -39,8 +39,8 @@ export function CourseBasicInfo({ data, onChange, errors }: Props) {
         <TextareaInput
           value={data.description}
           onChange={(v) => updateData('description', v)}
-          placeholder='Describe qué aprenderán los estudiantes, requisitos previos, qué incluye el curso...'
-          label='Descripción *'
+          placeholder='Describe what students will learn, prerequisites, what the course includes...'
+          label='Description *'
           error={errors?.description}
           rows={5}
           className='md:col-span-2'
@@ -50,7 +50,7 @@ export function CourseBasicInfo({ data, onChange, errors }: Props) {
           value={String(data.price)}
           onChange={(v) => updateData('price', parseFloat(v) || 0)}
           placeholder='0.00'
-          label='Precio (€) *'
+          label='Price ($) *'
           error={errors?.price}
           min={0}
           step='0.01'
@@ -59,25 +59,25 @@ export function CourseBasicInfo({ data, onChange, errors }: Props) {
         <SelectInput
           value={data.category}
           onChange={(v) => updateData('category', v)}
-          label='Categoría'
+          label='Category'
           error={errors?.category}
           options={[
-            { value: 'programming', label: 'Programación' },
-            { value: 'design', label: 'Diseño' },
+            { value: 'programming', label: 'Programming' },
+            { value: 'design', label: 'Design' },
             { value: 'marketing', label: 'Marketing' },
-            { value: 'business', label: 'Negocios' },
-            { value: 'data-science', label: 'Ciencia de datos' },
+            { value: 'business', label: 'Business' },
+            { value: 'data-science', label: 'Data Science' },
             { value: 'devops', label: 'DevOps' },
-            { value: 'mobile', label: 'Desarrollo móvil' },
-            { value: 'other', label: 'Otros' },
+            { value: 'mobile', label: 'Mobile Development' },
+            { value: 'other', label: 'Other' },
           ]}
         />
 
         <UrlInput
           value={data.image_url}
           onChange={(v) => updateData('image_url', v)}
-          placeholder='https://ejemplo.com/imagen.jpg'
-          label='URL de la imagen de portada'
+          placeholder='https://example.com/image.jpg'
+          label='Cover Image URL'
           error={errors?.image_url}
         />
       </div>

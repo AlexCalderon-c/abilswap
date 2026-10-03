@@ -14,8 +14,8 @@ export default function CourseGrid({ courses }: Props) {
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={1.5} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
           </svg>
         </div>
-        <p className='text-lg font-medium text-text-primary mb-1'>No se encontraron cursos</p>
-        <p className='text-sm text-text-muted'>Intenta ajustar los filtros de búsqueda</p>
+        <p className='text-lg font-medium text-text-primary mb-1'>No courses found</p>
+        <p className='text-sm text-text-muted'>Try adjusting your search filters</p>
       </div>
     )
   }

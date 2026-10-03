@@ -5,6 +5,7 @@ interface CourseContextInterface {
     isLoading: boolean
     error: Error | null
     enrollCourse: (courseId: number) => Promise<void>
+    deleteEnroll: (courseId: number) => Promise<void>
 }
 
 const CourseContext = createContext<CourseContextInterface | undefined>(undefined)
@@ -29,10 +30,22 @@ export function CourseProvider({children}: {children: ReactNode}){
         }
     }
 
+    const deleteEnroll = async (courseId: number) => {
+        try{
+            setIsLoading(true)
+            await apiClient.delete(`/api/enrollment/${courseId}`)
+        }catch(e){
+            setError(e as Error)
+        }finally{
+            setIsLoading(false)
+        }
+    }
+
     const value: CourseContextInterface = {
         isLoading,
         error,
-        enrollCourse
+        enrollCourse,
+        deleteEnroll
     }
 
     return (

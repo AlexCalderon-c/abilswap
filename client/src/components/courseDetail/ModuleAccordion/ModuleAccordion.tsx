@@ -21,9 +21,6 @@ export default function ModuleAccordion({ module, lessons, defaultOpen = false, 
         className='w-full flex items-center justify-between px-5 py-4 text-left hover:bg-surface-secondary transition-colors'
       >
         <div className='flex items-center gap-3'>
-          <span className='w-7 h-7 rounded-lg bg-primary-50 text-primary-700 text-xs font-bold flex items-center justify-center'>
-            {module.module_index}
-          </span>
           <div>
             <p className='font-medium text-sm text-text-primary'>{module.module_name}</p>
             <p className='text-xs text-text-muted mt-0.5'>{lessons.length} lecciones</p>
